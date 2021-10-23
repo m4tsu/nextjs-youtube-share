@@ -1,0 +1,20 @@
+{
+    // "editor.formatOnSave": true, // ファイル保存時にPrettierでフォーマット
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true // ファイル保存時にESLintでフォーマット
+    },
+    "eslint.format.enable": false,
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // "[javascript]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    //   },
+    //   "[json]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    //   },
+    // "[typescript]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode" // フォーマッタをprettierに指定
+    // },
+}
