@@ -1,12 +1,14 @@
-import React from 'react';
-import NextLink, { LinkProps as NextLinkProps } from 'next/link';
-import { ReactElement, ReactNode } from 'react';
-import qs from 'query-string';
-import { Paths } from './paths';
 import {
   Link as ChakraLink,
   LinkProps as ChakraLinkProps,
 } from '@chakra-ui/react';
+import NextLink, { LinkProps as NextLinkProps } from 'next/link';
+import qs from 'query-string';
+import React from 'react';
+import { ReactElement, ReactNode } from 'react';
+
+import { Paths } from './paths';
+
 
 // 参考 https://zenn.dev/panda_program/articles/typescript-nextjs-routing
 
@@ -17,12 +19,12 @@ type WithoutSlash<T> = T extends `/${infer U}` ? U : never;
 type Resource<T> = T extends `${infer U}/${infer S}` ? U | Resource<S> : T;
 type DynamicRoute<T> = T extends `[${infer U}]` ? U : never;
 type Params<T> = DynamicRoute<Resource<WithoutSlash<T>>>;
-type ParamKeys<T extends Path> = Params<T>;
-type PathParams<T extends Path> = {
+export type ParamKeys<T> = Params<T>;
+type PathParams<T> = {
   path: T;
   params?: { [K in ParamKeys<T>]: string | number };
 };
-export type Args<T extends Path> = ParamKeys<T> extends never
+export type Args<T> = ParamKeys<T> extends never
   ? PathParams<T>
   : Required<PathParams<T>>;
 export const getPath = <T extends Path>({ path, params }: Args<T>) => {
@@ -44,11 +46,6 @@ export const getPath = <T extends Path>({ path, params }: Args<T>) => {
     })
     .join('/');
 };
-// type Props<T extends Path> = {
-//   query?: { [key: string]: string | number | string[] };
-//   hash?: string;
-// } & Args<T> &
-//   Omit<LinkProps, 'href'>;
 
 const TypedLink: <T extends Path>(
   props: Args<T> & {

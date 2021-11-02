@@ -1,5 +1,6 @@
-import { Container } from '@/components/common/Container';
-import { FC, ReactElement } from 'react';
+import { FC } from 'react';
+
+import { Container } from '@/components/ui/Container';
 
 export const Main: FC = ({ children }) => {
   return (

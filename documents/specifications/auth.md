@@ -2,9 +2,9 @@
 
 認証ユーザーを `AuthUser`
 認証ユーザーの持つアプリケーション上のユーザーデータを `User`
-とする。
+とする.
 
-- front で supabase 認証。`AuthUser` を取得。
+- front で supabase 認証.`AuthUser` を取得.
   - authUser.uid から user を取得する
     - 取得できなかった場合(エラーではなく not found)
       - authUser の twitterId から user を検索する

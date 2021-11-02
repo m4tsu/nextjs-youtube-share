@@ -1,4 +1,7 @@
-import { extendTheme, createStandaloneToast } from '@chakra-ui/react';
+import {
+  createStandaloneToast,
+  extendTheme,
+} from '@chakra-ui/react';
 import { createBreakpoints } from '@chakra-ui/theme-tools';
 import { mode } from '@chakra-ui/theme-tools';
 
@@ -28,7 +31,7 @@ const colors = {
   //   500: '#2B4E4E',
   //   600: '#223E3E',
   //   700: '#192E2E',
-  //   800: '#111f1f', #121212 とPromaryの8%を混ぜた色。Googleのダークモードガイドライン？にあるっぽい
+  //   800: '#111f1f', #121212 とPromaryの8%を混ぜた色.Googleのダークモードガイドライン？にあるっぽい
   //   900: '#070d0d',
   // },
   primaryDark: {
@@ -55,40 +58,44 @@ const config = {
   useSystemColorMode: false,
 } as const;
 
-export const theme = extendTheme({
-  colors,
-  breakpoints,
-  config,
-  styles: {
-    global: (props) => ({
-      body: {
-        bg: mode('bgWhite', 'primaryDark.800')(props),
-        color: mode('textMain', 'bgWhite')(props),
+export const theme = extendTheme(
+  {
+    colors,
+    breakpoints,
+    config,
+    styles: {
+      global: (props) => ({
+        body: {
+          bg: mode('bgWhite', 'primaryDark.800')(props),
+          color: mode('textMain', 'bgWhite')(props),
+        },
+        '#chakra-toast-manager-top-right': {
+          // TODO: 正式な指定方法わからない
+          top: '70px!important',
+        },
+      }),
+    },
+    components: {
+      // AppBar: {
+      //   baseStyle: (props) => ({
+      //     bg: mode('primary.500', 'primaryDark.700')(props),
+      //   }),
+      // },
+      Text: {
+        baseStyle: {
+          wordBreak: 'break-word',
+        },
+        colors,
       },
-      '#chakra-toast-manager-top-right': {
-        // TODO: 正式な指定方法わからない
-        top: '70px!important',
-      },
-    }),
-  },
-  components: {
-    // AppBar: {
-    //   baseStyle: (props) => ({
-    //     bg: mode('primary.500', 'primaryDark.700')(props),
-    //   }),
-    // },
-    Text: {
-      baseStyle: {
-        wordBreak: 'break-word',
+      Toast: {
+        baseStyle: {
+          width: '100%',
+        },
       },
     },
-    Toast: {
-      baseStyle: {
-        width: '100%',
-      },
-    },
-  },
-});
+  }
+  // withDefaultColorScheme({ colorScheme: 'primary' })
+);
 
 export const toast = createStandaloneToast({
   theme,

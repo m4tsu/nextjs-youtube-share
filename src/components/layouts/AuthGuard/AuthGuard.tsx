@@ -1,8 +1,9 @@
-import { Loading } from '@/components/common/Loading';
-import { useAuth } from '@/services/auth/AuthProvider';
-import { Paths } from '@/utils/route/paths';
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
+
+import { Loading } from '@/components/ui/Loading';
+import { useAuth } from '@/services/auth/AuthProvider';
+import { Paths } from '@/utils/route/paths';
 
 // let mounted = false;
 export const AuthGuard: FC = ({ children }) => {
@@ -14,7 +15,7 @@ export const AuthGuard: FC = ({ children }) => {
     if (!isLoading && !me && router.isReady) {
       router.replace(Paths.login);
     }
-  }, [isLoading, me, router.isReady]);
+  }, [isLoading, me, router]);
 
   // if (!mounted) return null; // https://github.com/vercel/next.js/discussions/15021
   if (isLoading) return <Loading />;

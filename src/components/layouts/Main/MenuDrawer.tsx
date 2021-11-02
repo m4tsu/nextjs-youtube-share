@@ -1,22 +1,21 @@
 import { Button } from '@chakra-ui/button';
-import { Link } from '@/utils/route/Link';
-import { useDisclosure } from '@chakra-ui/hooks';
 import { HamburgerIcon } from '@chakra-ui/icons';
+import { Img } from '@chakra-ui/image';
 import { Box, StackDivider, VStack } from '@chakra-ui/layout';
 import {
   Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
   DrawerBody,
-  DrawerFooter,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
 } from '@chakra-ui/modal';
 import { FC } from 'react';
+
+import { Link } from '@/utils/route/Link';
+import { Paths } from '@/utils/route/paths';
+
 import { headerHeight } from '../AppBar/AppBar';
 import { HeaderButton } from '../AppBar/HeaderButton';
-import { Img } from '@chakra-ui/image';
-import { Paths } from '@/utils/route/paths';
 
 type Props = {
   onClose: () => void;
@@ -98,7 +97,7 @@ export const MenuDrawer: FC<Props> = ({ onClose, isOpen, onToggle }) => {
             <Box>
               <Link
                 path={Paths.following}
-                params={{ user_name: 2 }}
+                params={{ userName: 2 }}
                 chakraLinkProps={{ width: '100%', pt: '2', pb: '2' }}
               >
                 <MenuButton>フォロー</MenuButton>
@@ -107,7 +106,7 @@ export const MenuDrawer: FC<Props> = ({ onClose, isOpen, onToggle }) => {
             <Box>
               <Link
                 path={Paths.followers}
-                params={{ user_name: 2 }}
+                params={{ userName: 2 }}
                 chakraLinkProps={{ width: '100%', pt: '2', pb: '2' }}
               >
                 <MenuButton>フォロワー</MenuButton>
