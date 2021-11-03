@@ -1,6 +1,7 @@
 import { string, z } from 'zod';
 
 import { schemaForType } from '@/lib/zod/schemaForType';
+import { Post } from '@/types/domains/post';
 
 import { User } from '.prisma/client';
 
@@ -8,6 +9,11 @@ export type UserMetaData = {
   avatar_url: string;
   full_name: string;
   user_name: string;
+};
+
+export type UserPosts = User & {
+  posts: Post[];
+  _count: { posts: number } | null;
 };
 
 export const userSchema = schemaForType<User>()(

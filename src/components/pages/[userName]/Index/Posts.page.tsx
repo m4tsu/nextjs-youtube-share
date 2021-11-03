@@ -1,36 +1,54 @@
 import { Grid } from '@chakra-ui/react';
-import { FC } from 'react';
+import { useRouter } from 'next/router';
+import { FC, useCallback } from 'react';
 
 import { PostCard } from '@/components/domain/user/post/PostCard';
 import { NoResourceError } from '@/components/pages/error/NoResourceError';
 import { Loading } from '@/components/ui/Loading';
+import { Paginator } from '@/components/ui/Paginator';
 import { Panel } from '@/components/ui/Panel';
-import { httpClient } from '@/repositories/helpers/httpClient';
 import { useUserPosts } from '@/repositories/posts';
+import { getPath } from '@/utils/route/Link';
 
+const USER_POSTS_PER_PAGE = 4;
 type Props = {
   userName?: string;
+  page: number;
 };
-export const PostsPage: FC<Props> = ({ userName }) => {
-  const { data, error } = useUserPosts(userName);
-  console.log('aaaaaa', data, error);
-  const hoge = async () => {
-    const res = await httpClient.get('/api/users/tsuzurinnnn/posts');
-    console.log(res);
-  };
-  // return (
-  //   <div>
-  //     <button onClick={hoge}>hoge</button>
-  //   </div>
-  // );
+export const PostsPage: FC<Props> = ({ userName, page }) => {
+  const router = useRouter();
+  const { data, error, totalPage } = useUserPosts(
+    page,
+    USER_POSTS_PER_PAGE,
+    userName
+  );
+
+  const onChangePage = useCallback(
+    (pageNumber: number) => {
+      if (userName) {
+        router.push(
+          `${getPath({
+            path: '/[userName]',
+            params: { userName },
+          })}?page=${pageNumber}`
+        );
+      }
+    },
+    [router, userName]
+  );
+
   if (error) {
     return <NoResourceError resourceName="投稿" />;
   }
-  if (!data) {
+  if (!data || !totalPage || !userName) {
     return <Loading />;
   }
+  if (!data.posts.length) {
+    router.push(getPath({ path: '/[userName]', params: { userName } }));
+  }
+
   return (
-    <Panel>
+    <Panel display="flex" flexDirection="column" sx={{ gap: '1rem' }}>
       <Grid
         templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
         gap={4}
@@ -39,6 +57,11 @@ export const PostsPage: FC<Props> = ({ userName }) => {
           <PostCard key={post.id} post={post} user={data} />
         ))}
       </Grid>
+      <Paginator
+        currentPage={page}
+        totalPage={totalPage}
+        onPageChange={onChangePage}
+      />
     </Panel>
   );
 };
