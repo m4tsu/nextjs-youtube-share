@@ -3,8 +3,12 @@ import { z } from 'zod';
 import { schemaForType } from '@/lib/zod/schemaForType';
 import { validateUrl } from '@/utils/domains/post/video';
 
-import { Post, VideoType } from '.prisma/client';
+import { Post as PrismaPost, VideoType } from '.prisma/client';
 
+type Post = PrismaPost & {
+  favorited?: boolean;
+  favoritesCount: number;
+};
 export type { Post, VideoType };
 
 export type NicovideoInfo = {
@@ -12,7 +16,7 @@ export type NicovideoInfo = {
   title: string;
 };
 
-export const postSchema = schemaForType<Post>()(
+export const postSchema = schemaForType<PrismaPost>()(
   z.object({
     id: z.string().uuid(),
     userId: z.string().uuid(),

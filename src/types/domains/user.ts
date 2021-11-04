@@ -3,7 +3,12 @@ import { string, z } from 'zod';
 import { schemaForType } from '@/lib/zod/schemaForType';
 import { Post } from '@/types/domains/post';
 
-import { User } from '.prisma/client';
+import { User as PrismaUser } from '.prisma/client';
+
+type User = PrismaUser & {
+  isFollowing?: boolean;
+  postsCount?: number;
+};
 
 export type UserMetaData = {
   avatar_url: string;
@@ -13,10 +18,10 @@ export type UserMetaData = {
 
 export type UserPosts = User & {
   posts: Post[];
-  _count: { posts: number } | null;
+  // _count: { posts: number } | null;
 };
 
-export const userSchema = schemaForType<User>()(
+export const userSchema = schemaForType<PrismaUser>()(
   z.object({
     id: z.string().uuid(),
     userName: z

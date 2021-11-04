@@ -1,7 +1,7 @@
-import { StarIcon } from '@chakra-ui/icons';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 import { FC } from 'react';
 
+import { FavoriteButton } from '@/components/domain/user/post/FavariteButton';
 import { NoResourceError } from '@/components/pages/error/NoResourceError';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
@@ -9,6 +9,7 @@ import { Panel } from '@/components/ui/Panel';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { toDate } from '@/lib/dayjs/utils';
 import { usePost } from '@/repositories/posts';
+import { useAuth } from '@/services/auth/AuthProvider';
 import { getEmbedUrl } from '@/utils/domains/post/video';
 
 type Props = {
@@ -19,7 +20,8 @@ type Props = {
 
 export const PostPage: FC<Props> = ({ userName, postId }) => {
   const { data, error } = usePost(userName, postId);
-  console.log('post Page Render!!!!', userName, postId);
+  const { me } = useAuth();
+  console.log('post!!', data);
   if (error) return <NoResourceError resourceName="投稿" />;
   if (!data) return <Loading />;
   const { type, videoId, title, body, updatedAt, createdAt } = data;
@@ -45,7 +47,7 @@ export const PostPage: FC<Props> = ({ userName, postId }) => {
           <Button>poyo</Button>
         </Box>
         <Flex flexShrink={0} alignItems="center">
-          <StarIcon />
+          {me && <FavoriteButton postId={data.id} favorited={data.favorited} />}
         </Flex>
       </Flex>
       <Box>

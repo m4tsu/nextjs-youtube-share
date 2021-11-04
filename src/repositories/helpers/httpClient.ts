@@ -21,7 +21,6 @@ class HttpClient {
   }
 
   async get<ResponsData>(url: string) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     const res = await fetch(url, {
       method: 'GET',
       headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -70,6 +69,27 @@ class HttpClient {
     if (!res.ok) {
       const error = new HttpError(res, (await res.json()) as ApiErrorObject);
       console.log('http put error', error);
+      throw error;
+    }
+    return res.json() as Promise<ResponsData>;
+  }
+  async delete<ResponsData, RequestParams = any>({
+    url,
+    params,
+    config,
+  }: FetchParams<RequestParams>) {
+    const res = await fetch(url, {
+      method: 'DELETE',
+      body: JSON.stringify(params),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      ...config,
+    });
+    if (res.redirected) {
+      router.push(res.url);
+    }
+    if (!res.ok) {
+      const error = new HttpError(res, (await res.json()) as ApiErrorObject);
+      console.log('http post error', error);
       throw error;
     }
     return res.json() as Promise<ResponsData>;

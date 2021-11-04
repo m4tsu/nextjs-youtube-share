@@ -8,111 +8,63 @@ import { httpClient } from './helpers/httpClient';
 import { useFetch } from './helpers/useFetch';
 import { useInfiniteFetch } from './helpers/useInfiniteFetch';
 import { usePaginationFetch } from './helpers/usePaginationFetch';
-// class PostsRepository {
-//   private static instance: PostsRepository;
-//   private constructor() {}
-//   static getInstance() {
-//     if (!PostsRepository.instance) {
-//       PostsRepository.instance = new PostsRepository();
-//     }
-//     return PostsRepository.instance;
-//   }
+class PostsRepository {
+  private static instance: PostsRepository;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private constructor() {}
+  static getInstance() {
+    if (!PostsRepository.instance) {
+      PostsRepository.instance = new PostsRepository();
+    }
+    return PostsRepository.instance;
+  }
 
-// async fetchPost(postId?: string) {
-//   return handleSupabaseResponse(
-//     await supabaseClient
-//       .from<Post>('posts')
-//       .select('*')
-//       .eq('id', postId)
-//       .single()
-//   );
-// }
+  createPost = async (params: NewPostParams, userName: string) => {
+    const newPost = await httpClient.post<Post, NewPostParams>({
+      url: getApiPath({
+        path: '/api/users/[userName]/posts/create',
+        params: { userName },
+      }),
+      params,
+    });
+    await mutate<Post>(
+      getFetchKey({
+        path: '/api/users/[userName]/posts/[postId]',
+        params: { userName, postId: newPost.id },
+      }),
+      newPost,
+      false
+    );
+    await mutate<Post[]>(
+      getFetchKey({
+        path: '/api/users/[userName]/posts',
+        params: { userName },
+      }),
+      async (data) => (data ? { ...data, newPost } : undefined),
+      false
+    );
+    return newPost;
+  };
 
-// async fetchAllPosts() {
-//   return handleSupabaseResponse(
-//     await supabaseClient.from<Post>('posts').select('*').order('updated_at')
-//   );
-// }
+  favorite = async (postId: string) => {
+    await httpClient.post({
+      url: getApiPath({
+        path: '/api/posts/[postId]/favorites',
+        params: { postId },
+      }),
+    });
+  };
+  unFavorite = async (postId: string) => {
+    await httpClient.delete({
+      url: getApiPath({
+        path: '/api/posts/[postId]/favorites',
+        params: { postId },
+      }),
+    });
+  };
+}
 
-// async fetchUserPosts(userName?: string) {
-//   await new Promise((resolve) => setTimeout(resolve, 3000));
-//   return handleSupabaseResponse(
-//     await supabaseClient
-//       .from<UserPosts>('users')
-//       .select('*, posts!posts_user_id_fkey(*)')
-//       .eq('userName', userName)
-//       .order('created_at', { foreignTable: 'posts', ascending: false })
-//       .single()
-//   );
-// }
-// async fetchUserPosts(userName?: string) {
-//   return handleSupabaseResponse(
-//     await supabaseClient
-//       .from<Post>('posts')
-//       .select('*, user:users!posts_user_id_fkey(*)')
-//       //@ts-ignore
-//       .eq('users.userName', userName, { filterSource: true })
-//       .order('created_at', { ascending: false })
-//   );
-// }
-
-// async createPost({
-//   type,
-//   title,
-//   body,
-//   videoId,
-//   thumbnailUrl,
-// }: NewPostParams) {
-//   const { user_id } = authenticate();
-//   return handleSupabaseResponse(
-//     await supabaseClient
-//       .from<Post>('posts')
-//       .insert({
-//         type,
-//         title,
-//         body,
-//         thumbnail_url: thumbnailUrl,
-//         user_id,
-//         video_id: videoId,
-//         updated_at: getNowDateTime(),
-//       })
-//       .single()
-//   );
-// }
-
-// }
-
-// export const postsRepository = PostsRepository.getInstance();
-
-// operations, hooks
-// export const usePost = (postId?: string) => {
-//   return useSWR(postId ? `/api/posts/${postId}` : null, async () =>
-//     postsRepository.fetchPost(postId)
-//   );
-// };
-
-// export const useAllPosts = () => {
-//   return useSWR('/api/allPosts', async () => postsRepository.fetchAllPosts());
-// };
-
-// export const useUserPosts = (userName?: string) => {
-//   return useSWR<UserPosts, HttpError>(
-//     userName ? `/api/users/${userName}/posts` : null,
-//     async () => postsRepository.fetchUserPosts(userName)
-//   );
-// };
-
-// export const addPost = async (params: NewPostParams, userName: string) => {
-//   const post = await postsRepository.createPost(params);
-//   const result = await mutate<Post>(`/api/posts/${post.id}`, post, false);
-//   await mutate<UserPosts>(
-//     `/api/users/${userName}/posts`,
-//     async (data) =>
-//       data ? { ...data, posts: [post, ...data.posts] } : undefined,
-//     false
-//   );
-//   return post;
-// };
+export const postsRepository = PostsRepository.getInstance();
 
 export const createPost = async (params: NewPostParams, userName: string) => {
   const newPost = await httpClient.post<Post, NewPostParams>({
@@ -156,12 +108,6 @@ export const usePost = (userName?: string, postId?: string) => {
   );
 };
 
-// export const useUserPosts = (userName?: string) => {
-//   return useFetch<User & { posts: Post[] }>(
-//     getFetchKey({ path: '/api/users/[userName]/posts', params: { userName } })
-//   );
-// };
-
 export const useUserPosts = (
   pageIndex: number,
   perPage: number,
@@ -172,8 +118,8 @@ export const useUserPosts = (
     pageIndex,
     perPage
   );
-  const totalPage = data?._count?.posts
-    ? Math.ceil(data._count.posts / perPage)
+  const totalPage = data?.postsCount
+    ? Math.ceil(data.postsCount / perPage)
     : null; // TODO: ページネーションある時の返ってくるデータの方を統一して、usePaginationFetchに寄せるべきだけどめんどい
   return { data, error, totalPage };
 };

@@ -25,18 +25,35 @@ export default handler<UserPosts>().get(async (req, res) => {
   const { userName, pageIndex, perPage } = querySchema.parse(req.query);
   console.log('userPosts api', req.query);
   const skip = (pageIndex - 1) * perPage;
-  const userPosts = await prisma.user.findUnique({
+  const result = await prisma.user.findUnique({
     where: { userName },
     include: {
       _count: { select: { posts: true } },
-      posts: { take: perPage, skip, orderBy: { updatedAt: 'desc' } },
+      posts: {
+        take: perPage,
+        skip,
+        orderBy: { updatedAt: 'desc' },
+        include: {
+          _count: { select: { favorites: true } },
+          favorites: { where: { userId: req.currentUser?.id } },
+        },
+      },
     },
   });
-  console.log('userPosts', userPosts);
-  if (!userPosts) {
+  console.log('userPosts', result);
+  if (!result) {
     return res.status(404).json({
-      message: '投稿がみつかりませんでした.',
+      message: 'ユーザーがみつかりませんでした.',
     });
   }
+  const userPosts = {
+    ...result,
+    postsCount: result._count?.posts || 0,
+    posts: result.posts.map((post) => ({
+      ...post,
+      favoritesCount: post._count?.favorites || 0,
+      favorited: post.favorites.length > 0,
+    })),
+  };
   return res.status(200).json(userPosts);
 });

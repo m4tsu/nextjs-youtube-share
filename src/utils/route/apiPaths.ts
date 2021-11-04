@@ -8,7 +8,12 @@ export const ApiPaths = {
   user: '/api/users/[userName]',
   userPosts: '/api/users/[userName]/posts',
   userPost: '/api/users/[userName]/posts/[postId]',
+  favorites: '/api/posts/[postId]/favorites',
+  userFollowers: '/api/users/[userName]/followers',
+  userFollowings: '/api/users/[userName]/followings',
   createPost: '/api/users/[userName]/posts/create',
+
+  follow: '/api/users/follow/[userId]',
   nicovideoInfo: '/api/nicovideoInfo/[videoId]',
 } as const;
 

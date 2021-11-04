@@ -44,7 +44,6 @@ export const handler = <T = Record<string, unknown>>() =>
     NextApiResponse<T | ApiErrorObject>
   >(options).use(async (req, res, next) => {
     const { user } = await supabaseClient.auth.api.getUserByCookie(req);
-    console.log('authenticated!!!', user);
     req.currentUser = user;
     next();
   });

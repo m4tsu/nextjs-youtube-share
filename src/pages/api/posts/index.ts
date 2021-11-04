@@ -18,6 +18,7 @@ export default handler<Post[]>().get(async (req, res) => {
   // const {cursor, limit} = req.query as {cursor: Post['id'], limit: string}
   const { cursor, limit } = querySchema.parse(req.query);
   console.log('hogehoge', cursor, limit);
+  const currentUser = req.currentUser;
   if (cursor) {
     const posts = await prisma.post.findMany({
       take: limit,
@@ -25,18 +26,41 @@ export default handler<Post[]>().get(async (req, res) => {
       cursor: {
         id: cursor,
       },
-
       orderBy: {
         updatedAt: 'desc',
       },
+      include: {
+        _count: { select: { favorites: true } },
+        favorites: { where: { userId: currentUser?.id } },
+      },
     });
     console.log('posts', posts);
-    return res.status(200).json(posts);
+    return res
+      .status(200)
+      .json(
+        posts.map((post) => ({
+          ...post,
+          favoritesCount: post._count?.favorites || 0,
+          favorited: post.favorites.length > 0,
+        }))
+      );
   }
   const posts = await prisma.post.findMany({
     take: limit,
     orderBy: { updatedAt: 'desc' },
+    include: {
+      _count: { select: { favorites: true } },
+      favorites: { where: { userId: currentUser?.id } },
+    },
   });
   console.log('posts', posts);
-  return res.status(200).json(posts);
+  return res
+    .status(200)
+    .json(
+      posts.map((post) => ({
+        ...post,
+        favoritesCount: post._count?.favorites || 0,
+        favorited: post.favorites.length > 0,
+      }))
+    );
 });

@@ -1,21 +1,26 @@
-import { MoonIcon, StarIcon } from '@chakra-ui/icons';
 import { Box, Divider, Flex, Text } from '@chakra-ui/layout';
+import { Spacer } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
+import { useAuth } from '@/services/auth/AuthProvider';
+import { Post } from '@/types/domains/post';
+import { User } from '@/types/domains/user';
 import { getEmbedUrl } from '@/utils/domains/post/video';
 import { Link } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 
-import { Post, User } from '.prisma/client';
+import { FavoriteButton } from './FavariteButton';
 
 type Props = {
   post: Post;
   user: User;
 };
 export const PostCard: FC<Props> = ({ post, user }) => {
+  const { me } = useAuth();
+  console.log('postCard!!', post);
   return (
     <Link
       path={Paths.post}
@@ -56,8 +61,10 @@ export const PostCard: FC<Props> = ({ post, user }) => {
           </Flex>
           <Divider color="gray.500" />
           <Flex justifyContent="space-around">
-            <MoonIcon color="blue" />
-            <StarIcon color="yellow" />
+            <Spacer />
+            {me && (
+              <FavoriteButton favorited={post.favorited} postId={post.id} />
+            )}
           </Flex>
         </Flex>
       </Card>

@@ -22,7 +22,7 @@ export const PostsPage: FC<Props> = ({ userName, page }) => {
     USER_POSTS_PER_PAGE,
     userName
   );
-
+  console.log(data, error, totalPage);
   const onChangePage = useCallback(
     (pageNumber: number) => {
       if (userName) {
@@ -40,10 +40,10 @@ export const PostsPage: FC<Props> = ({ userName, page }) => {
   if (error) {
     return <NoResourceError resourceName="投稿" />;
   }
-  if (!data || !totalPage || !userName) {
+  if (!data || !userName) {
     return <Loading />;
   }
-  if (!data.posts.length) {
+  if (totalPage && page > totalPage) {
     router.push(getPath({ path: '/[userName]', params: { userName } }));
   }
 
@@ -57,11 +57,13 @@ export const PostsPage: FC<Props> = ({ userName, page }) => {
           <PostCard key={post.id} post={post} user={data} />
         ))}
       </Grid>
-      <Paginator
-        currentPage={page}
-        totalPage={totalPage}
-        onPageChange={onChangePage}
-      />
+      {totalPage && (
+        <Paginator
+          currentPage={page}
+          totalPage={totalPage}
+          onPageChange={onChangePage}
+        />
+      )}
     </Panel>
   );
 };

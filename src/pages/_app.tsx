@@ -41,6 +41,7 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
           },
           shouldRetryOnError: false,
           revalidateOnFocus: false,
+          // revalidateOnMount: true,
           revalidateOnReconnect: false,
         }}
       >
