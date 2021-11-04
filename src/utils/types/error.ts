@@ -7,7 +7,15 @@ export class BaseError extends Error {
   }
 }
 
-export interface HttpErrorObject {
+// API Routeが返すエラー
+export type ApiErrorObject = {
+  message?: string;
+  requireAlert?: boolean;
+  unexpected?: boolean;
+  details?: string[];
+};
+
+export type HttpErrorObject = {
   name: string;
   message: string;
   stack?: string;
@@ -16,17 +24,23 @@ export interface HttpErrorObject {
     status: number;
     statusText: string;
   };
-}
+} & Required<ApiErrorObject>;
 export class HttpError extends Error {
   url: string;
   status: number;
   statusText: string;
-  constructor(response: Response, message?: string) {
-    super(message ?? response.statusText);
+  requireAlert: boolean;
+  unexpected: boolean;
+  details: string[];
+  constructor(response: Response, apiError: ApiErrorObject) {
+    super(apiError.message ?? response.statusText);
     this.name = 'HttpError';
     this.status = response.status;
     this.statusText = response.statusText;
     this.url = response.url;
+    this.requireAlert = apiError.requireAlert ?? false;
+    this.unexpected = apiError.unexpected ?? false;
+    this.details = apiError.details ?? [];
   }
   serialize(): HttpErrorObject {
     return {
@@ -38,6 +52,9 @@ export class HttpError extends Error {
         statusText: this.statusText,
         url: this.url,
       },
+      requireAlert: this.requireAlert,
+      unexpected: this.unexpected,
+      details: this.details,
     };
   }
 }

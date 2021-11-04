@@ -1,8 +1,6 @@
-import { Button } from '@/components/common/Button';
-import { ButtonProps } from '@chakra-ui/button';
-import { useColorModeValue } from '@chakra-ui/color-mode';
-import { ComponentWithAs } from '@chakra-ui/system';
 import { ComponentProps, FC } from 'react';
+
+import { Button } from '@/components/ui/Button';
 
 type HeaderButtonProps = ComponentProps<typeof Button>;
 

@@ -1,6 +1,7 @@
-import { Container } from '@/components/common/Container';
-import { UserPanel } from '@/components/pages/users/UserPanel';
 import { FC } from 'react';
+
+import { UserPanel } from '@/components/domain/user/UserPanel';
+import { Container } from '@/components/ui/Container';
 
 export const UserPageLayout: FC = ({ children }) => {
   return (

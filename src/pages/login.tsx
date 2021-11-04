@@ -1,7 +1,9 @@
 import { NextAppPage } from 'next';
 
-const LoginPage: NextAppPage = () => {
-  return <div>ここからログインしてください</div>;
+import { LoginPage } from '@/components/pages/login/Login.page';
+
+const Page: NextAppPage = () => {
+  return <LoginPage />;
 };
 
-export default LoginPage;
+export default Page;

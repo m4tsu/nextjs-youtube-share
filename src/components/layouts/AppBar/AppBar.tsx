@@ -1,20 +1,16 @@
-import React, { FC, useState } from 'react';
-import {
-  Box,
-  Image,
-  Img,
-  useColorModeValue,
-  useStyleConfig,
-} from '@chakra-ui/react';
-// import { HeaderRightItem } from './HeaderRightItem';
-import { Container } from '@/components/common/Container';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { Link } from '@/utils/route/Link';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { HeaderButton } from './HeaderButton';
-import { MenuDrawer } from '../Main/MenuDrawer';
-import { User } from '@/models/user';
+import { Box, Image, Img } from '@chakra-ui/react';
+import React, { FC, useState } from 'react';
+
+import { Container } from '@/components/ui/Container';
 import { useAuth } from '@/services/auth/AuthProvider';
+import { User } from '@/types/domains/user';
+import { Link } from '@/utils/route/Link';
+
+import { MenuDrawer } from '../Main/MenuDrawer';
+
+import { HeaderButton } from './HeaderButton';
 
 export const headerHeight = '60px';
 type ComponentProps = {
@@ -75,18 +71,18 @@ const Component: FC<ComponentProps> = React.memo(({ user }) => {
           </Link>
           {user && (
             <Link
-              path="/[user_name]/posts/new"
-              params={{ user_name: user.user_name }}
+              path="/[userName]/posts/new"
+              params={{ userName: user.userName }}
             >
               <HeaderButton isLink>動画を登録する</HeaderButton>
             </Link>
           )}
 
           {user ? (
-            <Link path="/[user_name]" params={{ user_name: user.user_name }}>
+            <Link path="/[userName]" params={{ userName: user.userName }}>
               <HeaderButton isLink>
                 <Image
-                  src={user.photo_url}
+                  src={user.avatarUrl}
                   borderRadius="full"
                   boxSize="45px"
                 />

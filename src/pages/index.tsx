@@ -1,47 +1,17 @@
-import { Box, Button, LightMode, useColorMode } from '@chakra-ui/react';
-import { Button as AButton } from '@/components/common/Button';
+import { Box, Button, Divider, useColorMode } from '@chakra-ui/react';
+import { NextAppPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useAuth } from '@/repositories/useAuth';
-import { supabaseClient } from '@/lib/supabase/client';
 
-import { useAuth as useAuthContext } from '@/services/auth/AuthProvider';
+import { TopPage } from '@/components/pages/top/Top.page';
+import { supabaseClient } from '@/lib/supabase/client';
+import { useAuthDispatch } from '@/services/auth/AuthProvider';
 import { Link } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
-import { api } from '@/repositories/useFetch';
-import { Post } from '@/types/domain/posts';
 
-export default function Home() {
+export const Page: NextAppPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { isLoading, me } = useAuthContext();
-  const { login, logout } = useAuth();
-  const signinWithTwitter = async () => {
-    const res = await supabaseClient.auth.signIn({ provider: 'twitter' });
-    console.log(res);
-  };
-  const signupWithTwitter = async () => {
-    const res = await supabaseClient.auth.signUp({ provider: 'twitter' });
-    console.log(res);
-  };
-  const hoge = async () => {
-    const res = await supabaseClient
-      .from('posts')
-      .select('*, user:user_id(*)', { count: 'exact' })
-      .filter('user.user_name', 'eq', 'tsuzurinnnn');
-    console.log(res);
-    //  .from<definitions['users']>('users')
-    //  .select('*, posts:posts (*)')
-    //  .eq('user_name', user_name)
-    //  .single();
-  };
-
-  const postApiTest = async () => {
-    const result = await api.post<Post, any>({
-      url: '/api/posts/new',
-      params: {},
-    });
-    console.log(result);
-  };
+  const { signIn, signOut } = useAuthDispatch();
 
   const refreshSession = async () => {
     const res = await supabaseClient.auth.refreshSession();
@@ -57,74 +27,35 @@ export default function Home() {
       </Head>
 
       <main>
-        <div>
-          <button onClick={postApiTest}>Post Api Test</button>
-        </div>
+        <div></div>
         <div>
           <button onClick={refreshSession}>reflesh</button>
         </div>
-        <Link path={Paths.posts} params={{ user_name: 'MiraiPuzzle' }}>
-          MiraiPuzzle
-        </Link>
+        <div>
+          <Link
+            path={Paths.settings}
+            chakraLinkProps={{ colorScheme: 'primary' }}
+          >
+            Settings Page
+          </Link>
+        </div>
+        <div>
+          <Link
+            path={Paths.registration}
+            chakraLinkProps={{ colorScheme: 'primary' }}
+          >
+            RegistrationPage{' '}
+          </Link>
+        </div>
+        <div>
+          <Link path={Paths.posts} params={{ userName: 'MiraiPuzzle' }}>
+            MiraiPuzzle
+          </Link>
+        </div>
+
         <div>
           <Link path={Paths.home}>Home Page</Link>
         </div>
-
-        <h1>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-        {isLoading && <p style={{ color: 'red' }}>Loading...</p>}
-        <h1>{me?.user_name}</h1>
-
-        <p>
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div>
-          <a href="https://nextjs.org/docs">
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn">
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a href="https://github.com/vercel/next.js/tree/master/examples">
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app">
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-        <Box bgColor="brand.700" color="whiteAlpha.400">
-          aaaaaa <br /> hgoehgeoho
-        </Box>
-        <Box
-          bgColor="primary.500"
-          maxWidth={{
-            base: '100px',
-            sm: '559px',
-            md: '770px',
-            lg: '960px',
-            xl: '1200px',
-          }}
-        >
-          aaaaaa <br /> hgoehgeoho
-        </Box>
-        <LightMode>
-          <Button colorScheme="primary">ボタン！！！</Button>
-        </LightMode>
-        <Box>
-          <Button colorScheme="primary">ボタン！！！</Button>
-        </Box>
-        <AButton colorScheme="primary">original BUtton</AButton>
         <Box p="4">
           <Button onClick={toggleColorMode}>
             Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
@@ -137,13 +68,10 @@ export default function Home() {
         <Box bgColor="#121212" h="50px" mt="-4">
           dfs
         </Box>
-        <Button onClick={login}>login</Button>
-        <Button onClick={signinWithTwitter}>Twitterでログインテスト</Button>
-        <Button onClick={signupWithTwitter}>TwitterでSignupテスト</Button>
-        <Button onClick={logout}>logout</Button>
-        <Button onClick={hoge}>Hogeテスト</Button>
+        <Button onClick={signIn}>Twitterでログインテスト</Button>
       </main>
-
+      <Divider />
+      <TopPage />
       <footer>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
@@ -158,4 +86,5 @@ export default function Home() {
       </footer>
     </div>
   );
-}
+};
+export default Page;

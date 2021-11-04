@@ -9,3 +9,57 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id String @id @unique @db.Uuid //auth.users.id
+  userName String @unique
+  displayName String @db.VarChar(127)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  avatarUrl String  @db.VarChar(255)
+  posts Post[]
+  favorites Favorite[]
+  followers Follow[] @relation(name: "followee")
+  followings Follow[] @relation(name: "follower")
+}
+
+enum VideoType {
+  youtube
+  nicovideo
+}
+
+model Post {
+  id        String    @id @unique  @db.Uuid @default(uuid()) //@default(dbgenerated("public.uuid_generate_v4()"))
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  type VideoType
+  videoId String @db.VarChar(255)
+  thumbnailUrl String? @db.VarChar(255)
+  body     String?   @db.VarChar
+  title     String   @db.VarChar(255)
+  userId String  @db.Uuid
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  favorites Favorite[]
+
+  @@index([userId], name: "userId")
+}
+
+model Favorite {
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  @@id([postId, userId])
+}
+
+model Follow {
+  followerId String @db.Uuid
+  follower User @relation(name: "follower",fields: [followerId], references: [id], onDelete: Cascade)
+  followeeId String @db.Uuid
+  followee User @relation(name: "followee",fields: [followeeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  @@id([followeeId, followerId])
+}

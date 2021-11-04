@@ -1,58 +1,88 @@
-import { supabaseClient } from '@/lib/supabase/client';
-import { User } from '@/models/user';
-import useSWR from 'swr';
-import { handleSupabaseResponse } from './helper';
-import { api, useFetch } from './useFetch';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { Session } from '@supabase/gotrue-js';
 
-// export const useUser = (screen_name?: string) => {
-//   return useFetch<User>(screen_name ? `/api/users/${screen_name}` : null);
+import { User } from '@/types/domains/user';
+import { ApiPaths, getApiPath, getFetchKey } from '@/utils/route/apiPaths';
+
+import { httpClient } from './helpers/httpClient';
+import { useFetch, useFetchWithValidating } from './helpers/useFetch';
+
+class UsersRepository {
+  private static instance: UsersRepository;
+  private constructor() {}
+  static getInstance() {
+    if (!UsersRepository.instance) {
+      UsersRepository.instance = new UsersRepository();
+    }
+    return UsersRepository.instance;
+  }
+
+  async fetchMe() {
+    return httpClient.get<User>(ApiPaths.me);
+  }
+  async createUser() {
+    return await httpClient.post<User>({ url: ApiPaths.createUser });
+  }
+  async createUserWithUserName(userName: string) {
+    return await httpClient.post<User, { userName: string }>({
+      url: ApiPaths.createUserWithUserName,
+      params: { userName },
+    });
+  }
+  async follow(userId: string) {
+    await httpClient.post({
+      url: getApiPath({
+        path: ApiPaths.follow,
+        params: { userId },
+      }),
+    });
+  }
+  async unFollow(userId: string) {
+    return await httpClient.delete({
+      url: getApiPath({
+        path: ApiPaths.follow,
+        params: { userId },
+      }),
+    });
+  }
+}
+
+// export const createPost = async (params: NewPostParams, userName: string) => {
+//   const newPost = await httpClient.post<Post, NewPostParams>({
+//     url: getApiPath({
+//       path: '/api/users/[userName]/posts/create',
+//       params: { userName },
+//     }),
+//     params,
+//   });
+//   await mutate<Post>(
+//     getFetchKey({
+//       path: '/api/users/[userName]/posts/[postId]',
+//       params: { userName, postId: newPost.id },
+//     }),
+//     newPost,
+//     false
+//   );
+//   await mutate<Post[]>(
+//     getFetchKey({
+//       path: '/api/users/[userName]/posts',
+//       params: { userName },
+//     }),
+//     async (data) => (data ? { ...data, newPost } : undefined),
+//     false
+//   );
+//   return newPost;
 // };
 
-// export const useMe = () => {
-//   const session = supabaseClient.auth.session();
-//   return useFetch<User>(`/api/users/me?uuid=${session?.user?.id}`);
-// };
-
-const usersRepository = {
-  fetchMe: async (userId?: string) => {
-    return handleSupabaseResponse(
-      await supabaseClient
-        .from<User>('users')
-        .select('*')
-        .eq('user_id', userId)
-        .single()
-    );
-  },
-  fetchUser: async (userName?: string) => {
-    return handleSupabaseResponse(
-      await supabaseClient
-        .from<User>('users')
-        .select('*')
-        .eq('user_name', userName)
-        .single()
-    );
-  },
-};
+export const usersRepository = UsersRepository.getInstance();
 
 export const useUser = (userName?: string) => {
-  return useSWR(userName ? `/api/users/${userName}` : null, async () =>
-    usersRepository.fetchUser(userName)
+  return useFetchWithValidating<User>(
+    getFetchKey({ path: '/api/users/[userName]', params: { userName } })
   );
 };
 
-export const useMe = (userId?: string) => {
-  return useSWR(userId ? '/api/auth/me' : null, async () =>
-    usersRepository.fetchMe(userId)
-  );
-};
-
-type UpdateUserParams = Partial<
-  Pick<User, 'display_name' | 'photo_url' | 'user_name' | 'updated_at'>
->;
-export const updateMe = async (user_id: string, params: UpdateUserParams) => {
-  const res = api.post<User, UpdateUserParams>({
-    url: `/api/users/me?uuid=${user_id}`,
-    params,
-  });
-  return res;
+export const useMe = (session: Session | null) => {
+  console.log('useMe');
+  return useFetch<User>(session ? getFetchKey({ path: '/api/auth/me' }) : null);
 };
