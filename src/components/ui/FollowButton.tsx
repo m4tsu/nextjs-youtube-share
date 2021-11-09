@@ -1,4 +1,6 @@
+import { ButtonProps } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
+import { Box } from '@chakra-ui/layout';
 import {
   Modal,
   ModalContent,
@@ -18,11 +20,12 @@ type FollowButtonProps = {
   isFollowing: boolean;
   onClick?: () => void;
   userName: string;
-};
+} & ButtonProps;
 export const FollowButton: FC<FollowButtonProps> = ({
   isFollowing,
   onClick,
   userName,
+  ...props
 }) => {
   const { ref, isHovered } = useHover();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -33,18 +36,19 @@ export const FollowButton: FC<FollowButtonProps> = ({
     onClose();
   };
   return (
-    <div ref={ref}>
+    <Box ref={ref} flexShrink={0}>
       {isFollowing ? (
         <Button
           colorScheme={isHovered ? 'red' : 'primary'}
           variant="outline"
           onClick={onOpen}
           width="130px"
+          {...props}
         >
           {isHovered ? 'フォロー解除' : 'フォロー中'}
         </Button>
       ) : (
-        <Button colorScheme="primary" onClick={onClick}>
+        <Button colorScheme="primary" onClick={onClick} {...props}>
           フォロー
         </Button>
       )}
@@ -75,6 +79,6 @@ export const FollowButton: FC<FollowButtonProps> = ({
           </ModalContent>
         </Modal>
       </Portal>
-    </div>
+    </Box>
   );
 };

@@ -4,10 +4,7 @@ import { HttpError } from '@/utils/types/error';
 
 import { httpClient } from './httpClient';
 
-export const useFetch = <
-  T extends Record<string, unknown>,
-  E extends unknown = HttpError
->(
+export const useFetch = <T, E extends unknown = HttpError>(
   key: string | null,
   fetcher?: Fetcher<T>
 ) => {

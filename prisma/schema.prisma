@@ -18,6 +18,7 @@ model User {
   updatedAt DateTime @updatedAt @default(now())
   avatarUrl String  @db.VarChar(255)
   posts Post[]
+  categories Category[]
   favorites Favorite[]
   followers Follow[] @relation(name: "followee")
   followings Follow[] @relation(name: "follower")
@@ -40,6 +41,7 @@ model Post {
   userId String  @db.Uuid
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   favorites Favorite[]
+  categories CategoriesOnPost[]
 
   @@index([userId], name: "userId")
 }
@@ -62,4 +64,23 @@ model Follow {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
   @@id([followeeId, followerId])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  posts CategoriesOnPost[]
+  @@unique([userId, name])
+}
+
+model CategoriesOnPost {
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  postId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@id([categoryId, postId])
 }

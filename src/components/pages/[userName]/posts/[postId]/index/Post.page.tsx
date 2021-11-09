@@ -1,30 +1,28 @@
 import { Box, Flex, Text } from '@chakra-ui/layout';
-import { FC } from 'react';
+import { Tag } from '@chakra-ui/tag';
+import { FC, memo } from 'react';
 
-import { FavoriteButton } from '@/components/domain/user/post/FavariteButton';
+import { FavoriteButton } from '@/components/domain/post/FavoriteButton';
 import { NoResourceError } from '@/components/pages/error/NoResourceError';
-import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { Panel } from '@/components/ui/Panel';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { toDate } from '@/lib/dayjs/utils';
 import { usePost } from '@/repositories/posts';
-import { useAuth } from '@/services/auth/AuthProvider';
 import { getEmbedUrl } from '@/utils/domains/post/video';
 
 type Props = {
-  // post: Post;
   userName?: string;
   postId?: string;
 };
 
-export const PostPage: FC<Props> = ({ userName, postId }) => {
+const PostPageComponent: FC<Props> = ({ userName, postId }) => {
   const { data, error } = usePost(userName, postId);
-  const { me } = useAuth();
-  console.log('post!!', data);
+
   if (error) return <NoResourceError resourceName="投稿" />;
   if (!data) return <Loading />;
-  const { type, videoId, title, body, updatedAt, createdAt } = data;
+
+  const { type, videoId, title, body, updatedAt, categories } = data;
   const embedUrl = getEmbedUrl(type, videoId);
   return (
     <Panel display="flex" flexDirection="column" gridGap="2">
@@ -43,11 +41,20 @@ export const PostPage: FC<Props> = ({ userName, postId }) => {
           {toDate(updatedAt)}
         </Text>
         <Box flex="1 1 auto">
-          <Button>hoge</Button>
-          <Button>poyo</Button>
+          {categories &&
+            categories.map((category) => (
+              <Tag key={category.id}>{category.name}</Tag>
+            ))}
         </Box>
         <Flex flexShrink={0} alignItems="center">
-          {me && <FavoriteButton postId={data.id} favorited={data.favorited} />}
+          {userName && (
+            <FavoriteButton
+              postId={data.id}
+              userName={userName}
+              favorited={data.favorited || false}
+              favoritesCount={data.favoritesCount || 0}
+            />
+          )}
         </Flex>
       </Flex>
       <Box>
@@ -56,3 +63,5 @@ export const PostPage: FC<Props> = ({ userName, postId }) => {
     </Panel>
   );
 };
+
+export const PostPage = memo(PostPageComponent);

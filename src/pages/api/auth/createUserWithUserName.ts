@@ -1,12 +1,12 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
-import { authorize, handler } from '@/lib/apiRouteHandler/handler';
+import { authenticate, handler } from '@/lib/apiRouteHandler/handler';
 import prisma from '@/lib/prisma/prismaClient';
 import { UserMetaData } from '@/types/domains/user';
 import { User } from '@/types/domains/user';
 
 export default handler<User>().post(async (req, res) => {
-  const currentUser = authorize(req);
+  const currentUser = authenticate(req);
   const userByAuthUserId = await prisma.user.findUnique({
     where: { id: currentUser.id },
   });
@@ -16,8 +16,6 @@ export default handler<User>().post(async (req, res) => {
   const { id, user_metadata } = currentUser;
   const { avatar_url, full_name } = user_metadata as UserMetaData;
   const { userName } = req.body as { userName: string };
-  console.log('!!!!!!!', req.body['userName']);
-  console.log(id);
   try {
     const newUser = await prisma.user.create({
       data: {
@@ -29,7 +27,6 @@ export default handler<User>().post(async (req, res) => {
     });
     return res.status(200).json(newUser);
   } catch (e) {
-    console.log(e);
     // 既に同じuserNameのユーザーが登録されていた場合、特設ページで自分でuserName決めさせる
     if (
       e instanceof PrismaClientKnownRequestError &&

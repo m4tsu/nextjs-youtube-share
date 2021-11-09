@@ -18,7 +18,6 @@ export const usePaginationFetch = <Data, E extends unknown = HttpError>(
   perPage: number,
   fetcher?: Fetcher<Data>
 ) => {
-  console.log(path, pageIndex);
   const { data, error } = useSWR<Data, E>(
     path ? getKeyForPaginationFetch(pageIndex, perPage, path) : null,
     fetcher ?? httpClient.get

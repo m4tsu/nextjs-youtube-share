@@ -21,9 +21,7 @@ const querySchema = z.object({
 });
 
 export default handler<UserPosts>().get(async (req, res) => {
-  console.log(req.url);
   const { userName, pageIndex, perPage } = querySchema.parse(req.query);
-  console.log('userPosts api', req.query);
   const skip = (pageIndex - 1) * perPage;
   const result = await prisma.user.findUnique({
     where: { userName },
@@ -36,14 +34,14 @@ export default handler<UserPosts>().get(async (req, res) => {
         include: {
           _count: { select: { favorites: true } },
           favorites: { where: { userId: req.currentUser?.id } },
+          categories: { include: { category: true } },
         },
       },
     },
   });
-  console.log('userPosts', result);
   if (!result) {
     return res.status(404).json({
-      message: 'ユーザーがみつかりませんでした.',
+      message: '投稿が見つかりませんでした',
     });
   }
   const userPosts = {
@@ -53,6 +51,7 @@ export default handler<UserPosts>().get(async (req, res) => {
       ...post,
       favoritesCount: post._count?.favorites || 0,
       favorited: post.favorites.length > 0,
+      categories: post.categories.map((c) => c.category),
     })),
   };
   return res.status(200).json(userPosts);

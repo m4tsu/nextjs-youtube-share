@@ -88,14 +88,14 @@ export class SupabaseError extends Error {
   }
 }
 
-export interface UnAuthorizedErrorObject {
+export interface UnauthenticatedErrorObject {
   name: string;
   message: string;
   stack?: string;
   actionName?: string;
 }
 
-export class UnAuthorizedError extends Error {
+export class UnauthenticatedError extends Error {
   actionName?: string;
   constructor({
     message,
@@ -105,12 +105,12 @@ export class UnAuthorizedError extends Error {
     actionName?: string;
   }) {
     super(message ?? 'ログインしてください.');
-    this.name = 'UnAuthorizedError';
+    this.name = 'UnauthenticatedError';
     this.actionName = actionName;
     this.message;
   }
 
-  serialize(): UnAuthorizedErrorObject {
+  serialize(): UnauthenticatedErrorObject {
     return {
       name: this.name,
       message: this.message,

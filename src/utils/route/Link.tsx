@@ -1,6 +1,7 @@
 import {
   Link as ChakraLink,
   LinkProps as ChakraLinkProps,
+  LinkOverlay,
 } from '@chakra-ui/react';
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import qs from 'query-string';
@@ -8,7 +9,6 @@ import React from 'react';
 import { ReactElement, ReactNode } from 'react';
 
 import { Paths } from './paths';
-
 
 // 参考 https://zenn.dev/panda_program/articles/typescript-nextjs-routing
 
@@ -54,24 +54,34 @@ const TypedLink: <T extends Path>(
     query?: { [key: string]: string | number | string[] };
     hash?: string;
     chakraLinkProps?: Omit<ChakraLinkProps, 'href'>;
+    asOverLay?: boolean;
   } & Omit<NextLinkProps, 'href'>
 ) => ReactElement = ({ ...props }) => {
   const path = getPath(props);
   const query = props.query ? `?${qs.stringify(props.query)}` : '';
   const hash = props.hash ? `#${props.hash}` : '';
   const href = path + query + hash;
-  const { className, children, chakraLinkProps, ...linkProps } = props;
+  const { className, children, chakraLinkProps, asOverLay, ...linkProps } =
+    props;
   return (
     <NextLink href={href} passHref {...linkProps} shallow={false}>
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      {/* <a className={className}>{children}</a> */}
-      <ChakraLink
-        _hover={{ textDecoration: 'none' }}
-        {...chakraLinkProps}
-        onClick={() => (document.activeElement as HTMLElement).blur()}
-      >
-        {children}
-      </ChakraLink>
+      {asOverLay ? (
+        <LinkOverlay
+          _hover={{ textDecoration: 'none' }}
+          {...chakraLinkProps}
+          onClick={() => (document.activeElement as HTMLElement).blur()}
+        >
+          {children}
+        </LinkOverlay>
+      ) : (
+        <ChakraLink
+          _hover={{ textDecoration: 'none' }}
+          {...chakraLinkProps}
+          onClick={() => (document.activeElement as HTMLElement).blur()}
+        >
+          {children}
+        </ChakraLink>
+      )}
     </NextLink>
   );
 };

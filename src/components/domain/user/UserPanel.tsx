@@ -11,6 +11,7 @@ import { usersRepository, useUser } from '@/repositories/users';
 import { useAuth } from '@/services/auth/AuthProvider';
 import { User } from '@/types/domains/user';
 import { getPath } from '@/utils/route/Link';
+import { Paths } from '@/utils/route/paths';
 import { HttpError } from '@/utils/types/error';
 
 import { NoResourceError } from '../../pages/error/NoResourceError';
@@ -20,7 +21,6 @@ import { UserPanelTab } from './UserPanelTab';
 type ComponentProps = Pick<User, 'userName' | 'avatarUrl' | 'displayName'> & {
   currentPathName: string;
   isFollowing?: boolean;
-  loggedIn: boolean;
   onFollowButtonClick: () => void;
 };
 const Component: FC<ComponentProps> = memo(
@@ -31,7 +31,6 @@ const Component: FC<ComponentProps> = memo(
     currentPathName,
     onFollowButtonClick,
     isFollowing,
-    loggedIn,
   }) => {
     return (
       <Panel display="flex" flexDirection="column" sx={{ gap: '0.5rem' }}>
@@ -57,13 +56,11 @@ const Component: FC<ComponentProps> = memo(
             </Box>
           </Flex>
           <Flex alignItems="center">
-            {loggedIn && (
-              <FollowButton
-                isFollowing={isFollowing || false}
-                onClick={onFollowButtonClick}
-                userName={userName}
-              />
-            )}
+            <FollowButton
+              isFollowing={isFollowing || false}
+              onClick={onFollowButtonClick}
+              userName={userName}
+            />
           </Flex>
         </Flex>
         <UserPanelTab userName={userName} currentPathName={currentPathName} />
@@ -77,22 +74,22 @@ export const UserPanel: FC = () => {
   const { me } = useAuth();
   const currentPathName = router.pathname;
   const userName = router.query.userName as string;
-  console.log(currentPathName);
   const { data, error, mutate } = useUser(userName);
-  console.log('useUser data', data);
   const onFollowButtonClick = useCallback(async () => {
     if (!data) return;
+    if (!me) {
+      router.push({ pathname: Paths.login });
+      return;
+    }
     try {
       if (data.isFollowing) {
         const res = await usersRepository.unFollow(data.id);
         toast({ title: 'フォロー解除しました', status: 'success' });
         await mutate({ ...data, isFollowing: false });
-        console.log('unfollow!!!', res);
       } else {
         const res = await usersRepository.follow(data.id);
         toast({ title: 'フォローしました', status: 'success' });
         await mutate({ ...data, isFollowing: true });
-        console.log('follow!!!', res);
       }
     } catch (e) {
       if (e instanceof HttpError) {
@@ -112,7 +109,6 @@ export const UserPanel: FC = () => {
       {...data}
       currentPathName={currentPathName}
       onFollowButtonClick={onFollowButtonClick}
-      loggedIn={!!me}
     />
   );
 };

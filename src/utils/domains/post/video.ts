@@ -47,7 +47,6 @@ type ValidateUrl = (
   url: string
 ) => { videoId: string; isValid: true } | { isValid: false };
 export const validateUrl: ValidateUrl = (type: Post['type'], url: string) => {
-  console.log(type, url);
   switch (type) {
     case 'youtube': {
       const result = url.match(videoPatterns[0]) || url.match(videoPatterns[1]);
@@ -60,7 +59,6 @@ export const validateUrl: ValidateUrl = (type: Post['type'], url: string) => {
       const result =
         url.match(nicovideoPattern[0]) || url.match(nicovideoPattern[1]);
 
-      console.log(result);
       return result
         ? { videoId: result[1], isValid: true }
         : { isValid: false };
@@ -77,14 +75,12 @@ export const getVideoIdByUrl = (type: Post['type'], url: string) => {
       const result = !!(
         url.match(videoPatterns[0]) || url.match(videoPatterns[1])
       );
-      console.log(result);
       return !!(url.match(videoPatterns[0]) || url.match(videoPatterns[1]));
     }
     case 'nicovideo': {
       const result = !!(
         url.match(nicovideoPattern[0]) || url.match(nicovideoPattern[1])
       );
-      console.log(result);
       return !!(
         url.match(nicovideoPattern[0]) || url.match(nicovideoPattern[1])
       );

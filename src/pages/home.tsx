@@ -8,19 +8,16 @@ import { ApiPaths } from '@/utils/route/apiPaths';
 
 const createUser = async () => {
   const res = await httpClient.post<User>({ url: ApiPaths.createUser });
-  console.log(res);
   return res;
 };
 
 const getMe = async () => {
   const res = await httpClient.get<User>(ApiPaths.me);
-  console.log(res);
   return res;
 };
 
 const refreshSession = async () => {
   const res = await supabaseClient.auth.refreshSession();
-  console.log('reflesh', res);
 };
 
 const HomePage: NextAppPage = () => {

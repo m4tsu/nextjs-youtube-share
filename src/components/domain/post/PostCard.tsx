@@ -1,26 +1,23 @@
 import { Box, Divider, Flex, Text } from '@chakra-ui/layout';
 import { Spacer } from '@chakra-ui/react';
+import { Tag } from '@chakra-ui/tag';
 import { FC } from 'react';
 
-import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
-import { useAuth } from '@/services/auth/AuthProvider';
 import { Post } from '@/types/domains/post';
 import { User } from '@/types/domains/user';
 import { getEmbedUrl } from '@/utils/domains/post/video';
 import { Link } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 
-import { FavoriteButton } from './FavariteButton';
+import { FavoriteButton } from './FavoriteButton';
 
 type Props = {
   post: Post;
   user: User;
 };
 export const PostCard: FC<Props> = ({ post, user }) => {
-  const { me } = useAuth();
-  console.log('postCard!!', post);
   return (
     <Link
       path={Paths.post}
@@ -44,27 +41,31 @@ export const PostCard: FC<Props> = ({ post, user }) => {
           </Box>
 
           <Flex sx={{ gap: '.5rem' }}>
-            {['カテゴリA', 'カテゴリB'].map((category) => (
-              <Button
-                key={category}
-                isLink
-                fontSize="sm"
-                fontWeight="normal"
-                color="blue.500"
-                borderRadius="none"
-                height="fit-content"
-                p="2"
-              >
-                {category}
-              </Button>
-            ))}
+            {post.categories &&
+              post.categories.map((category) => (
+                <Tag
+                  key={category.id}
+                  isLink
+                  fontSize="sm"
+                  fontWeight="normal"
+                  color="blue.500"
+                  borderRadius="none"
+                  height="fit-content"
+                  p="2"
+                >
+                  {category.name}
+                </Tag>
+              ))}
           </Flex>
           <Divider color="gray.500" />
           <Flex justifyContent="space-around">
             <Spacer />
-            {me && (
-              <FavoriteButton favorited={post.favorited} postId={post.id} />
-            )}
+            <FavoriteButton
+              favorited={post.favorited ?? false}
+              postId={post.id}
+              userName={user.userName}
+              favoritesCount={post.favoritesCount || 0}
+            />
           </Flex>
         </Flex>
       </Card>

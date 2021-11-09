@@ -1,4 +1,4 @@
-import { string, z } from 'zod';
+import { z } from 'zod';
 
 import { schemaForType } from '@/lib/zod/schemaForType';
 import { Post } from '@/types/domains/post';
@@ -9,6 +9,7 @@ type User = PrismaUser & {
   isFollowing?: boolean;
   postsCount?: number;
 };
+export type { User };
 
 export type UserMetaData = {
   avatar_url: string;
@@ -32,10 +33,8 @@ export const userSchema = schemaForType<PrismaUser>()(
     displayName: z.string().max(64),
     createdAt: z.date(),
     updatedAt: z.date(),
-    avatarUrl: string(),
+    avatarUrl: z.string(),
   })
 );
 
 export const userSchemaOnCreate = userSchema.pick({ userName: true });
-
-export type { User };

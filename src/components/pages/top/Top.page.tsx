@@ -9,9 +9,6 @@ import { useAllPosts } from '@/repositories/posts';
 
 export const TopPage: FC = () => {
   const { data, error, size, loadMore, isLast, isValidating } = useAllPosts(3);
-  console.log(data);
-  console.log(error, size, isLast);
-  console.log(isValidating);
 
   return (
     <Panel>

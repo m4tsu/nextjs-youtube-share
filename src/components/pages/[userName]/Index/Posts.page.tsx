@@ -1,8 +1,8 @@
 import { Grid } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { FC, useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 
-import { PostCard } from '@/components/domain/user/post/PostCard';
+import { PostCard } from '@/components/domain/post/PostCard';
 import { NoResourceError } from '@/components/pages/error/NoResourceError';
 import { Loading } from '@/components/ui/Loading';
 import { Paginator } from '@/components/ui/Paginator';
@@ -15,14 +15,13 @@ type Props = {
   userName?: string;
   page: number;
 };
-export const PostsPage: FC<Props> = ({ userName, page }) => {
+const PostsPageComponent: FC<Props> = ({ userName, page }) => {
   const router = useRouter();
   const { data, error, totalPage } = useUserPosts(
     page,
     USER_POSTS_PER_PAGE,
     userName
   );
-  console.log(data, error, totalPage);
   const onChangePage = useCallback(
     (pageNumber: number) => {
       if (userName) {
@@ -67,3 +66,5 @@ export const PostsPage: FC<Props> = ({ userName, page }) => {
     </Panel>
   );
 };
+
+export const PostsPage = React.memo(PostsPageComponent);

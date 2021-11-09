@@ -1,6 +1,11 @@
 import { mutate } from 'swr';
 
-import { NewPostParams, NicovideoInfo, Post } from '@/types/domains/post';
+import {
+  NewPostParams,
+  NicovideoInfo,
+  Post,
+  PostFavorites,
+} from '@/types/domains/post';
 import { UserPosts } from '@/types/domains/user';
 import { ApiPaths, getApiPath, getFetchKey } from '@/utils/route/apiPaths';
 
@@ -105,6 +110,12 @@ export const usePost = (userName?: string, postId?: string) => {
       path: '/api/users/[userName]/posts/[postId]',
       params: { userName, postId },
     })
+  );
+};
+
+export const usePostFavorites = (postId?: string) => {
+  return useFetch<PostFavorites>(
+    getFetchKey({ path: '/api/posts/[postId]/favorites', params: { postId } })
   );
 };
 

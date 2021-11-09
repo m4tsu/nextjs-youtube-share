@@ -20,6 +20,7 @@ import { Panel } from '@/components/ui/Panel';
 import { DummyPlayer, VideoPlayer } from '@/components/ui/VideoPlayer';
 import { YoutubePlayer } from '@/components/ui/YoutubePlayer';
 import { toast } from '@/lib/chakraUI/theme';
+import { useCategories } from '@/repositories/category';
 import { createPost, useNicovideoInfo } from '@/repositories/posts';
 import {
   NewPostParams,
@@ -39,10 +40,11 @@ const placeholders = {
     'https://www.nicovideo.jp/watch/sm1234567 | https://nico.ms/sm1234567',
 };
 
-export const NewPage: FC = () => {
+type Props = {
+  userName: string;
+};
+export const NewPage: FC<Props> = ({ userName }) => {
   const router = useRouter();
-  const { userName } = router.query as { userName: string };
-
   const {
     handleSubmit,
     register,
@@ -53,11 +55,30 @@ export const NewPage: FC = () => {
     setValue,
   } = useForm<PostFormParams>({
     mode: 'all',
-    defaultValues: { type: 'youtube', videoUrl: '' },
+    defaultValues: { type: 'youtube', videoUrl: '', categories: [] },
     resolver: zodResolver(postFormSchema),
   });
-  console.log(errors, isSubmitting, isValid, isDirty);
-  console.log(postFormSchema.safeParse(getValues()));
+  const { data, error } = useCategories(userName);
+  const categoryOptions = data
+    ? data.map((c) => {
+        return {
+          id: c.id,
+          label: c.name,
+          value: c.name,
+        };
+      })
+    : [];
+
+  const categoriesError =
+    watch('categories').length > 5
+      ? 'カテゴリーは5つまでしか設定できません.'
+      : null; // TODO: 何故かzodエラーが出ない
+  // const categoriesError = useMemo(() => {
+  //   return getValues('categories').length > 5
+  //     ? 'カテゴリーは5つまでしか設定できません.'
+  //     : null;
+  // }, [getValues]);
+
   const urlValidationResult = validateUrl(watch('type'), watch('videoUrl'));
   const isNicovideo = watch('type') === 'nicovideo';
 
@@ -78,8 +99,6 @@ export const NewPage: FC = () => {
   }, []);
 
   const onSubmit = async (values: NewPostFormParams) => {
-    console.log(values, nicovideoData);
-    console.log(urlValidationResult);
     if (urlValidationResult.isValid) {
       try {
         const newPost = await createPost(
@@ -191,19 +210,19 @@ export const NewPage: FC = () => {
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl>
+        <FormControl isInvalid={!!categoriesError}>
           <FormLabel htmlFor="categories">カテゴリー</FormLabel>
           <CreatableSelect
             isMulti
-            options={[
-              { value: 'A', label: 'カテゴリA' },
-              { value: 'B', label: 'カテゴリB' },
-              { value: 'C', label: 'カテゴリC' },
-            ]}
+            name="categories"
+            options={categoryOptions}
             onChange={(values) => {
-              console.log(values);
+              setValue('categories', [...values]);
             }}
           />
+          <FormErrorMessage>
+            {categoriesError && categoriesError}
+          </FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!errors.body}>
@@ -222,7 +241,12 @@ export const NewPage: FC = () => {
           type="submit"
           width="full"
           isLoading={isSubmitting}
-          disabled={nicovideoInfoLoading || !isValid || !!nicovideoInfoError}
+          disabled={
+            nicovideoInfoLoading ||
+            !isValid ||
+            !!nicovideoInfoError ||
+            !!categoriesError
+          }
         >
           投稿する
         </Button>

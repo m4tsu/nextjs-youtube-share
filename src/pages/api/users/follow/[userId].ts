@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { authorize, handler } from '@/lib/apiRouteHandler/handler';
+import { authenticate, handler } from '@/lib/apiRouteHandler/handler';
 import prisma from '@/lib/prisma/prismaClient';
 
 const querySchema = z.object({
@@ -8,7 +8,7 @@ const querySchema = z.object({
 });
 export default handler()
   .post(async (req, res) => {
-    const currentUser = authorize(req);
+    const currentUser = authenticate(req);
     const { userId } = querySchema.parse(req.query);
 
     // const result = await prisma.follow.create({
@@ -21,7 +21,7 @@ export default handler()
     res.status(200).json(result);
   })
   .delete(async (req, res) => {
-    const currentUser = authorize(req);
+    const currentUser = authenticate(req);
     const { userId } = querySchema.parse(req.query);
 
     const result = await prisma.follow.delete({

@@ -83,6 +83,5 @@ export const useUser = (userName?: string) => {
 };
 
 export const useMe = (session: Session | null) => {
-  console.log('useMe');
   return useFetch<User>(session ? getFetchKey({ path: '/api/auth/me' }) : null);
 };

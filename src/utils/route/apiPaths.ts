@@ -6,6 +6,8 @@ export const ApiPaths = {
   me: '/api/auth/me',
   posts: '/api/posts',
   user: '/api/users/[userName]',
+  userCategories: '/api/users/[userName]/categories',
+  userCategoryPost: '/api/users/[userName]/categories/[categoryName]',
   userPosts: '/api/users/[userName]/posts',
   userPost: '/api/users/[userName]/posts/[postId]',
   favorites: '/api/posts/[postId]/favorites',

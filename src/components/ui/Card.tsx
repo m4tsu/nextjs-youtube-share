@@ -3,9 +3,13 @@ import { FC } from 'react';
 
 import { Panel } from './Panel';
 
-export const Card: FC<BoxProps> = (props) => {
+type Props = {
+  asLinkBox?: boolean;
+} & BoxProps;
+export const Card: FC<Props> = ({ asLinkBox, ...props }) => {
   return (
     <Panel
+      asLinkBox={asLinkBox}
       boxShadow="xs"
       borderColor="gray.300"
       borderWidth="1px"
