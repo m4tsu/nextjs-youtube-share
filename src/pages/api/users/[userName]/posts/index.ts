@@ -6,6 +6,7 @@ import { UserPosts } from '@/types/domains/user';
 
 const querySchema = z.object({
   userName: z.string(),
+  categoryName: z.string().optional(),
   pageIndex: z
     .string()
     .refine((v) => {
@@ -21,24 +22,59 @@ const querySchema = z.object({
 });
 
 export default handler<UserPosts>().get(async (req, res) => {
-  const { userName, pageIndex, perPage } = querySchema.parse(req.query);
+  console.log(req.query);
+  const { userName, categoryName, pageIndex, perPage } = querySchema.parse(
+    req.query
+  );
   const skip = (pageIndex - 1) * perPage;
-  const result = await prisma.user.findUnique({
-    where: { userName },
-    include: {
-      _count: { select: { posts: true } },
-      posts: {
-        take: perPage,
-        skip,
-        orderBy: { updatedAt: 'desc' },
-        include: {
-          _count: { select: { favorites: true } },
-          favorites: { where: { userId: req.currentUser?.id } },
-          categories: { include: { category: true } },
-        },
-      },
-    },
-  });
+  console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!', req.query);
+  const [totalCount, result] = await prisma.$transaction([
+    categoryName
+      ? prisma.post.count({
+          where: {
+            categories: { some: { category: { name: categoryName } } },
+            user: { userName },
+          },
+        })
+      : prisma.post.count({ where: { user: { userName } } }),
+    categoryName
+      ? prisma.user.findUnique({
+          where: { userName },
+          include: {
+            posts: {
+              take: perPage,
+              skip,
+              where: {
+                categories: { some: { category: { name: categoryName } } },
+              },
+              orderBy: { updatedAt: 'desc' },
+              include: {
+                _count: { select: { favorites: true } },
+                favorites: { where: { userId: req.currentUser?.id } },
+                categories: { include: { category: true } },
+              },
+            },
+          },
+        })
+      : prisma.user.findUnique({
+          where: { userName },
+          include: {
+            posts: {
+              take: perPage,
+              skip,
+              orderBy: { updatedAt: 'desc' },
+              include: {
+                _count: { select: { favorites: true } },
+                favorites: { where: { userId: req.currentUser?.id } },
+                categories: { include: { category: true } },
+              },
+            },
+          },
+        }),
+  ]);
+  // const totalCount =
+
+  // const result =
   if (!result) {
     return res.status(404).json({
       message: '投稿が見つかりませんでした',
@@ -46,7 +82,7 @@ export default handler<UserPosts>().get(async (req, res) => {
   }
   const userPosts = {
     ...result,
-    postsCount: result._count?.posts || 0,
+    postsCount: totalCount,
     posts: result.posts.map((post) => ({
       ...post,
       favoritesCount: post._count?.favorites || 0,

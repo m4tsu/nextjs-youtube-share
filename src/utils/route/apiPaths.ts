@@ -1,3 +1,5 @@
+import qs from 'query-string';
+
 import { ParamKeys } from './Link';
 
 export const ApiPaths = {
@@ -34,7 +36,10 @@ type FetchKeyArg<T> = ParamKeys<T> extends never
 export const getFetchKey = <T extends ApiPath>({
   path,
   params,
-}: FetchKeyArg<T>) => {
+  query,
+}: FetchKeyArg<T> & {
+  query?: { [key: string]: string | number | string[] | undefined };
+}) => {
   if (params === undefined) {
     return path;
   }
@@ -43,20 +48,23 @@ export const getFetchKey = <T extends ApiPath>({
     (key) => !!params[key]
   );
   if (isParamsExist) {
-    return path
-      .split('/')
-      .map((str) => {
-        const match = str.match(/\[(.*?)\]/);
-        if (match) {
-          const key = match[0];
-          const trimmed = key.substring(1, key.length - 1) as ParamKeys<
-            typeof path
-          >;
-          return params[trimmed];
-        }
-        return str;
-      })
-      .join('/');
+    const queryString = query ? `?${qs.stringify(query)}` : '';
+    return (
+      path
+        .split('/')
+        .map((str) => {
+          const match = str.match(/\[(.*?)\]/);
+          if (match) {
+            const key = match[0];
+            const trimmed = key.substring(1, key.length - 1) as ParamKeys<
+              typeof path
+            >;
+            return params[trimmed];
+          }
+          return str;
+        })
+        .join('/') + queryString
+    );
   }
   return null;
 };

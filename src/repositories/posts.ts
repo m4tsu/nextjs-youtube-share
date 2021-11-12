@@ -12,7 +12,6 @@ import { ApiPaths, getApiPath, getFetchKey } from '@/utils/route/apiPaths';
 import { httpClient } from './helpers/httpClient';
 import { useFetch } from './helpers/useFetch';
 import { useInfiniteFetch } from './helpers/useInfiniteFetch';
-import { usePaginationFetch } from './helpers/usePaginationFetch';
 class PostsRepository {
   private static instance: PostsRepository;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -122,12 +121,18 @@ export const usePostFavorites = (postId?: string) => {
 export const useUserPosts = (
   pageIndex: number,
   perPage: number,
-  userName?: string
+  userName?: string,
+  categoryName?: string
 ) => {
-  const { data, error } = usePaginationFetch<UserPosts>(
-    getFetchKey({ path: '/api/users/[userName]/posts', params: { userName } }),
-    pageIndex,
-    perPage
+  const { data, error } = useFetch<UserPosts>(
+    // usePaginationFetch<UserPosts>(
+    getFetchKey({
+      path: '/api/users/[userName]/posts',
+      params: { userName },
+      query: { pageIndex, perPage, categoryName },
+    })
+    // pageIndex,
+    // perPage
   );
   const totalPage = data?.postsCount
     ? Math.ceil(data.postsCount / perPage)

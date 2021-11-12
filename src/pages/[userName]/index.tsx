@@ -12,11 +12,12 @@ import React, { useCallback } from 'react';
 import { z } from 'zod';
 
 import { UserPageLayout } from '@/components/layouts/UserPage/UserPageLayout';
-import { PostsPage } from '@/components/pages/[userName]/Index/Posts.page';
+import { PostsPage } from '@/components/pages/[userName]/index/Posts.page';
 import { FavoritesPage } from '@/components/pages/[userName]/posts/[postId]/favorites/Favorites.page';
 
 const querySchema = z.object({
   userName: z.string().optional(),
+  category: z.string().optional(),
   page: z
     .string()
     .optional()
@@ -29,16 +30,16 @@ const querySchema = z.object({
 });
 const Page: NextAppPage = () => {
   const router = useRouter();
-  const { userName, page, favoritesModal, postId } = querySchema.parse(
-    router.query
-  );
+  const { userName, page, favoritesModal, postId, category } =
+    querySchema.parse(router.query);
+  console.log('hoge!!!!!!!!', router.query);
   const handleCloseModal = useCallback(() => {
     router.push(`/${userName}`, undefined, { shallow: true });
   }, [router, userName]);
 
   return (
     <>
-      <PostsPage userName={userName} page={page ?? 1} />
+      <PostsPage userName={userName} page={page ?? 1} categoryName={category} />
       <Modal isOpen={!!favoritesModal} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent>

@@ -27,24 +27,38 @@ type PathParams<T> = {
 export type Args<T> = ParamKeys<T> extends never
   ? PathParams<T>
   : Required<PathParams<T>>;
-export const getPath = <T extends Path>({ path, params }: Args<T>) => {
+export const getPath = <T extends Path>({
+  path,
+  params,
+  query,
+  hash,
+}: Args<T> & {
+  query?: { [key: string]: string | number | string[] | undefined };
+  hash?: string;
+}) => {
   if (!params) {
     return path;
   }
-  return path
-    .split('/')
-    .map((str) => {
-      const match = str.match(/\[(.*?)\]/);
-      if (match) {
-        const key = match[0];
-        const trimmed = key.substring(1, key.length - 1) as ParamKeys<
-          typeof path
-        >;
-        return params[trimmed];
-      }
-      return str;
-    })
-    .join('/');
+  const queryString = query ? `?${qs.stringify(query)}` : '';
+  const hashString = hash ? `#${hash}` : '';
+  return (
+    path
+      .split('/')
+      .map((str) => {
+        const match = str.match(/\[(.*?)\]/);
+        if (match) {
+          const key = match[0];
+          const trimmed = key.substring(1, key.length - 1) as ParamKeys<
+            typeof path
+          >;
+          return params[trimmed];
+        }
+        return str;
+      })
+      .join('/') +
+    queryString +
+    hashString
+  );
 };
 
 const TypedLink: <T extends Path>(
@@ -57,10 +71,10 @@ const TypedLink: <T extends Path>(
     asOverLay?: boolean;
   } & Omit<NextLinkProps, 'href'>
 ) => ReactElement = ({ ...props }) => {
-  const path = getPath(props);
-  const query = props.query ? `?${qs.stringify(props.query)}` : '';
-  const hash = props.hash ? `#${props.hash}` : '';
-  const href = path + query + hash;
+  const href = getPath(props);
+  // const query = props.query ? `?${qs.stringify(props.query)}` : '';
+  // const hash = props.hash ? `#${props.hash}` : '';
+  // const href = path + query + hash;
   const { className, children, chakraLinkProps, asOverLay, ...linkProps } =
     props;
   return (

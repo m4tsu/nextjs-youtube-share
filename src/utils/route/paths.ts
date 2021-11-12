@@ -1,5 +1,6 @@
 export const Paths = {
   posts: '/[userName]',
+  userCategories: '/[userName]/category/[categoryName]',
   post: '/[userName]/posts/[postId]',
   favoriteUsers: '/[userName]/posts/[postId]/favorites',
   newPost: '/[userName]/posts/new',

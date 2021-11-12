@@ -13,27 +13,30 @@ import { getPath } from '@/utils/route/Link';
 const USER_POSTS_PER_PAGE = 4;
 type Props = {
   userName?: string;
+  categoryName?: string;
   page: number;
 };
-const PostsPageComponent: FC<Props> = ({ userName, page }) => {
+const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
   const router = useRouter();
   const { data, error, totalPage } = useUserPosts(
     page,
     USER_POSTS_PER_PAGE,
-    userName
+    userName,
+    categoryName
   );
   const onChangePage = useCallback(
     (pageNumber: number) => {
       if (userName) {
         router.push(
-          `${getPath({
+          getPath({
             path: '/[userName]',
             params: { userName },
-          })}?page=${pageNumber}`
+            query: { page: pageNumber, category: categoryName },
+          })
         );
       }
     },
-    [router, userName]
+    [router, userName, categoryName]
   );
 
   if (error) {
