@@ -74,7 +74,7 @@ export const PostCard: FC<Props> = ({ post, user }) => {
   );
 
   return (
-    <Card asLinkBox p={2} overflow="hidden">
+    <Card asLinkBox p={4} overflow="hidden">
       <Flex direction="column" overflow="hidden">
         <VideoPlayer embedUrl={getEmbedUrl(post.type, post.videoId)} />
         <Box my={1}>
@@ -84,40 +84,24 @@ export const PostCard: FC<Props> = ({ post, user }) => {
             params={{ userName: user.userName, postId: post.id }}
           >
             <Text
-              color="gray.800"
               fontSize="lg"
               fontWeight="bold"
               overflow="hidden"
               textOverflow="ellipsis"
               whiteSpace="nowrap"
-              // lineHeight="1.4rem"
-              // maxHeight="2.8rem"
-              // sx={{
-              //   WebkitLineClamp: 2,
-              //   WebkitBoxOrient: 'vertical',
-              //   display: '-webkit-box',
-              // }}
             >
               {post.title}
             </Text>
           </Link>
         </Box>
-        {/* TODO: 横のアイテムと高さが揃えられない */}
         <Flex justifyContent="space-between" alignItems="center">
           <Text
             mr={1}
-            color="textSub"
+            variant="secondary"
             fontSize="sm"
             overflow="hidden"
             textOverflow="ellipsis"
             whiteSpace="nowrap"
-            // lineHeight="1.2rem"
-            // maxHeight="2.4rem"
-            // sx={{
-            //   WebkitLineClamp: 2,
-            //   WebkitBoxOrient: 'vertical',
-            //   display: '-webkit-box',
-            // }}
           >
             {post.body}
           </Text>
@@ -133,7 +117,7 @@ export const PostCard: FC<Props> = ({ post, user }) => {
         </Flex>
         <Divider color="gray.400" my={1} />
         <Flex sx={{ gap: '.5rem' }} alignItems="center" mt={1}>
-          <Text as="time" color="textSub" fontSize="sm" flexShrink={0}>
+          <Text as="time" variant="secondary" fontSize="sm" flexShrink={0}>
             {toDate(post.updatedAt)}
           </Text>
           <Flex

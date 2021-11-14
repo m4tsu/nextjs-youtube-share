@@ -37,7 +37,6 @@ const Component: FC<ComponentProps> = memo(
         <Flex alignItems="center" justifyContent="space-between">
           <Flex alignItems="center" justifyContent="space-between">
             <Image
-              // src={user.avatarUrl}
               src={avatarUrl}
               borderRadius="full"
               display="block"
@@ -45,12 +44,10 @@ const Component: FC<ComponentProps> = memo(
               height="50px"
             />
             <Box ml={4}>
-              <Text color="textMain" fontSize="lg" fontWeight="bold" my={1}>
-                {/* {user.displayName} */}
+              <Text fontSize="lg" fontWeight="bold" my={1}>
                 {displayName}
               </Text>
-              <Text color="textSub" fontSize="md" my={1}>
-                {/* {user.userName} */}
+              <Text variant="secondary" fontSize="md" my={1}>
                 {userName}
               </Text>
             </Box>
@@ -99,7 +96,7 @@ export const UserPanel: FC = () => {
       }
       throw e;
     }
-  }, [data, mutate, router]);
+  }, [data, mutate, router, me]);
 
   if (error) return <NoResourceError resourceName="ユーザー" />;
   if (!data) return <Loading />;

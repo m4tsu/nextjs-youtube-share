@@ -81,11 +81,11 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
   return (
     <Panel display="flex" flexDirection="column" gridGap="2">
       <VideoPlayer embedUrl={embedUrl} />
-      <Text as="h1" color="textMain" fontWeight="bold" fontSize="3xl">
+      <Text as="h1" fontWeight="bold" fontSize="3xl">
         {title}
       </Text>
       <Flex alignItems="center" gridGap="2" fontSize="md">
-        <Text as="time" color="textSub" flexShrink={0}>
+        <Text as="time" variant="secondary" flexShrink={0}>
           {toDate(updatedAt)}
         </Text>
         <Flex flex="1 1 auto" flexWrap="wrap" sx={{ gap: '.5rem' }}>
@@ -117,7 +117,7 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
       </Flex>
       <Divider />
       <Box mt={2}>
-        <Text color="textMain" whiteSpace="pre-wrap" fontSize="lg">
+        <Text whiteSpace="pre-wrap" fontSize="lg">
           {body}
         </Text>
       </Box>

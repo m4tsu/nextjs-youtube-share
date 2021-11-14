@@ -56,7 +56,6 @@ export const UserCard: FC<Props> = ({ user }) => {
       <Avatar src={user.avatarUrl} name={user.displayName} />
       <Box overflow="hidden">
         <Text
-          color="textMain"
           fontSize="lg"
           fontWeight="bold"
           overflow="hidden"
@@ -73,7 +72,7 @@ export const UserCard: FC<Props> = ({ user }) => {
           </Link>
         </Text>
         <Text
-          color="textSub"
+          variant="secondary"
           fontSize="md"
           overflow="hidden"
           textOverflow="ellipsis"

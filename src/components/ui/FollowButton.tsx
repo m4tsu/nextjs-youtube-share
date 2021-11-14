@@ -36,7 +36,7 @@ export const FollowButton: FC<FollowButtonProps> = ({
     onClose();
   };
   return (
-    <Box ref={ref} flexShrink={0}>
+    <Box ref={ref} flexShrink={0} onClick={(e) => e.preventDefault()}>
       {isFollowing ? (
         <Button
           colorScheme={isHovered ? 'red' : 'primary'}

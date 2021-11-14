@@ -1,4 +1,4 @@
-import { Grid } from '@chakra-ui/react';
+import { Flex, Grid } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC, useCallback } from 'react';
 
@@ -6,9 +6,9 @@ import { PostCard } from '@/components/domain/post/PostCard';
 import { NoResourceError } from '@/components/pages/error/NoResourceError';
 import { Loading } from '@/components/ui/Loading';
 import { Paginator } from '@/components/ui/Paginator';
-import { Panel } from '@/components/ui/Panel';
 import { useUserPosts } from '@/repositories/posts';
 import { getPath } from '@/utils/route/Link';
+import { Paths } from '@/utils/route/paths';
 
 const USER_POSTS_PER_PAGE = 4;
 type Props = {
@@ -29,7 +29,7 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
       if (userName) {
         router.push(
           getPath({
-            path: '/[userName]',
+            path: Paths.posts,
             params: { userName },
             query: { page: pageNumber, category: categoryName },
           })
@@ -46,11 +46,11 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
     return <Loading />;
   }
   if (totalPage && page > totalPage) {
-    router.push(getPath({ path: '/[userName]', params: { userName } }));
+    router.push(getPath({ path: Paths.posts, params: { userName } }));
   }
 
   return (
-    <Panel display="flex" flexDirection="column" sx={{ gap: '1rem' }}>
+    <Flex flexDirection="column" sx={{ gap: '1rem' }}>
       <Grid
         templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
         gap={4}
@@ -66,7 +66,7 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
           onPageChange={onChangePage}
         />
       )}
-    </Panel>
+    </Flex>
   );
 };
 

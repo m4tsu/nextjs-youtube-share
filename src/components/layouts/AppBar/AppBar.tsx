@@ -1,55 +1,31 @@
-import { useDisclosure } from '@chakra-ui/hooks';
-import { HamburgerIcon } from '@chakra-ui/icons';
-import { Box, Image, Img } from '@chakra-ui/react';
-import React, { FC, useState } from 'react';
+import { Avatar, Box, Flex, Img, useColorModeValue } from '@chakra-ui/react';
+import React, { FC } from 'react';
 
 import { Container } from '@/components/ui/Container';
+import { Loading } from '@/components/ui/Loading';
+import { Panel } from '@/components/ui/Panel';
 import { useAuth } from '@/services/auth/AuthProvider';
 import { User } from '@/types/domains/user';
 import { Link } from '@/utils/route/Link';
-
-import { MenuDrawer } from '../Main/MenuDrawer';
+import { Paths } from '@/utils/route/paths';
 
 import { HeaderButton } from './HeaderButton';
 
-export const headerHeight = '60px';
 type ComponentProps = {
   user: null | User;
+  isLoading?: boolean;
 };
-
-const Component: FC<ComponentProps> = React.memo(({ user }) => {
-  // const styles = useStyleConfig('AppBar');
-  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
-  const [text, setText] = useState('');
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-  };
+const Component: FC<ComponentProps> = React.memo(({ user, isLoading }) => {
+  const bgColor = useColorModeValue('white', 'darkPrimary.600');
 
   return (
-    <Box as="nav" w="100%" bgColor="white" color="gray.700" boxShadow="xs">
-      <MenuDrawer isOpen={isOpen} onClose={onClose} onToggle={onToggle} />
+    <Panel as="nav" height="60px" bg={bgColor} color="gray.700" p={0}>
       <Container
         display="flex"
-        height={headerHeight}
         justifyContent="space-between"
         alignItems="center"
       >
         <Box display="flex" alignItems="center" h="full">
-          <HeaderButton
-            borderRadius="full"
-            p={2}
-            mr={4}
-            boxSize="45px"
-            onClick={onToggle}
-          >
-            <HamburgerIcon
-              alignItems="center"
-              verticalAlign="middle"
-              cursor="pointer"
-              fontSize="4xl"
-            />
-          </HeaderButton>
-
           <Link
             path="/"
             chakraLinkProps={{
@@ -62,43 +38,36 @@ const Component: FC<ComponentProps> = React.memo(({ user }) => {
           </Link>
         </Box>
 
-        <Box h="full">
-          <Link
-            path="/search"
-            chakraLinkProps={{ _hover: { textDecoration: 'none' } }}
-          >
-            <HeaderButton isLink>ユーザーを探す</HeaderButton>
-          </Link>
-          {user && (
-            <Link
-              path="/[userName]/posts/new"
-              params={{ userName: user.userName }}
-            >
-              <HeaderButton isLink>動画を登録する</HeaderButton>
-            </Link>
-          )}
-
-          {user ? (
-            <Link path="/[userName]" params={{ userName: user.userName }}>
-              <HeaderButton isLink>
-                <Image
-                  src={user.avatarUrl}
-                  borderRadius="full"
-                  boxSize="45px"
-                />
-              </HeaderButton>
-            </Link>
+        <Flex h="full">
+          {isLoading ? (
+            <Loading />
           ) : (
-            <Link path="/login">
-              <HeaderButton>ログイン</HeaderButton>
-            </Link>
+            <>
+              {user && (
+                <Link path={Paths.newPost} params={{ userName: user.userName }}>
+                  <HeaderButton>投稿する</HeaderButton>
+                </Link>
+              )}
+
+              {user ? (
+                <Link path={Paths.posts} params={{ userName: user.userName }}>
+                  <HeaderButton isLink>
+                    <Avatar src={user.avatarUrl} boxSize="44px" />
+                  </HeaderButton>
+                </Link>
+              ) : (
+                <Link path="/login">
+                  <HeaderButton>ログイン</HeaderButton>
+                </Link>
+              )}
+            </>
           )}
-        </Box>
+        </Flex>
       </Container>
-    </Box>
+    </Panel>
   );
 });
 export const AppBar: FC = () => {
-  const { me } = useAuth();
-  return <Component user={me} />;
+  const { me, isLoading } = useAuth();
+  return <Component user={me} isLoading={isLoading} />;
 };

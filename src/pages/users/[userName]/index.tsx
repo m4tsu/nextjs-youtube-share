@@ -32,17 +32,22 @@ const Page: NextAppPage = () => {
   const router = useRouter();
   const { userName, page, favoritesModal, postId, category } =
     querySchema.parse(router.query);
-  console.log('hoge!!!!!!!!', router.query);
+
   const handleCloseModal = useCallback(() => {
-    router.push(`/${userName}`, undefined, { shallow: true });
-  }, [router, userName]);
+    const query: { page?: number; category?: string } = {};
+    if (page) query['page'] = page;
+    if (category) query['category'] = category;
+    router.push({ pathname: `/${userName}`, query }, undefined, {
+      shallow: true,
+    });
+  }, [router, userName, page, category]);
 
   return (
     <>
       <PostsPage userName={userName} page={page ?? 1} categoryName={category} />
       <Modal isOpen={!!favoritesModal} onClose={handleCloseModal}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mt={{ base: 40, lg: 20 }}>
           <ModalHeader>この投稿をお気に入りしたユーザー</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

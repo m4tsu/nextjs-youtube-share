@@ -39,7 +39,7 @@ export const PostPanel: FC<Props> = ({ post, user }) => {
             {post.title}
           </Text>
           <Flex justifyContent="space-between" alignItems="center">
-            <Text as="time" color="textSub">
+            <Text as="time" variant="secondary">
               {toDate(post.updatedAt)}
             </Text>
             <StarIcon color="yellow" />
@@ -73,7 +73,6 @@ export const PostPanel: FC<Props> = ({ post, user }) => {
             />
             <Box overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
               <Text
-                color="textMain"
                 fontSize="lg"
                 fontWeight="bold"
                 overflow="hidden"
@@ -83,7 +82,7 @@ export const PostPanel: FC<Props> = ({ post, user }) => {
                 {user.displayName}
               </Text>
               <Text
-                color="textSub"
+                variant="secondary"
                 fontSize="md"
                 overflow="hidden"
                 whiteSpace="nowrap"

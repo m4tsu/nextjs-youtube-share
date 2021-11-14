@@ -25,6 +25,7 @@ export const FavoriteButton: FC<Props> = ({
   ...props
 }) => {
   const router = useRouter();
+  console.log('route!!!!!!!', router);
   const [favorited, setFavorited] = useState(initialFavorited);
   const [favoritesCount, setFavoritesCount] = useState(initialFavoritesCount);
   const rerendered = useRef(false);
@@ -47,13 +48,10 @@ export const FavoriteButton: FC<Props> = ({
     async (e: React.MouseEvent<HTMLOrSVGElement, MouseEvent>) => {
       e.preventDefault();
       if (favorited) {
-        console.log('unfavo!!!!!!!!!!!');
         await onUnFavorite(postId);
         setFavorited(false);
         setFavoritesCount((prev) => (prev -= 1));
       } else {
-        console.log('favo!!!!!!!!!');
-
         await onFavorite(postId);
         setFavorited(true);
         setFavoritesCount((prev) => (prev += 1));
@@ -82,7 +80,7 @@ export const FavoriteButton: FC<Props> = ({
         <Icon
           aria-label="favorite"
           as={AiOutlineStar}
-          color="gray.300"
+          color="gray.400"
           _hover={{ color: 'yellow.400' }}
           transition="ease"
           transitionDuration="300"
@@ -97,11 +95,20 @@ export const FavoriteButton: FC<Props> = ({
       {/* TODO: as使うパターン想定してなかったのでラップしたLinkじゃなくNextのLinkそのまま使っとく */}
       <NextLink
         as={`/${userName}/posts/${postId}/favorites`}
-        href={`${router.pathname}/?favoritesModal=true&userName=${userName}&postId=${postId}`}
+        href={{
+          pathname: `${router.pathname}`,
+          query: { ...router.query, favoritesModal: 'true', userName, postId },
+        }}
+        shallow
       >
+        {/* <NextLink
+        as={`/${userName}/posts/${postId}/favorites`}
+        href={`${router.asPath}`}
+      > */}
         <ChakraLink
           px="1"
           fontSize="lg"
+          position="relative"
           onClick={() => (document.activeElement as HTMLElement).blur()}
           _hover={{ textDecoration: 'underline' }}
         >

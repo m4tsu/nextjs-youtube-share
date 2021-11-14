@@ -2,6 +2,7 @@ import {
   ButtonGroup,
   ButtonProps as ChakraButtonProps,
 } from '@chakra-ui/button';
+import { useColorModeValue } from '@chakra-ui/color-mode';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Flex } from '@chakra-ui/layout';
 import { FC } from 'react';
@@ -39,6 +40,8 @@ export const Paginator: FC<Props> = ({
   currentPage,
   onPageChange,
 }) => {
+  const disabledBg = useColorModeValue('gray.300', 'darkPrimary.400');
+
   const prevPage = currentPage > 1 ? currentPage - 1 : null;
   const nextPage = currentPage < totalPage ? currentPage + 1 : null;
 
@@ -71,8 +74,8 @@ export const Paginator: FC<Props> = ({
         <PaginatorButton
           backgroundColor="gray.200"
           disabled
-          _disabled={{ opacity: 1, background: 'gray.200' }}
-          _hover={{ opacity: 1, background: 'gray.200' }}
+          _disabled={{ opacity: 1, background: disabledBg }}
+          _hover={{ opacity: 1, background: disabledBg }}
         >
           {currentPage}
         </PaginatorButton>

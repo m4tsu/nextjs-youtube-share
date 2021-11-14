@@ -22,12 +22,10 @@ const querySchema = z.object({
 });
 
 export default handler<UserPosts>().get(async (req, res) => {
-  console.log(req.query);
   const { userName, categoryName, pageIndex, perPage } = querySchema.parse(
     req.query
   );
   const skip = (pageIndex - 1) * perPage;
-  console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!', req.query);
   const [totalCount, result] = await prisma.$transaction([
     categoryName
       ? prisma.post.count({
