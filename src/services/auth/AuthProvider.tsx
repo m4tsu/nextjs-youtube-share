@@ -65,8 +65,8 @@ export const AuthProvider: FC = ({ children }) => {
   const signOut = useCallback(async () => {
     await supabaseClient.auth.signOut();
     setMe(null);
-    router.push(Paths.login);
-  }, []);
+    router.push(Paths.top);
+  }, [router]);
 
   const authenticate = async (event: AuthChangeEvent, s: Session | null) => {
     // for server side auth

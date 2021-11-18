@@ -1,6 +1,5 @@
 import { ButtonProps } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { Box } from '@chakra-ui/layout';
 import {
   Modal,
   ModalContent,
@@ -10,7 +9,7 @@ import {
   ModalFooter,
 } from '@chakra-ui/modal';
 import { Portal } from '@chakra-ui/portal';
-import { FC } from 'react';
+import { FC, MouseEventHandler } from 'react';
 
 import { useHover } from '@/utils/useHover';
 
@@ -27,7 +26,7 @@ export const FollowButton: FC<FollowButtonProps> = ({
   userName,
   ...props
 }) => {
-  const { ref, isHovered } = useHover();
+  const { ref, isHovered } = useHover<HTMLButtonElement>();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const unfollow = () => {
     if (onClick) {
@@ -35,20 +34,40 @@ export const FollowButton: FC<FollowButtonProps> = ({
     }
     onClose();
   };
+
+  const handleOpen: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    onOpen();
+  };
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    onClick && onClick();
+  };
+
   return (
-    <Box ref={ref} flexShrink={0} onClick={(e) => e.preventDefault()}>
+    // <Box ref={ref} flexShrink={0}>
+    <>
       {isFollowing ? (
         <Button
+          ref={ref}
           colorScheme={isHovered ? 'red' : 'primary'}
+          flexShrink={0}
           variant="outline"
-          onClick={onOpen}
+          onClick={handleOpen}
           width="130px"
           {...props}
         >
           {isHovered ? 'フォロー解除' : 'フォロー中'}
         </Button>
       ) : (
-        <Button colorScheme="primary" onClick={onClick} {...props}>
+        <Button
+          ref={ref}
+          colorScheme="primary"
+          flexShrink={0}
+          onClick={handleClick}
+          {...props}
+        >
           フォロー
         </Button>
       )}
@@ -79,6 +98,7 @@ export const FollowButton: FC<FollowButtonProps> = ({
           </ModalContent>
         </Modal>
       </Portal>
-    </Box>
+    </>
+    // </Box>
   );
 };

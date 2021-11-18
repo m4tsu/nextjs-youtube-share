@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { Link } from '@/utils/route/Link';
+import { Paths } from '@/utils/route/paths';
 
 type Props = {
   categoryName: string;
@@ -15,7 +16,7 @@ export const CategoryLinkButton: FC<Props> = ({
 }) => {
   return (
     <Link
-      path="/[userName]"
+      path={Paths.posts}
       params={{ userName }}
       query={{ category: categoryName }}
       chakraLinkProps={{ position: 'relative' }}

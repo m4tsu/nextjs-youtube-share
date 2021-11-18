@@ -1,4 +1,5 @@
 import { Box, Divider, Flex, Text } from '@chakra-ui/layout';
+import { Spacer } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC, useCallback } from 'react';
 
@@ -74,8 +75,8 @@ export const PostCard: FC<Props> = ({ post, user }) => {
   );
 
   return (
-    <Card asLinkBox p={4} overflow="hidden">
-      <Flex direction="column" overflow="hidden">
+    <Card asLinkBox p={4} overflow="hidden" display="flex">
+      <Flex direction="column" overflow="hidden" width="full">
         <VideoPlayer embedUrl={getEmbedUrl(post.type, post.videoId)} />
         <Box my={1}>
           <Link
@@ -87,13 +88,27 @@ export const PostCard: FC<Props> = ({ post, user }) => {
               fontSize="lg"
               fontWeight="bold"
               overflow="hidden"
-              textOverflow="ellipsis"
-              whiteSpace="nowrap"
+              // textOverflow="ellipsis"
+              // whiteSpace="nowrap"
+              // display="-webkit-box"
+              // '-webkit-line-clamp'={3}
+              // '-webkit-box-orient'="vertical"
+              //               display: -webkit-box;
+              // overflow: hidden;
+              // -webkit-line-clamp: 3;
+              // -webkit-box-orient: vertical;
+              sx={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+              }}
             >
               {post.title}
             </Text>
           </Link>
         </Box>
+        <Spacer />
+
         <Flex justifyContent="space-between" alignItems="center">
           <Text
             mr={1}

@@ -64,7 +64,7 @@ export const UserCard: FC<Props> = ({ user }) => {
           my={1}
         >
           <Link
-            path="/[userName]"
+            path={Paths.posts}
             params={{ userName: user.userName }}
             asOverLay
           >

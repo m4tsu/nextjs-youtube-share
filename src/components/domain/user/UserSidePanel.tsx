@@ -1,5 +1,5 @@
 import { Avatar } from '@chakra-ui/avatar';
-import { Box, BoxProps, Flex, Text } from '@chakra-ui/layout';
+import { BoxProps, Flex, Text } from '@chakra-ui/layout';
 import { Divider, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC, memo, useCallback } from 'react';
@@ -38,7 +38,6 @@ const Component: FC<ComponentProps> = memo(
     <Panel
       display="flex"
       flexDirection="column"
-      // borderWidth="thin"
       variant="rounded"
       sx={{ gap: '1rem' }}
       {...panelProps}
@@ -49,11 +48,7 @@ const Component: FC<ComponentProps> = memo(
         justifyContent={{ base: 'space-between', lg: 'center' }}
         alignItems={{ base: 'center', lg: 'unset' }}
       >
-        <Flex
-          sx={{ gap: '.5rem' }}
-          alignItems="center"
-          // justifyContent="space-between"
-        >
+        <Flex sx={{ gap: '.5rem' }} alignItems="center">
           <Avatar src={avatarUrl} name={userName} />
           <Flex flexDirection="column" overflow="hidden">
             <Text fontSize="md" fontWeight="bold">
@@ -65,23 +60,22 @@ const Component: FC<ComponentProps> = memo(
           </Flex>
         </Flex>
         {!isMe && (
-          <Box>
-            <FollowButton
-              isFollowing={isFollowing ?? false}
-              onClick={onFollowButtonClick}
-              userName={userName}
-              width="full"
-            />
-          </Box>
+          <FollowButton
+            isFollowing={isFollowing ?? false}
+            onClick={onFollowButtonClick}
+            userName={userName}
+            width={{ base: undefined, lg: 'full' }}
+          />
         )}
       </Flex>
 
       <Divider
         my={0}
-        borderColor="darkPrimary.400"
+        borderColor="gray.300"
         display={{ base: 'none', lg: 'flex' }}
       />
       <UserSidePanelTabs
+        isMe={isMe}
         display={{ base: 'none', lg: 'flex' }}
         userName={userName}
         currentPathName={currentPathName}
@@ -130,14 +124,13 @@ export const UserSidePanel: FC<{ panelProps?: BoxProps }> = ({
   if (!user) return <Loading />;
   const isMe = me ? me.userName === user.userName : false;
 
-  console.log(me, user);
   return (
     <Component
       {...user}
       isMe={isMe}
       currentPathName={currentPathName}
       onFollowButtonClick={onFollowButtonClick}
-      panelProps={{ ...panelProps, bg }}
+      panelProps={{ bg, ...panelProps }}
     />
   );
 };

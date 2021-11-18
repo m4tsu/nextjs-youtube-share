@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { UserPageLayout } from '@/components/layouts/UserPage/UserPageLayout';
 import { PostsPage } from '@/components/pages/[userName]/index/Posts.page';
 import { FavoritesPage } from '@/components/pages/[userName]/posts/[postId]/favorites/Favorites.page';
+import { getPath } from '@/utils/route/Link';
 
 const querySchema = z.object({
   userName: z.string().optional(),
@@ -35,11 +36,19 @@ const Page: NextAppPage = () => {
 
   const handleCloseModal = useCallback(() => {
     const query: { page?: number; category?: string } = {};
+    if (!userName) return;
     if (page) query['page'] = page;
     if (category) query['category'] = category;
-    router.push({ pathname: `/${userName}`, query }, undefined, {
-      shallow: true,
-    });
+    router.push(
+      {
+        pathname: getPath({ path: '/users/[userName]', params: { userName } }),
+        query,
+      },
+      undefined,
+      {
+        shallow: true,
+      }
+    );
   }, [router, userName, page, category]);
 
   return (

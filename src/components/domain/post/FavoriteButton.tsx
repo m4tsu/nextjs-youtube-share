@@ -6,6 +6,9 @@ import { useRouter } from 'next/router';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
 
+import { getPath } from '@/utils/route/Link';
+import { Paths } from '@/utils/route/paths';
+
 type Props = IconProps & {
   favorited: boolean;
   favoritesCount: number;
@@ -25,7 +28,6 @@ export const FavoriteButton: FC<Props> = ({
   ...props
 }) => {
   const router = useRouter();
-  console.log('route!!!!!!!', router);
   const [favorited, setFavorited] = useState(initialFavorited);
   const [favoritesCount, setFavoritesCount] = useState(initialFavoritesCount);
   const rerendered = useRef(false);
@@ -94,17 +96,16 @@ export const FavoriteButton: FC<Props> = ({
       )}
       {/* TODO: as使うパターン想定してなかったのでラップしたLinkじゃなくNextのLinkそのまま使っとく */}
       <NextLink
-        as={`/${userName}/posts/${postId}/favorites`}
+        as={getPath({
+          path: Paths.favoriteUsers,
+          params: { userName, postId },
+        })}
         href={{
           pathname: `${router.pathname}`,
           query: { ...router.query, favoritesModal: 'true', userName, postId },
         }}
         shallow
       >
-        {/* <NextLink
-        as={`/${userName}/posts/${postId}/favorites`}
-        href={`${router.asPath}`}
-      > */}
         <ChakraLink
           px="1"
           fontSize="lg"

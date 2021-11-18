@@ -147,7 +147,7 @@ export const NewPage: FC<Props> = ({ userName }) => {
         trigger('title');
       }
     }
-  }, [nicovideoData?.title]);
+  }, [nicovideoData?.title, isDirty]);
 
   return (
     <Panel>
@@ -215,10 +215,12 @@ export const NewPage: FC<Props> = ({ userName }) => {
           <CreatableSelect
             isMulti
             name="categories"
+            placeholder="カテゴリーを選択する"
             options={categoryOptions}
             onChange={(values) => {
               setValue('categories', [...values]);
             }}
+            formatCreateLabel={(value) => `カテゴリーを作成: ${value}`}
           />
           <FormErrorMessage>
             {categoriesError && categoriesError}

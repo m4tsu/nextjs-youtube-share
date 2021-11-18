@@ -5,7 +5,7 @@ import { mode } from '@chakra-ui/theme-tools';
 // https://colorhunt.co/palette/283149404b6900818adbedf3 この組み合わせよさそう
 
 // color は 500 がメインになる
-const colors = {
+export const colors = {
   bgWhite: '#F4F5F7',
   darkGray: '#6f7372',
   textMain: '#1A202C', //gray.800
@@ -125,6 +125,41 @@ export const theme = extendTheme(
           variant: 'primary',
         },
       },
+      Menu: {
+        parts: ['list'],
+        baseStyle: (props) => ({
+          list: {
+            padding: 4,
+            bg: mode('white', 'darkPrimary.600')(props),
+          },
+        }),
+      },
+      Modal: {
+        parts: ['dialog'],
+        baseStyle: (props) => ({
+          dialog: {
+            padding: 4,
+            bg: mode('white', 'darkPrimary.700')(props),
+          },
+        }),
+      },
+      Input: {
+        parts: ['field'],
+        baseStyle: (props) => ({
+          field: {
+            background: 'unset',
+            backgroundColor: mode('white', 'darkPrimary.600')(props),
+          },
+        }),
+        colors,
+      },
+      Textarea: {
+        baseStyle: (props) => ({
+          background: 'unset',
+          backgroundColor: mode('white', 'darkPrimary.600')(props),
+        }),
+        colors,
+      },
       Toast: {
         baseStyle: {
           width: '100%',
@@ -140,6 +175,7 @@ export const theme = extendTheme(
         }),
         colors,
       },
+
       Panel: {
         baseStyle: (props) => ({
           p: 4,

@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
   const getLayout = Component.getLayout || ((page) => <Main>{page}</Main>);
   const requireLogin = Component.requireLogin || false;
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider resetCSS theme={theme}>
       <SWRConfig
         value={{
           onError: (error, key) => {

@@ -1,6 +1,7 @@
-import { Avatar, Box, Flex, Img, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Img, useColorModeValue } from '@chakra-ui/react';
 import React, { FC } from 'react';
 
+import { AppBarMenu } from '@/components/domain/user/AppBarMenu';
 import { Container } from '@/components/ui/Container';
 import { Loading } from '@/components/ui/Loading';
 import { Panel } from '@/components/ui/Panel';
@@ -12,14 +13,21 @@ import { Paths } from '@/utils/route/paths';
 import { HeaderButton } from './HeaderButton';
 
 type ComponentProps = {
-  user: null | User;
+  me: null | User;
   isLoading?: boolean;
 };
-const Component: FC<ComponentProps> = React.memo(({ user, isLoading }) => {
+const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
   const bgColor = useColorModeValue('white', 'darkPrimary.600');
 
   return (
-    <Panel as="nav" height="60px" bg={bgColor} color="gray.700" p={0}>
+    <Panel
+      as="nav"
+      display="flex"
+      height="60px"
+      bg={bgColor}
+      // color="gray.700"
+      p={0}
+    >
       <Container
         display="flex"
         justifyContent="space-between"
@@ -43,20 +51,21 @@ const Component: FC<ComponentProps> = React.memo(({ user, isLoading }) => {
             <Loading />
           ) : (
             <>
-              {user && (
-                <Link path={Paths.newPost} params={{ userName: user.userName }}>
+              {me && (
+                <Link path={Paths.newPost} params={{ userName: me.userName }}>
                   <HeaderButton>投稿する</HeaderButton>
                 </Link>
               )}
 
-              {user ? (
-                <Link path={Paths.posts} params={{ userName: user.userName }}>
-                  <HeaderButton isLink>
-                    <Avatar src={user.avatarUrl} boxSize="44px" />
-                  </HeaderButton>
-                </Link>
+              {me ? (
+                // <Link path={Paths.posts} params={{ userName: me.userName }}>
+                //   <HeaderButton isLink>
+                //     <Avatar src={me.avatarUrl} boxSize="44px" />
+                //   </HeaderButton>
+                // </Link>
+                <AppBarMenu me={me} />
               ) : (
-                <Link path="/login">
+                <Link path={Paths.login}>
                   <HeaderButton>ログイン</HeaderButton>
                 </Link>
               )}
@@ -69,5 +78,5 @@ const Component: FC<ComponentProps> = React.memo(({ user, isLoading }) => {
 });
 export const AppBar: FC = () => {
   const { me, isLoading } = useAuth();
-  return <Component user={me} isLoading={isLoading} />;
+  return <Component me={me} isLoading={isLoading} />;
 };
