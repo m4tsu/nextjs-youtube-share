@@ -1,5 +1,6 @@
 import { mutate } from 'swr';
 
+import { UserFavoritePosts } from '@/pages/api/users/[userName]/favorites';
 import {
   NewPostParams,
   NicovideoInfo,
@@ -137,6 +138,25 @@ export const useUserPosts = (
   const totalPage = data?.postsCount
     ? Math.ceil(data.postsCount / perPage)
     : null; // TODO: ページネーションある時の返ってくるデータの方を統一して、usePaginationFetchに寄せるべきだけどめんどい
+  return { data, error, totalPage };
+};
+
+export const useUserFavoritePosts = (
+  pageIndex: number,
+  perPage: number,
+  userName?: string,
+  categoryName?: string
+) => {
+  const { data, error } = useFetch<UserFavoritePosts>(
+    getFetchKey({
+      path: '/api/users/[userName]/favorites',
+      params: { userName },
+      query: { pageIndex, perPage, categoryName },
+    })
+  );
+  const totalPage = data?.postsCount
+    ? Math.ceil(data.postsCount / perPage)
+    : null;
   return { data, error, totalPage };
 };
 

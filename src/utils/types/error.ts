@@ -1,5 +1,3 @@
-import { PostgrestError } from '@supabase/supabase-js';
-
 export class BaseError extends Error {
   constructor(e?: string) {
     super(e);
@@ -59,31 +57,16 @@ export class HttpError extends Error {
   }
 }
 
-interface SupabaseErrorObject {
-  name: string;
+export interface NetworkErrorObject {
   message: string;
-  details: string;
-  code: string;
-  hint: string;
 }
-export class SupabaseError extends Error {
-  details: string;
-  code: string;
-  hint: string;
-  constructor(error: PostgrestError) {
-    super(error.message);
-    this.name = 'SupabaseError';
-    this.details = error.details;
-    this.hint = error.hint;
-    this.code = error.code;
+export class NetworkError extends Error {
+  constructor(message?: string) {
+    super(message ?? 'ネットワークエラー');
   }
-  serialize(): SupabaseErrorObject {
+  serialize(): NetworkErrorObject {
     return {
-      name: this.name,
       message: this.message,
-      details: this.details,
-      code: this.code,
-      hint: this.hint,
     };
   }
 }
@@ -105,7 +88,7 @@ export class UnauthenticatedError extends Error {
     actionName?: string;
   }) {
     super(message ?? 'ログインしてください.');
-    this.name = 'UnauthenticatedError';
+    this.name = 'Unauthenticated';
     this.actionName = actionName;
     this.message;
   }

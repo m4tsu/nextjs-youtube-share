@@ -1,8 +1,9 @@
 import { useColorModeValue } from '@chakra-ui/color-mode';
-import { Menu, MenuButton, MenuList } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, Portal } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
+import { z } from 'zod';
 
 import { Container } from '@/components/ui/Container';
 import { Panel } from '@/components/ui/Panel';
@@ -13,14 +14,14 @@ import { UserSidePanelTabs } from './UserSidePanelTabs';
 
 type ComponentProps = {
   currentPathName: string;
-  userName: string;
+  userName?: string;
   isMe: boolean;
 };
 const Component: FC<ComponentProps> = ({ userName, currentPathName, isMe }) => {
   const bg = useColorModeValue('white', 'darkPrimary.600');
   const hoverBg = useColorModeValue('gray.50', 'darkPrimary.500');
   return (
-    <Menu strategy="fixed">
+    <Menu strategy="fixed" autoSelect={false}>
       <MenuButton
         as={Panel}
         display={{ base: 'block', lg: 'none' }}
@@ -47,20 +48,26 @@ const Component: FC<ComponentProps> = ({ userName, currentPathName, isMe }) => {
           />
         </Container>
       </MenuButton>
-      <MenuList zIndex="popover">
-        <UserSidePanelTabs
-          isMe={isMe}
-          userName={userName}
-          currentPathName={currentPathName}
-        />
-      </MenuList>
+      <Portal>
+        <MenuList zIndex="popover">
+          {userName && (
+            <UserSidePanelTabs
+              asMenu
+              isMe={isMe}
+              userName={userName}
+              currentPathName={currentPathName}
+            />
+          )}
+        </MenuList>
+      </Portal>
     </Menu>
   );
 };
 
+const querySchema = z.object({ userName: z.string().optional() });
 export const UserTopPanel: FC = () => {
   const router = useRouter();
-  const userName = router.query.userName as string;
+  const { userName } = querySchema.parse(router.query);
   const currentPathName = router.pathname;
   const { me } = useAuth();
   const isMe = me ? me.userName === userName : false;

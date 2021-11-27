@@ -1,10 +1,10 @@
 import { Box } from '@chakra-ui/layout';
 import { FC } from 'react';
 
-import { HttpErrorObject } from '@/utils/types/error';
+import { HttpErrorObject, NetworkErrorObject } from '@/utils/types/error';
 
 type Props = {
-  error: HttpErrorObject;
+  error: HttpErrorObject | NetworkErrorObject;
 };
 export const Error: FC<Props> = ({ error }) => {
   // statusによってリダイレクトとかも考える？

@@ -8,7 +8,9 @@ export default handler<User>().get(async (req, res) => {
 
   const user = await prisma.user.findUnique({
     where: { userName },
-    include: { followers: { where: { followerId: currentUser?.id } } },
+    include: {
+      followers: { where: { OR: [{ followerId: req.currentUser?.id }] } },
+    },
   });
   if (!user) {
     return res.status(404).json({

@@ -1,10 +1,10 @@
 import useSWR, { Fetcher } from 'swr';
 
-import { HttpError } from '@/utils/types/error';
+import { HttpError, NetworkError } from '@/utils/types/error';
 
 import { httpClient } from './httpClient';
 
-export const useFetch = <T, E extends unknown = HttpError>(
+export const useFetch = <T, E extends unknown = HttpError | NetworkError>(
   key: string | null,
   fetcher?: Fetcher<T>
 ) => {
@@ -29,7 +29,7 @@ export const useFetch = <T, E extends unknown = HttpError>(
 // isValidatingを使わなくても、useSWRから取得してしまうとisValidatingに応じてレンダリングが起こってしまうので使うかどうかで呼び出しを変える
 export const useFetchWithValidating = <
   T extends Record<string, unknown>,
-  E extends unknown = HttpError
+  E extends unknown = HttpError | NetworkError
 >(
   key: string | null,
   fetcher?: Fetcher<T>

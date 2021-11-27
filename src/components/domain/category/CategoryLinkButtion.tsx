@@ -26,10 +26,12 @@ export const CategoryLinkButton: FC<Props> = ({
         size="xs"
         fontSize="xs"
         fontWeight="normal"
-        colorScheme="blue"
+        bg="darkPrimary.50"
+        color="gray.200"
         borderRadius="sm"
-        py="1"
+        py="0.5"
         px="2"
+        _hover={{ bg: 'darkPrimary.300' }}
         {...props}
       >
         {categoryName}

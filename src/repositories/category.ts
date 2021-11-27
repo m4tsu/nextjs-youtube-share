@@ -1,5 +1,5 @@
 import { Category } from '@/types/domains/category';
-import { getFetchKey } from '@/utils/route/apiPaths';
+import { ApiPaths, getFetchKey } from '@/utils/route/apiPaths';
 
 import { useFetch } from './helpers/useFetch';
 
@@ -20,7 +20,7 @@ export const categoryRepository = CategoryRepository.getInstance();
 export const useCategories = (userName?: string) => {
   return useFetch<Category[]>(
     getFetchKey({
-      path: '/api/users/[userName]/categories',
+      path: ApiPaths.userCategories,
       params: { userName },
     })
   );

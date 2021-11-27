@@ -85,3 +85,15 @@ export const useUser = (userName?: string) => {
 export const useMe = (session: Session | null) => {
   return useFetch<User>(session ? getFetchKey({ path: '/api/auth/me' }) : null);
 };
+
+export const useFollowers = (userName?: string) => {
+  return useFetch<User[]>(
+    getFetchKey({ path: ApiPaths.followers, params: { userName } })
+  );
+};
+
+export const useFollowings = (userName?: string) => {
+  return useFetch<User[]>(
+    getFetchKey({ path: ApiPaths.followings, params: { userName } })
+  );
+};

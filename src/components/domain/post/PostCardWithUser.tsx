@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Text } from '@chakra-ui/layout';
-import { Spacer } from '@chakra-ui/react';
+import { Avatar, Spacer, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC, useCallback } from 'react';
 
@@ -16,17 +16,16 @@ import { Link } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 import { HttpError } from '@/utils/types/error';
 
-import { CategoryLinkButton } from '../category/CategoryLinkButtion';
-
 import { FavoriteButton } from './FavoriteButton';
 
 type Props = {
   post: Post;
   user: User;
 };
-export const PostCard: FC<Props> = ({ post, user }) => {
+export const PostCardWithUser: FC<Props> = ({ post, user }) => {
   const router = useRouter();
   const { me } = useAuth();
+  const userCardBg = useColorModeValue('gray.50', 'darkPrimary.700');
 
   const onUnFavorite = useCallback(
     async (postId: string) => {
@@ -78,69 +77,64 @@ export const PostCard: FC<Props> = ({ post, user }) => {
     <Card asLinkBox p={4} overflow="hidden" display="flex">
       <Flex direction="column" overflow="hidden" width="full">
         <VideoPlayer embedUrl={getEmbedUrl(post.type, post.videoId)} />
-        <Box pt={2}>
+        <Flex pt={2} sx={{ gap: '.5rem' }}>
           <Link
-            asOverLay
-            path={Paths.post}
-            params={{ userName: user.userName, postId: post.id }}
+            path={Paths.posts}
+            params={{ userName: user.userName }}
+            chakraLinkProps={{ position: 'relative' }}
           >
-            <Text
-              fontSize="lg"
-              fontWeight="bold"
-              overflow="hidden"
-              sx={{
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-              }}
-            >
-              {post.title}
-            </Text>
+            <Avatar src={user.avatarUrl} />
           </Link>
-        </Box>
-        <Spacer />
+          <Box>
+            <Link
+              asOverLay
+              path={Paths.post}
+              params={{ userName: user.userName, postId: post.id }}
+            >
+              <Text
+                fontSize="lg"
+                fontWeight="bold"
+                overflow="hidden"
+                sx={{
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                }}
+              >
+                {post.title}
+              </Text>
+            </Link>
+            <Spacer />
 
-        <Flex justifyContent="space-between" alignItems="center">
-          <Text
-            mr={1}
-            variant="secondary"
-            fontSize="sm"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-          >
-            {post.body}
-          </Text>
-          <FavoriteButton
-            position="relative"
-            favorited={post.favorited ?? false}
-            postId={post.id}
-            userName={user.userName}
-            favoritesCount={post.favoritesCount || 0}
-            onFavorite={onFavorite}
-            onUnFavorite={onUnFavorite}
-          />
-        </Flex>
-        <Divider color="gray.400" my={1} />
-        <Flex sx={{ gap: '.5rem' }} alignItems="center" mt={1}>
-          <Text as="time" variant="secondary" fontSize="sm" flexShrink={0}>
-            {toDate(post.updatedAt)}
-          </Text>
-          <Flex
-            sx={{ gap: '.5rem' }}
-            flex="1 1 auto"
-            alignItems="center"
-            flexWrap="wrap"
-          >
-            {post.categories &&
-              post.categories.map((category) => (
-                <CategoryLinkButton
-                  categoryName={category.name}
-                  userName={user.userName}
-                  key={`${post.id}-${category.id}`}
-                />
-              ))}
-          </Flex>
+            <Flex justifyContent="space-between" alignItems="center">
+              <Text
+                mr={1}
+                variant="secondary"
+                fontSize="sm"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+              >
+                {post.body}
+              </Text>
+
+              <FavoriteButton
+                position="relative"
+                favorited={post.favorited ?? false}
+                postId={post.id}
+                userName={user.userName}
+                favoritesCount={post.favoritesCount || 0}
+                onFavorite={onFavorite}
+                onUnFavorite={onUnFavorite}
+              />
+            </Flex>
+            <Divider color="gray.400" my={1} />
+            <Flex sx={{ gap: '.5rem' }} alignItems="center" mt={1}>
+              <Text as="time" variant="secondary" fontSize="sm" flexShrink={0}>
+                {toDate(post.updatedAt)}
+              </Text>
+            </Flex>
+          </Box>
         </Flex>
       </Flex>
     </Card>

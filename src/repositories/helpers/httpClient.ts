@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import router from 'next/router';
 
-import { ApiErrorObject, HttpError } from '@/utils/types/error';
+import { ApiErrorObject, HttpError, NetworkError } from '@/utils/types/error';
 
 type FetchParams<RequestParams> = {
   url: string;
@@ -21,17 +21,19 @@ class HttpClient {
   }
 
   async get<ResponsData>(url: string) {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-    });
-    if (!res.ok) {
-      const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-      console.log('http get error', error.serialize());
-      throw error;
+    try {
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+      });
+      if (!res.ok) {
+        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
+        throw error;
+      }
+      return res.json() as Promise<ResponsData>;
+    } catch (e) {
+      throw new NetworkError();
     }
-    console.log(res);
-    return res.json() as Promise<ResponsData>;
   }
 
   async post<ResponsData, RequestParams = any>({
@@ -39,21 +41,25 @@ class HttpClient {
     params,
     config,
   }: FetchParams<RequestParams>) {
-    const res = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(params),
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      ...config,
-    });
-    if (res.redirected) {
-      router.push(res.url);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(params),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        ...config,
+      });
+      if (res.redirected) {
+        router.push(res.url);
+      }
+      if (!res.ok) {
+        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
+        console.log('http post error', error);
+        throw error;
+      }
+      return res.json() as Promise<ResponsData>;
+    } catch (e) {
+      throw new NetworkError();
     }
-    if (!res.ok) {
-      const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-      console.log('http post error', error);
-      throw error;
-    }
-    return res.json() as Promise<ResponsData>;
   }
 
   async put<ResponsData, RequestParams extends Record<string, unknown>>({
@@ -61,38 +67,46 @@ class HttpClient {
     params,
     config,
   }: FetchParams<RequestParams>) {
-    const res = await fetch(url, {
-      method: 'PUT',
-      body: JSON.stringify(params),
-      ...config,
-    });
-    if (!res.ok) {
-      const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-      console.log('http put error', error);
-      throw error;
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        body: JSON.stringify(params),
+        ...config,
+      });
+      if (!res.ok) {
+        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
+        console.log('http put error', error);
+        throw error;
+      }
+      return res.json() as Promise<ResponsData>;
+    } catch (e) {
+      throw new NetworkError();
     }
-    return res.json() as Promise<ResponsData>;
   }
   async delete<ResponsData, RequestParams = any>({
     url,
     params,
     config,
   }: FetchParams<RequestParams>) {
-    const res = await fetch(url, {
-      method: 'DELETE',
-      body: JSON.stringify(params),
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      ...config,
-    });
-    if (res.redirected) {
-      router.push(res.url);
+    try {
+      const res = await fetch(url, {
+        method: 'DELETE',
+        body: JSON.stringify(params),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        ...config,
+      });
+      if (res.redirected) {
+        router.push(res.url);
+      }
+      if (!res.ok) {
+        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
+        console.log('http post error', error);
+        throw error;
+      }
+      return res.json() as Promise<ResponsData>;
+    } catch (e) {
+      throw new NetworkError();
     }
-    if (!res.ok) {
-      const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-      console.log('http post error', error);
-      throw error;
-    }
-    return res.json() as Promise<ResponsData>;
   }
 }
 

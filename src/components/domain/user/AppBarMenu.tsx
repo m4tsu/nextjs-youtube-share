@@ -3,6 +3,7 @@ import Icon from '@chakra-ui/icon';
 import { SettingsIcon } from '@chakra-ui/icons';
 import { Divider, Flex } from '@chakra-ui/layout';
 import { Menu, MenuButton, MenuList } from '@chakra-ui/menu';
+import { Portal } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import { FiLogOut } from 'react-icons/fi';
@@ -23,40 +24,46 @@ export const AppBarMenu: FC<Props> = ({ me }) => {
   const router = useRouter();
   const currentPathName = router.pathname;
   return (
-    <Menu strategy="fixed">
+    <Menu strategy="fixed" isLazy autoSelect={false}>
       <MenuButton>
         <Avatar src={me.avatarUrl} boxSize="44px" />
       </MenuButton>
-      <MenuList
-        zIndex="popover"
-        display="flex"
-        flexDirection="column"
-        sx={{ gap: '.5rem' }}
-      >
-        <UserSidePanelTabs
-          userName={me.userName}
-          isMe
-          currentPathName={currentPathName}
-        />
-        <Divider />
-        <Flex flexDirection="column">
-          <ToggleColorModeButton />
-          <Link path={Paths.settings}>
-            <TabButton isActive={currentPathName === Paths.settings}>
-              <Icon as={SettingsIcon} />
-              設定
-            </TabButton>
-          </Link>
-          {/* <TabButton isActive={currentPathName === Paths.settings}>
+      <Portal>
+        <MenuList
+          zIndex="popover"
+          display="flex"
+          flexDirection="column"
+          sx={{ gap: '.5rem' }}
+        >
+          <UserSidePanelTabs
+            userName={me.userName}
+            isMe
+            asMenu
+            currentPathName={currentPathName}
+          />
+          <Divider />
+          <Flex flexDirection="column">
+            <ToggleColorModeButton />
+            <Link path={Paths.settings}>
+              <TabButton
+                isActive={currentPathName === Paths.settings}
+                asMenuItem
+              >
+                <Icon as={SettingsIcon} />
+                設定
+              </TabButton>
+            </Link>
+            {/* <TabButton isActive={currentPathName === Paths.settings}>
             カテゴリー管理
           </TabButton> */}
-        </Flex>
-        <Divider />
-        <TabButton onClick={signOut}>
-          <Icon as={FiLogOut} />
-          ログアウト
-        </TabButton>
-      </MenuList>
+          </Flex>
+          <Divider />
+          <TabButton onClick={signOut} asMenuItem>
+            <Icon as={FiLogOut} />
+            ログアウト
+          </TabButton>
+        </MenuList>
+      </Portal>
     </Menu>
   );
 };

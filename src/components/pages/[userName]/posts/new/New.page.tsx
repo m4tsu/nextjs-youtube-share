@@ -15,7 +15,7 @@ import { FC, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/Button';
-import { CreatableSelect } from '@/components/ui/MultiSelect';
+import { CreatableSelect } from '@/components/ui/CreatableSelect';
 import { Panel } from '@/components/ui/Panel';
 import { DummyPlayer, VideoPlayer } from '@/components/ui/VideoPlayer';
 import { YoutubePlayer } from '@/components/ui/YoutubePlayer';

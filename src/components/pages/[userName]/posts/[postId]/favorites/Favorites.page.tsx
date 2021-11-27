@@ -1,7 +1,7 @@
 import { VStack } from '@chakra-ui/layout';
 import { FC } from 'react';
 
-import { UserCard } from '@/components/domain/user/UserCard';
+import { UserCardWithFollowButton } from '@/components/domain/user/UserCardWithFollowButton';
 import { Error } from '@/components/pages/error/Error';
 import { Loading } from '@/components/ui/Loading';
 import { usePostFavorites } from '@/repositories/posts';
@@ -14,7 +14,7 @@ const Component: FC<ComponentProps> = ({ users }) => {
   return (
     <VStack gap={4}>
       {users.map((user) => (
-        <UserCard key={user.userName} user={user} />
+        <UserCardWithFollowButton key={user.userName} user={user} />
       ))}
     </VStack>
   );
@@ -22,7 +22,6 @@ const Component: FC<ComponentProps> = ({ users }) => {
 
 type Props = {
   postId?: string;
-  // asModal?: boolean;
 };
 export const FavoritesPage: FC<Props> = ({ postId }) => {
   const { data, error } = usePostFavorites(postId);

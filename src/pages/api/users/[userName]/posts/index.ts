@@ -27,52 +27,41 @@ export default handler<UserPosts>().get(async (req, res) => {
   );
   const skip = (pageIndex - 1) * perPage;
   const [totalCount, result] = await prisma.$transaction([
-    categoryName
-      ? prisma.post.count({
-          where: {
+    prisma.post.count({
+      where: {
+        AND: [
+          {
             categories: { some: { category: { name: categoryName } } },
+          },
+          {
             user: { userName },
           },
-        })
-      : prisma.post.count({ where: { user: { userName } } }),
-    categoryName
-      ? prisma.user.findUnique({
-          where: { userName },
-          include: {
-            posts: {
-              take: perPage,
-              skip,
-              where: {
+        ],
+      },
+    }),
+    prisma.user.findUnique({
+      where: { userName },
+      include: {
+        posts: {
+          take: perPage,
+          skip,
+          where: {
+            AND: [
+              {
                 categories: { some: { category: { name: categoryName } } },
               },
-              orderBy: { updatedAt: 'desc' },
-              include: {
-                _count: { select: { favorites: true } },
-                favorites: { where: { userId: req.currentUser?.id } },
-                categories: { include: { category: true } },
-              },
-            },
+            ],
           },
-        })
-      : prisma.user.findUnique({
-          where: { userName },
+          orderBy: { updatedAt: 'desc' },
           include: {
-            posts: {
-              take: perPage,
-              skip,
-              orderBy: { updatedAt: 'desc' },
-              include: {
-                _count: { select: { favorites: true } },
-                favorites: { where: { userId: req.currentUser?.id } },
-                categories: { include: { category: true } },
-              },
-            },
+            _count: { select: { favorites: true } },
+            favorites: { where: { userId: req.currentUser?.id } },
+            categories: { include: { category: true } },
           },
-        }),
+        },
+      },
+    }),
   ]);
-  // const totalCount =
-
-  // const result =
   if (!result) {
     return res.status(404).json({
       message: '投稿が見つかりませんでした',

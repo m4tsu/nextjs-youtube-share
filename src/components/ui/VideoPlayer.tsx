@@ -23,6 +23,7 @@ const VideoPlayerComponent: FC<{ embedUrl: string }> = ({ embedUrl }) => {
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         title="Embedded content"
+        zIndex="2"
       />
     </VideoPlayerWrapper>
   );

@@ -2,7 +2,8 @@ import { Avatar } from '@chakra-ui/avatar';
 import { BoxProps, Flex, Text } from '@chakra-ui/layout';
 import { Divider, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { FC, memo, useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
+import { z } from 'zod';
 
 import { NoResourceError } from '@/components/pages/error/NoResourceError';
 import { FollowButton } from '@/components/ui/FollowButton';
@@ -24,22 +25,25 @@ type ComponentProps = Pick<User, 'userName' | 'avatarUrl' | 'displayName'> & {
   onFollowButtonClick: () => void;
   panelProps?: BoxProps;
 };
-const Component: FC<ComponentProps> = memo(
-  ({
-    currentPathName,
-    isMe,
-    userName,
-    avatarUrl,
-    displayName,
-    isFollowing,
-    onFollowButtonClick,
-    panelProps,
-  }) => (
+const Component: FC<ComponentProps> = ({
+  currentPathName,
+  isMe,
+  userName,
+  avatarUrl,
+  displayName,
+  isFollowing,
+  onFollowButtonClick,
+  panelProps,
+}) => {
+  const bg = useColorModeValue('white', 'darkPrimary.600');
+
+  return (
     <Panel
       display="flex"
       flexDirection="column"
       variant="rounded"
       sx={{ gap: '1rem' }}
+      bg={bg}
       {...panelProps}
     >
       <Flex
@@ -81,17 +85,17 @@ const Component: FC<ComponentProps> = memo(
         currentPathName={currentPathName}
       />
     </Panel>
-  )
-);
+  );
+};
 
+const querySchema = z.object({ userName: z.string().optional() });
 export const UserSidePanel: FC<{ panelProps?: BoxProps }> = ({
   panelProps,
 }) => {
   const router = useRouter();
-  const bg = useColorModeValue('white', 'darkPrimary.600');
   const { me } = useAuth();
   const currentPathName = router.pathname;
-  const userName = router.query.userName as string;
+  const { userName } = querySchema.parse(router.query);
   const { data: user, error, mutate } = useUser(userName);
 
   const onFollowButtonClick = useCallback(async () => {
@@ -122,15 +126,15 @@ export const UserSidePanel: FC<{ panelProps?: BoxProps }> = ({
 
   if (error) return <NoResourceError resourceName="ユーザー" />;
   if (!user) return <Loading />;
-  const isMe = me ? me.userName === user.userName : false;
 
+  const isMe = me ? me.userName === user.userName : false;
   return (
     <Component
       {...user}
       isMe={isMe}
       currentPathName={currentPathName}
       onFollowButtonClick={onFollowButtonClick}
-      panelProps={{ bg, ...panelProps }}
+      panelProps={panelProps}
     />
   );
 };

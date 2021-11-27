@@ -1,7 +1,7 @@
 import { Fetcher } from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
-import { HttpError } from '@/utils/types/error';
+import { HttpError, NetworkError } from '@/utils/types/error';
 
 import { httpClient } from './httpClient';
 
@@ -27,7 +27,7 @@ const getKeyForInfiniteFetch = <
 
 export const useInfiniteFetch = <
   Data extends { id: string },
-  E extends unknown = HttpError
+  E extends unknown = HttpError | NetworkError
 >(
   limit: number,
   path: string,

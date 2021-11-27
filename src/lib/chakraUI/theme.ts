@@ -1,4 +1,5 @@
 import { createStandaloneToast, extendTheme } from '@chakra-ui/react';
+// import { createStandaloneToast, extendTheme, theme } from '@chakra-ui/react';
 import { createBreakpoints } from '@chakra-ui/theme-tools';
 import { mode } from '@chakra-ui/theme-tools';
 
@@ -114,6 +115,11 @@ export const theme = extendTheme(
         },
         colors,
         variants: {
+          pageTitle: (props) => ({
+            fontSize: '2xl',
+            fontWeight: 'bold',
+            color: mode('gray.800', 'white')(props),
+          }),
           primary: (props) => ({
             color: mode('gray.800', 'white')(props),
           }),
@@ -124,6 +130,18 @@ export const theme = extendTheme(
         defaultProps: {
           variant: 'primary',
         },
+      },
+      Select: {
+        parts: ['field'],
+        baseStyle: (props) => ({
+          field: {
+            bg: mode('white', 'darkPrimary.600')(props),
+            '> option, > optgroup': {
+              bg: mode('white', 'darkPrimary.600')(props),
+            },
+          },
+        }),
+        colors,
       },
       Menu: {
         parts: ['list'],

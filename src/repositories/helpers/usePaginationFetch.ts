@@ -1,6 +1,6 @@
 import useSWR, { Fetcher } from 'swr';
 
-import { HttpError } from '@/utils/types/error';
+import { HttpError, NetworkError } from '@/utils/types/error';
 
 import { httpClient } from './httpClient';
 
@@ -12,7 +12,10 @@ const getKeyForPaginationFetch = (
   return `${path}?pageIndex=${pageIndex}&perPage=${perPage}`;
 };
 
-export const usePaginationFetch = <Data, E extends unknown = HttpError>(
+export const usePaginationFetch = <
+  Data,
+  E extends unknown = HttpError | NetworkError
+>(
   path: string | null,
   pageIndex: number,
   perPage: number,

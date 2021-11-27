@@ -10,8 +10,15 @@ const querySchema = z.object({
 export default handler<User[]>().get(async (req, res) => {
   const { userName } = querySchema.parse(req.query);
 
-  const followings = await prisma.user.findMany({
+  const result = await prisma.user.findMany({
     where: { followers: { some: { follower: { userName } } } },
+    include: {
+      followers: { where: { OR: [{ followerId: req.currentUser?.id }] } },
+    },
   });
+  const followings: User[] = result.map((followee) => ({
+    ...followee,
+    isFollowing: followee.followers.length > 0,
+  }));
   return res.status(200).json(followings);
 });
