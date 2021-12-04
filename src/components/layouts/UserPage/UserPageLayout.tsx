@@ -30,7 +30,7 @@ export const UserPageLayout: FC = ({ children }) => {
             top={{ base: '0' }}
             zIndex="popover"
           >
-            <Box position="sticky" top={{ base: '0px', lg: '30px' }}>
+            <Box position="sticky" top={{ base: '60px', lg: '100px' }}>
               <UserSidePanel />
             </Box>
           </Box>

@@ -1,4 +1,4 @@
-import { Box, Flex, Img, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 import React, { FC } from 'react';
 
 import { AppBarMenu } from '@/components/domain/user/AppBarMenu';
@@ -18,13 +18,19 @@ type ComponentProps = {
 };
 const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
   const bgColor = useColorModeValue('white', 'darkPrimary.600');
+  const borderColor = useColorModeValue('gray.200', 'darkPrimary.400');
   console.log('rerender');
   return (
     <Panel
       as="nav"
+      position="sticky"
+      top="0"
+      zIndex="sticky"
       display="flex"
       height="60px"
       bg={bgColor}
+      borderBottomWidth="1px"
+      borderColor={borderColor}
       // color="gray.700"
       p={0}
     >
@@ -42,7 +48,10 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
               alignItems: 'center',
             }}
           >
-            <Img src="/logo-white.png" h="80%" />
+            {/* <Img src="/logo-white.png" h="80%" /> */}
+            <Text fontFamily="Ubuntu, sans-serif" fontSize="3xl">
+              Tubetter
+            </Text>
           </Link>
         </Box>
 

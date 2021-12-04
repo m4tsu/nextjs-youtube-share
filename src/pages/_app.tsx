@@ -50,6 +50,10 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
           <Head>
             <title>Tubetter</title>
             <link rel="icon" href="/favicon.ico" />
+            <link
+              href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap"
+              rel="stylesheet"
+            />
           </Head>
           {/* {router.isReady && (<></>)} */}
           {requireLogin ? (

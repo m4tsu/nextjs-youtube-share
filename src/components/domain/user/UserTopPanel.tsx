@@ -20,6 +20,7 @@ type ComponentProps = {
 };
 const Component: FC<ComponentProps> = ({ userName, currentPathName, isMe }) => {
   const bg = useColorModeValue('white', 'darkPrimary.600');
+  const borderColor = useColorModeValue('gray.200', 'darkPrimary.400');
   const hoverBg = useColorModeValue('gray.50', 'darkPrimary.500');
   return (
     <Menu strategy="fixed" autoSelect={false}>
@@ -27,12 +28,11 @@ const Component: FC<ComponentProps> = ({ userName, currentPathName, isMe }) => {
         as={Panel}
         display={{ base: 'block', lg: 'none' }}
         position="sticky"
-        top="0"
+        top="60px"
         zIndex="sticky"
         p={0}
-        borderTopWidth="1px"
         borderBottomWidth="1px"
-        borderColor="primaryDark.500"
+        borderColor={borderColor}
         borderRadius="none"
         cursor="pointer"
         bg={bg}
