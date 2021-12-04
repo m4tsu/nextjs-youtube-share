@@ -48,7 +48,7 @@ export const AuthProvider: FC = ({ children }) => {
   const [session, setSession] = useState<Session | null>(initialSession);
   const [me, setMe] = useState<User | null>(null);
   const [isLoadingMe, setIsLoadingMe] = useState(false);
-  // const { data: me, error } = useMe(session);
+
   const error = null;
   const isLoading = (!error && !!session) || isLoadingMe;
 

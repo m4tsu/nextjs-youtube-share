@@ -1,4 +1,5 @@
 import { Box } from '@chakra-ui/layout';
+import { useBreakpointValue } from '@chakra-ui/media-query';
 import React, { FC } from 'react';
 
 import { UserSidePanel } from '@/components/domain/user/UserSidePanel';
@@ -6,9 +7,12 @@ import { UserTopPanel } from '@/components/domain/user/UserTopPanel';
 import { Container } from '@/components/ui/Container';
 
 export const UserPageLayout: FC = ({ children }) => {
+  const shouldTopPanelShown = useBreakpointValue({ base: true, lg: false });
+  const shouldSidePanelShown = useBreakpointValue({ base: false, lg: true });
   return (
     <>
-      <UserTopPanel />
+      {shouldTopPanelShown && <UserTopPanel />}
+
       <Container
         position="relative"
         display="flex"
@@ -17,19 +21,21 @@ export const UserPageLayout: FC = ({ children }) => {
         px={6}
         sx={{ gap: '20px' }}
       >
-        <Box
-          as="aside"
-          width="250px"
-          display={{ base: 'none', lg: 'block' }}
-          maxHeight="100vh"
-          position={{ base: 'sticky' }}
-          top={{ base: '0' }}
-          zIndex="popover"
-        >
-          <Box position="sticky" top={{ base: '0px', lg: '30px' }}>
-            <UserSidePanel />
+        {shouldSidePanelShown && (
+          <Box
+            as="aside"
+            width="250px"
+            maxHeight="100vh"
+            position={{ base: 'sticky' }}
+            top={{ base: '0' }}
+            zIndex="popover"
+          >
+            <Box position="sticky" top={{ base: '0px', lg: '30px' }}>
+              <UserSidePanel />
+            </Box>
           </Box>
-        </Box>
+        )}
+
         <Box as="main" flex="1">
           {children}
         </Box>

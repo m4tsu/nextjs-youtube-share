@@ -11,20 +11,23 @@ import { postsRepository } from '@/repositories/posts';
 import { useAuth } from '@/services/auth/AuthProvider';
 import { Post } from '@/types/domains/post';
 import { User } from '@/types/domains/user';
-import { getEmbedUrl } from '@/utils/domains/post/video';
+import { getEmbedUrl, getThumbnail } from '@/utils/domains/post/video';
 import { Link } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 import { HttpError } from '@/utils/types/error';
 
 import { FavoriteButton } from './FavoriteButton';
+import { Thumbnail } from './Thumbnail';
 
 type ComponentProps = {
+  embeded?: boolean;
   post: Post;
   user: User;
   onFavorite: (postId: Post['id']) => Promise<void>;
   onUnFavorite: (postId: Post['id']) => Promise<void>;
 };
 const Component = ({
+  embeded = false,
   post,
   user,
   onFavorite,
@@ -38,8 +41,11 @@ const Component = ({
     flexDirection="column"
     sx={{ gap: '.5rem' }}
   >
-    <VideoPlayer embedUrl={getEmbedUrl(post.type, post.videoId)} />
-
+    {embeded ? (
+      <VideoPlayer embedUrl={getEmbedUrl(post.type, post.videoId)} />
+    ) : (
+      <Thumbnail src={getThumbnail(post)} />
+    )}
     <Flex
       direction="column"
       overflow="hidden"
@@ -118,11 +124,8 @@ const Component = ({
   </Card>
 );
 
-type Props = {
-  post: Post;
-  user: User;
-};
-export const EmbededUserPostCard: FC<Props> = ({ post, user }) => {
+type Props = Pick<ComponentProps, 'embeded' | 'user' | 'post'>;
+export const UserPostCard: FC<Props> = ({ embeded, post, user }) => {
   const router = useRouter();
   const { me } = useAuth();
 
@@ -174,6 +177,7 @@ export const EmbededUserPostCard: FC<Props> = ({ post, user }) => {
 
   return (
     <Component
+      embeded={embeded}
       user={user}
       post={post}
       onFavorite={onFavorite}

@@ -82,11 +82,13 @@ export const breakpoints = createBreakpoints({
   md: '770px',
   lg: '960px',
   xl: '1200px',
+  '2xl': '1400px',
 });
 
 const config = {
   initialColorMode: 'light',
   useSystemColorMode: false,
+  cssVarPrefix: 'tbt',
 } as const;
 
 export const theme = extendTheme(
@@ -96,10 +98,16 @@ export const theme = extendTheme(
     config,
     styles: {
       global: (props) => ({
+        html: {
+          overflowY: 'scroll',
+        },
         body: {
           bg: mode('bgWhite', 'darkPrimary.700')(props),
           color: mode('gray.800', 'bgWhite')(props),
           minHeight: '100vh',
+        },
+        main: {
+          pb: '40px',
         },
         '#chakra-toast-manager-top-right': {
           // TODO: 正式な指定方法わからない

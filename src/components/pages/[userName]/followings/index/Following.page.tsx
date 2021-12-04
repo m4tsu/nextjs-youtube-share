@@ -1,4 +1,5 @@
-import { Flex, Text, VStack } from '@chakra-ui/layout';
+import { Flex, Text } from '@chakra-ui/layout';
+import { Grid } from '@chakra-ui/react';
 import React, { FC } from 'react';
 
 import { UserCardWithFollowButton } from '@/components/domain/user/UserCardWithFollowButton';
@@ -17,11 +18,14 @@ export const FollowingPage: FC<Props> = ({ userName }) => {
   return (
     <Flex flexDirection="column" sx={{ gap: '1rem' }}>
       <Text variant="pageTitle">フォロー中</Text>
-      <VStack gap={4}>
+      <Grid
+        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+        gap={4}
+      >
         {followings.map((following) => (
           <UserCardWithFollowButton key={following.userName} user={following} />
         ))}
-      </VStack>
+      </Grid>
     </Flex>
   );
 };

@@ -3,7 +3,7 @@ import { Flex, Grid, Icon, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC, useCallback } from 'react';
 
-import { EmbededPostCard } from '@/components/domain/post/EmbededPostCard';
+import { PostCard } from '@/components/domain/post/PostCard';
 import { NoResourceError } from '@/components/pages/error/NoResourceError';
 import { Loading } from '@/components/ui/Loading';
 import { Paginator } from '@/components/ui/Paginator';
@@ -130,7 +130,7 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
       >
         {userPosts.posts.map((post) => (
           // <PostCard key={post.id} post={post} user={data} />
-          <EmbededPostCard key={post.id} post={post} user={userPosts} />
+          <PostCard embeded key={post.id} post={post} user={userPosts} />
         ))}
       </Grid>
       {totalPage && (

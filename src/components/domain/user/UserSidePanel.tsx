@@ -14,6 +14,7 @@ import { usersRepository, useUser } from '@/repositories/users';
 import { useAuth } from '@/services/auth/AuthProvider';
 import { User } from '@/types/domains/user';
 import { getPath } from '@/utils/route/Link';
+import { Paths } from '@/utils/route/paths';
 import { HttpError } from '@/utils/types/error';
 
 import { UserSidePanelTabs } from './UserSidePanelTabs';
@@ -95,8 +96,13 @@ export const UserSidePanel: FC<{ panelProps?: BoxProps }> = ({
   const router = useRouter();
   const { me } = useAuth();
   const currentPathName = router.pathname;
+  const isMyHomePage = currentPathName === Paths.home;
   const { userName } = querySchema.parse(router.query);
-  const { data: user, error, mutate } = useUser(userName);
+  const {
+    data: user,
+    error,
+    mutate,
+  } = useUser(isMyHomePage ? me?.userName : userName);
 
   const onFollowButtonClick = useCallback(async () => {
     if (!user) return;

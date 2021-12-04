@@ -18,7 +18,7 @@ type ComponentProps = {
 };
 const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
   const bgColor = useColorModeValue('white', 'darkPrimary.600');
-
+  console.log('rerender');
   return (
     <Panel
       as="nav"
@@ -58,11 +58,6 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
               )}
 
               {me ? (
-                // <Link path={Paths.posts} params={{ userName: me.userName }}>
-                //   <HeaderButton isLink>
-                //     <Avatar src={me.avatarUrl} boxSize="44px" />
-                //   </HeaderButton>
-                // </Link>
                 <AppBarMenu me={me} />
               ) : (
                 <Link path={Paths.login}>

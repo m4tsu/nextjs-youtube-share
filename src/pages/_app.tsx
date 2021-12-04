@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
                 toast({
                   title: error.message,
                   description: error.details.map((detail, i) => (
-                    <p key={i}>detail</p>
+                    <p key={i}>{detail}</p>
                   )),
                   status: 'error',
                   position: 'top-right',

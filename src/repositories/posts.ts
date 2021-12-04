@@ -6,6 +6,7 @@ import {
   NicovideoInfo,
   Post,
   PostFavorites,
+  PostWithUser,
 } from '@/types/domains/post';
 import { UserPosts } from '@/types/domains/user';
 import { ApiPaths, getApiPath, getFetchKey } from '@/utils/route/apiPaths';
@@ -162,4 +163,8 @@ export const useUserFavoritePosts = (
 
 export const useAllPosts = (limit: number) => {
   return useInfiniteFetch<Post>(limit, ApiPaths.posts);
+};
+
+export const useTimeline = (limit: number) => {
+  return useInfiniteFetch<PostWithUser>(limit, ApiPaths.timeline);
 };

@@ -32,6 +32,7 @@ class HttpClient {
       }
       return res.json() as Promise<ResponsData>;
     } catch (e) {
+      if (e instanceof HttpError) throw e;
       throw new NetworkError();
     }
   }
@@ -58,6 +59,7 @@ class HttpClient {
       }
       return res.json() as Promise<ResponsData>;
     } catch (e) {
+      if (e instanceof HttpError) throw e;
       throw new NetworkError();
     }
   }
@@ -80,6 +82,7 @@ class HttpClient {
       }
       return res.json() as Promise<ResponsData>;
     } catch (e) {
+      if (e instanceof HttpError) throw e;
       throw new NetworkError();
     }
   }
@@ -105,6 +108,7 @@ class HttpClient {
       }
       return res.json() as Promise<ResponsData>;
     } catch (e) {
+      if (e instanceof HttpError) throw e;
       throw new NetworkError();
     }
   }

@@ -8,6 +8,7 @@ export const ApiPaths = {
   me: '/api/auth/me',
   posts: '/api/posts',
   user: '/api/users/[userName]',
+  timeline: '/api/users/[userName]/timeline',
   followers: '/api/users/[userName]/followers',
   followings: '/api/users/[userName]/followings',
   userCategories: '/api/users/[userName]/categories',

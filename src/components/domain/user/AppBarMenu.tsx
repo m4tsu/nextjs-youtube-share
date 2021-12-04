@@ -5,7 +5,7 @@ import { Divider, Flex } from '@chakra-ui/layout';
 import { Menu, MenuButton, MenuList } from '@chakra-ui/menu';
 import { Portal } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { FiLogOut } from 'react-icons/fi';
 
 import { TabButton } from '@/components/ui/TabButton';
@@ -19,7 +19,7 @@ import { UserSidePanelTabs } from './UserSidePanelTabs';
 type Props = {
   me: User;
 };
-export const AppBarMenu: FC<Props> = ({ me }) => {
+const Component: FC<Props> = ({ me }) => {
   const { signOut } = useAuthDispatch();
   const router = useRouter();
   const currentPathName = router.pathname;
@@ -67,3 +67,5 @@ export const AppBarMenu: FC<Props> = ({ me }) => {
     </Menu>
   );
 };
+
+export const AppBarMenu = memo(Component);

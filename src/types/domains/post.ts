@@ -19,6 +19,10 @@ export type PostFavorites = Post & {
   favoriteUsers: User[];
 };
 
+export type PostWithUser = Post & {
+  user: User;
+};
+
 export type NicovideoInfo = {
   thumbnailUrl: string;
   title: string;

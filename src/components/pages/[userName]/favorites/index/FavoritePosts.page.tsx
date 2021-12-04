@@ -2,7 +2,7 @@ import { Flex, Grid, Text } from '@chakra-ui/layout';
 import { useRouter } from 'next/router';
 import React, { FC, useCallback } from 'react';
 
-import { EmbededUserPostCard } from '@/components/domain/post/EmbededUserPostCard';
+import { UserPostCard } from '@/components/domain/post/UserPostCard';
 import { Error } from '@/components/pages/error/Error';
 import { Loading } from '@/components/ui/Loading';
 import { Paginator } from '@/components/ui/Paginator';
@@ -10,7 +10,7 @@ import { useUserFavoritePosts } from '@/repositories/posts';
 import { getPath } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 
-const PER_PAGE = 2;
+const PER_PAGE = 4;
 type Props = {
   userName?: string;
   categoryName?: string;
@@ -62,8 +62,7 @@ export const FavoritePostsPage: FC<Props> = ({
         gap={4}
       >
         {data.posts.map((post) => (
-          // <PostCardWithUser key={post.id} post={post} user={post.user} />
-          <EmbededUserPostCard key={post.id} post={post} user={post.user} />
+          <UserPostCard embeded key={post.id} post={post} user={post.user} />
         ))}
       </Grid>
       {totalPage && (

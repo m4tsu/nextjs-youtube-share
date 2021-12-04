@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { Container } from '@/components/ui/Container';
 import { Panel } from '@/components/ui/Panel';
 import { useAuth } from '@/services/auth/AuthProvider';
+import { Paths } from '@/utils/route/paths';
 
 import { UserSidePanel } from './UserSidePanel';
 import { UserSidePanelTabs } from './UserSidePanelTabs';
@@ -66,14 +67,16 @@ const Component: FC<ComponentProps> = ({ userName, currentPathName, isMe }) => {
 
 const querySchema = z.object({ userName: z.string().optional() });
 export const UserTopPanel: FC = () => {
+  console.log('render!!');
   const router = useRouter();
   const { userName } = querySchema.parse(router.query);
   const currentPathName = router.pathname;
   const { me } = useAuth();
+  const isMyHomePage = currentPathName === Paths.home;
   const isMe = me ? me.userName === userName : false;
   return (
     <Component
-      userName={userName}
+      userName={isMyHomePage ? me?.userName : userName}
       currentPathName={currentPathName}
       isMe={isMe}
     />
