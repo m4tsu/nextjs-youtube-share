@@ -50,7 +50,8 @@ export const AuthProvider: FC = ({ children }) => {
   const [isLoadingMe, setIsLoadingMe] = useState(false);
 
   const error = null;
-  const isLoading = (!error && !!session) || isLoadingMe;
+  // const isLoading = (!error && !!session) || isLoadingMe;
+  const isLoading = isLoadingMe || (!me && !!session);
 
   const authenticated = useRef(false);
   console.log('AuthProvider', session, me, isLoading, error);
@@ -119,7 +120,7 @@ export const AuthProvider: FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoading: isLoadingMe, me: me ?? null }}>
+    <AuthContext.Provider value={{ isLoading: isLoading, me: me ?? null }}>
       <AuthDispatchContext.Provider
         value={{ createUserWithUserName, signIn: signinWithTwitter, signOut }}
       >

@@ -3,12 +3,16 @@ import { FC } from 'react';
 
 type Props = {
   resourceName?: string;
+  saffix?: 'ありません。' | 'いません。';
 };
 
-export const NoResourceError: FC<Props> = ({ resourceName = 'リソース' }) => {
+export const NoResource: FC<Props> = ({
+  resourceName = 'リソース',
+  saffix = 'ありません。',
+}) => {
   return (
     <Box py="8" textAlign="center" fontSize="lg" fontWeight="bold">
-      {resourceName}が見つかりませんでした.
+      {resourceName}が{saffix}
     </Box>
   );
 };

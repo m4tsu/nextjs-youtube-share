@@ -1,5 +1,5 @@
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { AppBarMenu } from '@/components/domain/user/AppBarMenu';
 import { Container } from '@/components/ui/Container';
@@ -19,7 +19,12 @@ type ComponentProps = {
 const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
   const bgColor = useColorModeValue('white', 'darkPrimary.600');
   const borderColor = useColorModeValue('gray.200', 'darkPrimary.400');
-  console.log('rerender');
+
+  const [mounted, setMounted] = useState(false); //https://github.com/vercel/next.js/discussions/17443
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <Panel
       as="nav"
@@ -31,7 +36,6 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
       bg={bgColor}
       borderBottomWidth="1px"
       borderColor={borderColor}
-      // color="gray.700"
       p={0}
     >
       <Container
@@ -48,34 +52,35 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
               alignItems: 'center',
             }}
           >
-            {/* <Img src="/logo-white.png" h="80%" /> */}
-            <Text fontFamily="Ubuntu, sans-serif" fontSize="3xl">
+            <Text fontFamily="Ubuntu, sans-serif" fontSize="2xl">
               Tubetter
             </Text>
           </Link>
         </Box>
 
-        <Flex h="full">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <>
-              {me && (
-                <Link path={Paths.newPost} params={{ userName: me.userName }}>
-                  <HeaderButton>投稿する</HeaderButton>
-                </Link>
-              )}
+        {mounted && (
+          <Flex h="full">
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <>
+                {me && (
+                  <Link path={Paths.newPost} params={{ userName: me.userName }}>
+                    <HeaderButton>投稿する</HeaderButton>
+                  </Link>
+                )}
 
-              {me ? (
-                <AppBarMenu me={me} />
-              ) : (
-                <Link path={Paths.login}>
-                  <HeaderButton>ログイン</HeaderButton>
-                </Link>
-              )}
-            </>
-          )}
-        </Flex>
+                {me ? (
+                  <AppBarMenu me={me} />
+                ) : (
+                  <Link path={Paths.login}>
+                    <HeaderButton>ログイン</HeaderButton>
+                  </Link>
+                )}
+              </>
+            )}
+          </Flex>
+        )}
       </Container>
     </Panel>
   );

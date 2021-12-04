@@ -73,6 +73,7 @@ class HttpClient {
       const res = await fetch(url, {
         method: 'PUT',
         body: JSON.stringify(params),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
         ...config,
       });
       if (!res.ok) {
@@ -86,6 +87,31 @@ class HttpClient {
       throw new NetworkError();
     }
   }
+
+  async patch<ResponsData, RequestParams extends Record<string, unknown>>({
+    url,
+    params,
+    config,
+  }: FetchParams<RequestParams>) {
+    try {
+      const res = await fetch(url, {
+        method: 'PATCH',
+        body: JSON.stringify(params),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        ...config,
+      });
+      if (!res.ok) {
+        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
+        console.log('http put error', error);
+        throw error;
+      }
+      return res.json() as Promise<ResponsData>;
+    } catch (e) {
+      if (e instanceof HttpError) throw e;
+      throw new NetworkError();
+    }
+  }
+
   async delete<ResponsData, RequestParams = any>({
     url,
     params,
@@ -98,6 +124,7 @@ class HttpClient {
         headers: new Headers({ 'Content-Type': 'application/json' }),
         ...config,
       });
+      console.log(res);
       if (res.redirected) {
         router.push(res.url);
       }

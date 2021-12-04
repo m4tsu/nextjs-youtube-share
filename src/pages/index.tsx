@@ -15,7 +15,6 @@ export const Page: NextAppPage = () => {
 
   const refreshSession = async () => {
     const res = await supabaseClient.auth.refreshSession();
-    console.log('reflesh', res);
   };
 
   return (

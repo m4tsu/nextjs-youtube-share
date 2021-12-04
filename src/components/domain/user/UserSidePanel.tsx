@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import React, { FC, useCallback } from 'react';
 import { z } from 'zod';
 
-import { NoResourceError } from '@/components/pages/error/NoResourceError';
+import { Error } from '@/components/pages/error/Error';
 import { FollowButton } from '@/components/ui/FollowButton';
 import { Loading } from '@/components/ui/Loading';
 import { Panel } from '@/components/ui/Panel';
@@ -130,7 +130,7 @@ export const UserSidePanel: FC<{ panelProps?: BoxProps }> = ({
     }
   }, [user, mutate, router, me]);
 
-  if (error) return <NoResourceError resourceName="ユーザー" />;
+  if (error) return <Error error={error.serialize()} />;
   if (!user) return <Loading />;
 
   const isMe = me ? me.userName === user.userName : false;

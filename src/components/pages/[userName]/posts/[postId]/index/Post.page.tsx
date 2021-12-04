@@ -1,10 +1,30 @@
+import { useDisclosure } from '@chakra-ui/hooks';
+import Icon from '@chakra-ui/icon';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Box, Divider, Flex, Text } from '@chakra-ui/layout';
+import {
+  Menu,
+  MenuButton,
+  MenuItem as CMenuItem,
+  MenuItemProps,
+  MenuList,
+} from '@chakra-ui/menu';
+import {
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from '@chakra-ui/modal';
 import { useRouter } from 'next/router';
 import React, { FC, memo, useCallback } from 'react';
+import { MdMoreVert } from 'react-icons/md';
 
 import { CategoryLinkButton } from '@/components/domain/category/CategoryLinkButtion';
 import { FavoriteButton } from '@/components/domain/post/FavoriteButton';
-import { NoResourceError } from '@/components/pages/error/NoResourceError';
+import { Error } from '@/components/pages/error/Error';
+import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { Panel } from '@/components/ui/Panel';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
@@ -16,6 +36,13 @@ import { getEmbedUrl } from '@/utils/domains/post/video';
 import { Paths } from '@/utils/route/paths';
 import { HttpError } from '@/utils/types/error';
 
+import { DeletePostModal } from './DeletePostModal';
+import { EditPost } from './EditPost';
+
+const MenuItem: FC<MenuItemProps> = (props) => (
+  <CMenuItem display="flex" sx={{ gap: '0.5rem' }} {...props} />
+);
+
 type Props = {
   userName?: string;
   postId?: string;
@@ -23,9 +50,24 @@ type Props = {
 
 const PostPageComponent: FC<Props> = ({ userName, postId }) => {
   const router = useRouter();
+  const {
+    isOpen: isOpenEdit,
+    onOpen: onOpenEdit,
+    onClose: onCloseEdit,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
 
   const { data, error } = usePost(userName, postId);
   const { me } = useAuth();
+  const isMine = me ? me.userName === userName : false;
+
+  // const handleUpdated = () => {
+  //   onCloseEdit()
+  // }
 
   const onUnFavorite = useCallback(
     async (postId: string) => {
@@ -73,55 +115,103 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
     [router, me]
   );
 
-  if (error) return <NoResourceError resourceName="投稿" />;
+  if (error) return <Error error={error.serialize()} />;
   if (!userName || !data) return <Loading />;
 
   const { type, videoId, title, body, updatedAt, categories } = data;
   const embedUrl = getEmbedUrl(type, videoId);
   return (
-    <Panel display="flex" flexDirection="column" gridGap="2">
-      <VideoPlayer embedUrl={embedUrl} />
-      <Text as="h1" fontWeight="bold" fontSize="3xl">
-        {title}
-      </Text>
-      <Flex alignItems="center" gridGap="2" fontSize="md">
-        <Text as="time" variant="secondary" flexShrink={0}>
-          {toDate(updatedAt)}
+    <>
+      <Panel display="flex" flexDirection="column" gridGap="2">
+        <VideoPlayer embedUrl={embedUrl} />
+        <Text as="h1" fontWeight="bold" fontSize="3xl">
+          {title}
         </Text>
-        <Flex flex="1 1 auto" flexWrap="wrap" sx={{ gap: '.5rem' }}>
-          {categories &&
-            categories.map((category) => (
-              <CategoryLinkButton
-                key={category.id}
+        <Flex alignItems="center" gridGap="2" fontSize="md">
+          <Text as="time" variant="secondary" flexShrink={0}>
+            {toDate(updatedAt)}
+          </Text>
+          <Flex flex="1 1 auto" flexWrap="wrap" sx={{ gap: '.5rem' }}>
+            {categories &&
+              categories.map((category) => (
+                <CategoryLinkButton
+                  key={category.id}
+                  userName={userName}
+                  categoryName={category.name}
+                >
+                  {category.name}
+                </CategoryLinkButton>
+              ))}
+          </Flex>
+          <Flex flexShrink={0} alignItems="center">
+            {userName && (
+              <FavoriteButton
+                postId={data.id}
                 userName={userName}
-                categoryName={category.name}
-              >
-                {category.name}
-              </CategoryLinkButton>
-            ))}
+                favorited={data.favorited || false}
+                favoritesCount={data.favoritesCount || 0}
+                w={8}
+                h={8}
+                onFavorite={onFavorite}
+                onUnFavorite={onUnFavorite}
+              />
+            )}
+            {isMine && (
+              <Flex>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    borderRadius="full"
+                    p={0}
+                    variant="outline"
+                    borderWidth="0"
+                    fontSize="2xl"
+                  >
+                    <Icon as={MdMoreVert} boxSize="32px" />
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={onOpenEdit}>
+                      <EditIcon />
+                      編集
+                    </MenuItem>
+                    <MenuItem onClick={onOpenDelete}>
+                      <DeleteIcon />
+                      削除
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </Flex>
+            )}
+          </Flex>
         </Flex>
-        <Flex flexShrink={0} alignItems="center">
-          {userName && (
-            <FavoriteButton
-              postId={data.id}
-              userName={userName}
-              favorited={data.favorited || false}
-              favoritesCount={data.favoritesCount || 0}
-              w={8}
-              h={8}
-              onFavorite={onFavorite}
-              onUnFavorite={onUnFavorite}
-            />
-          )}
-        </Flex>
-      </Flex>
-      <Divider />
-      <Box mt={2}>
-        <Text whiteSpace="pre-wrap" fontSize="lg">
-          {body}
-        </Text>
-      </Box>
-    </Panel>
+        <Divider borderColor="gray.400" />
+        <Box mt={2}>
+          <Text whiteSpace="pre-wrap" fontSize="lg">
+            {body}
+          </Text>
+        </Box>
+      </Panel>
+      {me && (
+        <Modal isOpen={isOpenEdit} onClose={onCloseEdit} size="4xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>投稿を編集する</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <EditPost post={data} me={me} onUpdated={onCloseEdit} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
+      {me && (
+        <DeletePostModal
+          isOpen={isOpenDelete}
+          onClose={onCloseDelete}
+          myUserName={me.userName}
+          postId={data.id}
+        />
+      )}
+    </>
   );
 };
 

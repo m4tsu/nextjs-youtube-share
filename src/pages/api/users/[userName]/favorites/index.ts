@@ -26,7 +26,6 @@ export type UserFavoritePosts = {
     favoritesCount: number;
     user: User;
     favorited?: boolean;
-    // categories: Category[];
   })[];
   postsCount: number;
 };
@@ -48,7 +47,6 @@ export default handler<UserFavoritePosts>().get(async (req, res) => {
         user: true,
         favorites: { where: { userId: req.currentUser?.id } },
         _count: { select: { favorites: true } },
-        // categories: { include: { category: true } },
       },
       take: perPage,
       skip,
@@ -68,7 +66,6 @@ export default handler<UserFavoritePosts>().get(async (req, res) => {
         favoritesCount: post._count?.favorites || 0,
         user: post.user,
         favorited: post.favorites.length > 0,
-        // categories: post.categories.map((c) => c.category),
       };
     }),
     postsCount: totalCount,

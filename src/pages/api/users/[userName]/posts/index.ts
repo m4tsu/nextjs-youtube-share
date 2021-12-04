@@ -31,7 +31,9 @@ export default handler<UserPosts>().get(async (req, res) => {
       where: {
         AND: [
           {
-            categories: { some: { category: { name: categoryName } } },
+            categories: categoryName
+              ? { some: { category: { name: categoryName } } }
+              : undefined,
           },
           {
             user: { userName },
@@ -48,7 +50,9 @@ export default handler<UserPosts>().get(async (req, res) => {
           where: {
             AND: [
               {
-                categories: { some: { category: { name: categoryName } } },
+                categories: categoryName
+                  ? { some: { category: { name: categoryName } } }
+                  : undefined,
               },
             ],
           },

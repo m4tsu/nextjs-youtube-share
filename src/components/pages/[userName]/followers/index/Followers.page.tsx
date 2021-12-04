@@ -3,6 +3,7 @@ import { Grid } from '@chakra-ui/react';
 import React, { FC } from 'react';
 
 import { UserCardWithFollowButton } from '@/components/domain/user/UserCardWithFollowButton';
+import { NoResource } from '@/components/layouts/NoResource';
 import { Error } from '@/components/pages/error/Error';
 import { Loading } from '@/components/ui/Loading';
 import { useFollowers } from '@/repositories/users';
@@ -18,14 +19,18 @@ export const FollowersPage: FC<Props> = ({ userName }) => {
   return (
     <Flex flexDirection="column" sx={{ gap: '1rem' }}>
       <Text variant="pageTitle">フォロワー</Text>
-      <Grid
-        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
-        gap={4}
-      >
-        {followers.map((follower) => (
-          <UserCardWithFollowButton key={follower.userName} user={follower} />
-        ))}
-      </Grid>
+      {followers.length === 0 ? (
+        <NoResource resourceName="フォロワー" saffix="いません。" />
+      ) : (
+        <Grid
+          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+          gap={4}
+        >
+          {followers.map((follower) => (
+            <UserCardWithFollowButton key={follower.userName} user={follower} />
+          ))}
+        </Grid>
+      )}
     </Flex>
   );
 };

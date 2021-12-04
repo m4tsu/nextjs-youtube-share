@@ -67,7 +67,6 @@ const Component: FC<ComponentProps> = ({ userName, currentPathName, isMe }) => {
 
 const querySchema = z.object({ userName: z.string().optional() });
 export const UserTopPanel: FC = () => {
-  console.log('render!!');
   const router = useRouter();
   const { userName } = querySchema.parse(router.query);
   const currentPathName = router.pathname;

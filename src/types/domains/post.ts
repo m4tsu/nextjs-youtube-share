@@ -64,7 +64,7 @@ export const postSchemaOnCreate = postSchema
     categories: z.array(categorySchemaOnPostForm),
   });
 
-export const postFormSchema = postSchemaOnCreate
+export const postFormSchemaOnCreate = postSchemaOnCreate
   .pick({ type: true, title: true, body: true, thumbnailUrl: true })
   .extend({
     videoUrl: z.string().min(1, 'URLを入力してください.'),
@@ -80,6 +80,25 @@ export const postFormSchema = postSchemaOnCreate
     },
     { message: 'URLの形式が間違っています.', path: ['videoUrl'] }
   );
-
 export type NewPostParams = z.infer<typeof postSchemaOnCreate>;
-export type PostFormParams = z.infer<typeof postFormSchema>;
+export type PostFormParamsOnCreate = z.infer<typeof postFormSchemaOnCreate>;
+
+export const postSchemaOnUpdate = postSchema
+  .pick({
+    title: true,
+    body: true,
+  })
+  .extend({
+    categories: z.array(categorySchemaOnPostForm),
+  });
+export const postFormSchemaOnUpdate = postSchemaOnUpdate
+  .pick({ title: true, body: true })
+  .extend({
+    categories: z
+      .array(categorySchemaOnPostForm)
+      // .array()
+      .max(5, 'カテゴリーは5つまでしか設定できません.'),
+  });
+
+export type UpdatePostParams = z.infer<typeof postSchemaOnUpdate>;
+export type PostFormParamsOnUpdate = z.infer<typeof postFormSchemaOnUpdate>;

@@ -28,9 +28,9 @@ export const UserPageLayout: FC = ({ children }) => {
             maxHeight="100vh"
             position={{ base: 'sticky' }}
             top={{ base: '0' }}
-            zIndex="popover"
+            zIndex="sticky"
           >
-            <Box position="sticky" top={{ base: '60px', lg: '100px' }}>
+            <Box position="sticky" top={{ lg: '100px' }}>
               <UserSidePanel />
             </Box>
           </Box>

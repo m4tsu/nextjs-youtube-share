@@ -24,8 +24,8 @@ import { useCategories } from '@/repositories/category';
 import { createPost, useNicovideoInfo } from '@/repositories/posts';
 import {
   NewPostParams,
-  PostFormParams,
-  postFormSchema,
+  PostFormParamsOnCreate,
+  postFormSchemaOnCreate,
 } from '@/types/domains/post';
 import { getEmbedUrl, validateUrl } from '@/utils/domains/post/video';
 import { getPath } from '@/utils/route/Link';
@@ -53,10 +53,10 @@ export const NewPage: FC<Props> = ({ userName }) => {
     trigger,
     getValues,
     setValue,
-  } = useForm<PostFormParams>({
+  } = useForm<PostFormParamsOnCreate>({
     mode: 'all',
     defaultValues: { type: 'youtube', videoUrl: '', categories: [] },
-    resolver: zodResolver(postFormSchema),
+    resolver: zodResolver(postFormSchemaOnCreate),
   });
   const { data, error } = useCategories(userName);
   const categoryOptions = data
@@ -116,7 +116,6 @@ export const NewPage: FC<Props> = ({ userName }) => {
           })
         );
       } catch (e) {
-        console.log('catch error', e);
         toast({
           title: '投稿が失敗しました',
           status: 'error',

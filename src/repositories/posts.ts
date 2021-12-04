@@ -7,6 +7,7 @@ import {
   Post,
   PostFavorites,
   PostWithUser,
+  UpdatePostParams,
 } from '@/types/domains/post';
 import { UserPosts } from '@/types/domains/user';
 import { ApiPaths, getApiPath, getFetchKey } from '@/utils/route/apiPaths';
@@ -50,6 +51,41 @@ class PostsRepository {
       false
     );
     return newPost;
+  };
+
+  updatePost = async (
+    postId: string,
+    params: UpdatePostParams,
+    userName: string
+  ) => {
+    const updatedPost = await httpClient.patch<Post, UpdatePostParams>({
+      url: getApiPath({
+        path: ApiPaths.userPost,
+        params: { userName, postId },
+      }),
+      params,
+    });
+    mutate<Post>(
+      getFetchKey({
+        path: '/api/users/[userName]/posts/[postId]',
+        params: { userName, postId: updatedPost.id },
+      }),
+      (data) => {
+        const { title, body, categories } = updatedPost;
+        return data ? { ...data, title, body, categories } : updatedPost;
+      },
+      false
+    );
+    return updatedPost;
+  };
+
+  deletePost = async (postId: string, userName: string) => {
+    await httpClient.delete({
+      url: getApiPath({
+        path: '/api/users/[userName]/posts/[postId]',
+        params: { postId, userName },
+      }),
+    });
   };
 
   favorite = async (postId: string) => {

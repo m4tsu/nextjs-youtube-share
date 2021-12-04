@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import React, { FC, useCallback } from 'react';
 
 import { PostCard } from '@/components/domain/post/PostCard';
-import { NoResourceError } from '@/components/pages/error/NoResourceError';
 import { Loading } from '@/components/ui/Loading';
 import { Paginator } from '@/components/ui/Paginator';
 import { Select } from '@/components/ui/Select';
@@ -13,6 +12,7 @@ import { useUserPosts } from '@/repositories/posts';
 import { getPath } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 
+import { NoResource } from '../../../layouts/NoResource';
 import { Error } from '../../error/Error';
 
 const USER_POSTS_PER_PAGE = 4;
@@ -75,7 +75,7 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
   );
 
   if (userPostsError) {
-    return <NoResourceError resourceName="投稿" />;
+    return <Error error={userPostsError.serialize()} />;
   }
   if (categoriesError) {
     return <Error error={categoriesError.serialize()} />;
@@ -124,15 +124,20 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
         />
       </Flex>
 
-      <Grid
-        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
-        gap={4}
-      >
-        {userPosts.posts.map((post) => (
-          // <PostCard key={post.id} post={post} user={data} />
-          <PostCard embeded key={post.id} post={post} user={userPosts} />
-        ))}
-      </Grid>
+      {userPosts.posts.length == 0 ? (
+        <NoResource resourceName="投稿" />
+      ) : (
+        <Grid
+          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+          gap={4}
+        >
+          {userPosts.posts.map((post) => (
+            // <PostCard key={post.id} post={post} user={data} />
+            <PostCard embeded key={post.id} post={post} user={userPosts} />
+          ))}
+        </Grid>
+      )}
+
       {totalPage && (
         <Paginator
           currentPage={page}

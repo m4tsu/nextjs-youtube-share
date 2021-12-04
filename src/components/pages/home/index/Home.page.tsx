@@ -15,19 +15,17 @@ const UserPostCard = memo(
 );
 
 const MAX_POSTS_COUNTS = 100;
-const LIMIT = 8;
+const LIMIT = 2;
 const LOADER_HEIGHT = '40px';
 export const HomePage: FC = () => {
   const { data, error, isValidating, loadMore, isLast } = useTimeline(LIMIT);
   const fetchLimited = data ? data.length >= MAX_POSTS_COUNTS / LIMIT : false;
-  console.log(data, isLast, error, isValidating);
 
   const handleScroll = useCallback(() => {
     if (isLast || isValidating || fetchLimited) return;
     const threshold = 40;
     const doc = document.documentElement;
     const { scrollHeight, scrollTop, clientHeight } = doc;
-    console.log({ scrollHeight, scrollTop, clientHeight });
     if (scrollHeight - scrollTop - threshold < clientHeight) {
       loadMore();
     }
