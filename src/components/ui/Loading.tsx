@@ -10,7 +10,7 @@ export const Loading: FC<BoxProps> = (props) => {
       width="full"
       {...props}
     >
-      <Spinner color="blue.500" />
+      <Spinner color="primary.500" />
     </Box>
   );
 };

@@ -5,9 +5,12 @@ import {
   FormLabel,
   HStack,
   Input,
+  InputGroup,
+  InputRightElement,
   Radio,
   RadioGroup,
   Textarea,
+  Spinner,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
@@ -21,7 +24,7 @@ import { DummyPlayer, VideoPlayer } from '@/components/ui/VideoPlayer';
 import { YoutubePlayer } from '@/components/ui/YoutubePlayer';
 import { toast } from '@/lib/chakraUI/theme';
 import { useCategories } from '@/repositories/category';
-import { createPost, useNicovideoInfo } from '@/repositories/posts';
+import { postsRepository, useNicovideoInfo } from '@/repositories/posts';
 import {
   NewPostParams,
   PostFormParamsOnCreate,
@@ -73,11 +76,6 @@ export const NewPage: FC<Props> = ({ userName }) => {
     watch('categories').length > 5
       ? 'カテゴリーは5つまでしか設定できません.'
       : null; // TODO: 何故かzodエラーが出ない
-  // const categoriesError = useMemo(() => {
-  //   return getValues('categories').length > 5
-  //     ? 'カテゴリーは5つまでしか設定できません.'
-  //     : null;
-  // }, [getValues]);
 
   const urlValidationResult = validateUrl(watch('type'), watch('videoUrl'));
   const isNicovideo = watch('type') === 'nicovideo';
@@ -101,7 +99,7 @@ export const NewPage: FC<Props> = ({ userName }) => {
   const onSubmit = async (values: NewPostFormParams) => {
     if (urlValidationResult.isValid) {
       try {
-        const newPost = await createPost(
+        const newPost = await postsRepository.createPost(
           {
             ...values,
             videoId: urlValidationResult.videoId,
@@ -199,11 +197,19 @@ export const NewPage: FC<Props> = ({ userName }) => {
         </FormControl>
         <FormControl isInvalid={!!errors.title}>
           <FormLabel htmlFor="title">タイトル</FormLabel>
-          <Input
-            id="title"
-            placeholder="投稿のタイトル"
-            {...register('title')}
-          />
+          <InputGroup>
+            <Input
+              id="title"
+              placeholder="投稿のタイトル"
+              {...register('title')}
+            />
+            {nicovideoInfoLoading && (
+              <InputRightElement>
+                <Spinner color="primary.500" />
+              </InputRightElement>
+            )}
+          </InputGroup>
+
           <FormErrorMessage>
             {errors.title && errors.title.message}
           </FormErrorMessage>

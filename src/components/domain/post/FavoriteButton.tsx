@@ -102,7 +102,12 @@ export const FavoriteButton: FC<Props> = ({
         })}
         href={{
           pathname: `${router.pathname}`,
-          query: { ...router.query, favoritesModal: 'true', userName, postId },
+          query: {
+            ...router.query,
+            postId,
+            asModal: true,
+            route: Paths.favoriteUsers,
+          },
         }}
         shallow
       >

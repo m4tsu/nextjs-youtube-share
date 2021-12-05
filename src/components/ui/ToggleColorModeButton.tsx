@@ -22,7 +22,7 @@ export const ToggleColorModeButton: FC = () => {
         <Icon as={MoonIcon} />
         ダークテーマ
       </Flex>
-      <Switch isChecked={isDarkMode} isReadOnly />
+      <Switch isChecked={isDarkMode} isReadOnly colorScheme="darkPrimary" />
     </TabButton>
   );
 };

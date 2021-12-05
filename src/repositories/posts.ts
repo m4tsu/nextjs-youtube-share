@@ -42,14 +42,7 @@ class PostsRepository {
       newPost,
       false
     );
-    await mutate<Post[]>(
-      getFetchKey({
-        path: '/api/users/[userName]/posts',
-        params: { userName },
-      }),
-      async (data) => (data ? { ...data, newPost } : undefined),
-      false
-    );
+
     return newPost;
   };
 
@@ -107,33 +100,6 @@ class PostsRepository {
 }
 
 export const postsRepository = PostsRepository.getInstance();
-
-export const createPost = async (params: NewPostParams, userName: string) => {
-  const newPost = await httpClient.post<Post, NewPostParams>({
-    url: getApiPath({
-      path: '/api/users/[userName]/posts/create',
-      params: { userName },
-    }),
-    params,
-  });
-  await mutate<Post>(
-    getFetchKey({
-      path: '/api/users/[userName]/posts/[postId]',
-      params: { userName, postId: newPost.id },
-    }),
-    newPost,
-    false
-  );
-  await mutate<Post[]>(
-    getFetchKey({
-      path: '/api/users/[userName]/posts',
-      params: { userName },
-    }),
-    async (data) => (data ? { ...data, newPost } : undefined),
-    false
-  );
-  return newPost;
-};
 
 export const useNicovideoInfo = (videoId?: string) => {
   return useFetch<NicovideoInfo>(

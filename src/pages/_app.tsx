@@ -6,6 +6,7 @@ import { SWRConfig } from 'swr';
 import { AppBar } from '@/components/layouts/AppBar/AppBar';
 import { AuthGuard } from '@/components/layouts/AuthGuard/AuthGuard';
 import { Main } from '@/components/layouts/Main/Main';
+import { ModalPage } from '@/components/layouts/ModalPage/ModalPage';
 import { theme, toast } from '@/lib/chakraUI/theme';
 import { AuthProvider } from '@/services/auth/AuthProvider';
 import { HttpError } from '@/utils/types/error';
@@ -13,6 +14,7 @@ import { HttpError } from '@/utils/types/error';
 function MyApp({ Component, pageProps, router }: MyAppProps) {
   const getLayout = Component.getLayout || ((page) => <Main>{page}</Main>);
   const requireLogin = Component.requireLogin || false;
+  const asModal = !!router.query.asModal;
   return (
     <ChakraProvider resetCSS theme={theme}>
       <SWRConfig
@@ -55,13 +57,12 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
               rel="stylesheet"
             />
           </Head>
-          {/* {router.isReady && (<></>)} */}
           {requireLogin ? (
             <AuthGuard>{getLayout(<Component {...pageProps} />)}</AuthGuard>
           ) : (
             getLayout(<Component {...pageProps} />)
           )}
-          {/* {getLayout(<Component {...pageProps} />)} */}
+          {asModal && <ModalPage />}
         </AuthProvider>
       </SWRConfig>
     </ChakraProvider>

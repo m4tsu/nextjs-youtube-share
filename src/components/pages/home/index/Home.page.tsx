@@ -15,7 +15,7 @@ const UserPostCard = memo(
 );
 
 const MAX_POSTS_COUNTS = 100;
-const LIMIT = 2;
+const LIMIT = 8;
 const LOADER_HEIGHT = '40px';
 export const HomePage: FC = () => {
   const { data, error, isValidating, loadMore, isLast } = useTimeline(LIMIT);

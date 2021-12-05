@@ -1,3 +1,4 @@
+import { useColorModeValue } from '@chakra-ui/color-mode';
 import { Box } from '@chakra-ui/layout';
 import { FC, memo } from 'react';
 import { FaPlayCircle } from 'react-icons/fa';
@@ -31,6 +32,7 @@ const VideoPlayerComponent: FC<{ embedUrl: string }> = ({ embedUrl }) => {
 export const VideoPlayer = memo(VideoPlayerComponent);
 
 const DummyPlayerComponent: FC = () => {
+  const bg = useColorModeValue('gray.200', 'darkPrimary.400');
   return (
     <VideoPlayerWrapper>
       <Box
@@ -38,7 +40,7 @@ const DummyPlayerComponent: FC = () => {
         height="full"
         top="0"
         right="0"
-        backgroundColor="gray.200"
+        backgroundColor={bg}
         position="absolute"
       >
         <Box
