@@ -48,10 +48,9 @@ export const AuthProvider: FC = ({ children }) => {
   const [session, setSession] = useState<Session | null>(initialSession);
   const [me, setMe] = useState<User | null>(null);
   const [isLoadingMe, setIsLoadingMe] = useState(false);
-
-  const error = null;
+  const [error, setError] = useState<any>(null);
   // const isLoading = (!error && !!session) || isLoadingMe;
-  const isLoading = isLoadingMe || (!me && !!session);
+  const isLoading = isLoadingMe || (!error && !me && !!session);
 
   const authenticated = useRef(false);
   console.log('AuthProvider', session, me, isLoading, error);
@@ -82,16 +81,26 @@ export const AuthProvider: FC = ({ children }) => {
         console.log(res);
       });
       const res = await usersRepository.fetchMe();
+      setIsLoadingMe(false);
       console.log(res);
       authenticated.current = true;
       setMe(res);
     } catch (e) {
       console.log('OOOOOOO', e instanceof HttpError, e);
+      setError(e);
       if (e instanceof HttpError && e.status === 404) {
         setIsLoadingMe(false); // TODO: リダイレクト前にこれしないとずっとローディングになっちゃう...
-        const r = await usersRepository.createUser();
-        console.log('newMe', r);
-        setMe(r);
+        try {
+          const r = await usersRepository.createUser();
+          console.log('newMe', r);
+          setMe(r);
+        } catch (e) {
+          if (e instanceof HttpError && e.status === 307) {
+            router.push(Paths.registration);
+          } else {
+            throw e;
+          }
+        }
       } else {
         setMe(null);
       }

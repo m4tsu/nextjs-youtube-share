@@ -59,14 +59,18 @@ export class HttpError extends Error {
 
 export interface NetworkErrorObject {
   message: string;
+  status: number;
 }
 export class NetworkError extends Error {
+  status: number;
   constructor(message?: string) {
     super(message ?? 'ネットワークエラー');
+    this.status = 400;
   }
   serialize(): NetworkErrorObject {
     return {
       message: this.message,
+      status: this.status,
     };
   }
 }

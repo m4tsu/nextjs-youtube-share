@@ -4,12 +4,10 @@ import {
   FormErrorMessage,
   FormLabel,
   HStack,
-  Input,
   InputGroup,
   InputRightElement,
   Radio,
   RadioGroup,
-  Textarea,
   Spinner,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,7 +17,9 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/Button';
 import { CreatableSelect } from '@/components/ui/CreatableSelect';
+import { Input } from '@/components/ui/Input';
 import { Panel } from '@/components/ui/Panel';
+import { Textarea } from '@/components/ui/Textarea';
 import { DummyPlayer, VideoPlayer } from '@/components/ui/VideoPlayer';
 import { YoutubePlayer } from '@/components/ui/YoutubePlayer';
 import { toast } from '@/lib/chakraUI/theme';

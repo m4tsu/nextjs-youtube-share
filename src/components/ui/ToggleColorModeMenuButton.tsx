@@ -7,7 +7,7 @@ import React, { FC, MouseEventHandler } from 'react';
 
 import { TabButton } from '@/components/ui/TabButton';
 
-export const ToggleColorModeButton: FC = () => {
+export const ToggleColorModeMenuButton: FC = () => {
   const { colorMode, toggleColorMode, setColorMode } = useColorMode();
   const isDarkMode = colorMode === 'dark';
 

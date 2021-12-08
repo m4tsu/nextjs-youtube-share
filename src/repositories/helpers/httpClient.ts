@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import router from 'next/router';
 
+import { toast } from '@/lib/chakraUI/theme';
 import { ApiErrorObject, HttpError, NetworkError } from '@/utils/types/error';
 
 type FetchParams<RequestParams> = {
@@ -27,7 +27,11 @@ class HttpClient {
         headers: new Headers({ 'Content-Type': 'application/json' }),
       });
       if (!res.ok) {
-        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
+        const errObj = (await res.json()) as ApiErrorObject;
+        if (errObj.requireAlert) {
+          toast({ status: 'error', title: errObj.message });
+        }
+        const error = new HttpError(res, errObj);
         throw error;
       }
       return res.json() as Promise<ResponsData>;
@@ -49,12 +53,12 @@ class HttpClient {
         headers: new Headers({ 'Content-Type': 'application/json' }),
         ...config,
       });
-      if (res.redirected) {
-        router.push(res.url);
-      }
       if (!res.ok) {
-        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-        console.log('http post error', error);
+        const errObj = (await res.json()) as ApiErrorObject;
+        if (errObj.requireAlert) {
+          toast({ status: 'error', title: errObj.message });
+        }
+        const error = new HttpError(res, errObj);
         throw error;
       }
       return res.json() as Promise<ResponsData>;
@@ -77,8 +81,11 @@ class HttpClient {
         ...config,
       });
       if (!res.ok) {
-        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-        console.log('http put error', error);
+        const errObj = (await res.json()) as ApiErrorObject;
+        if (errObj.requireAlert) {
+          toast({ status: 'error', title: errObj.message });
+        }
+        const error = new HttpError(res, errObj);
         throw error;
       }
       return res.json() as Promise<ResponsData>;
@@ -101,8 +108,11 @@ class HttpClient {
         ...config,
       });
       if (!res.ok) {
-        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-        console.log('http put error', error);
+        const errObj = (await res.json()) as ApiErrorObject;
+        if (errObj.requireAlert) {
+          toast({ status: 'error', title: errObj.message });
+        }
+        const error = new HttpError(res, errObj);
         throw error;
       }
       return res.json() as Promise<ResponsData>;
@@ -124,13 +134,12 @@ class HttpClient {
         headers: new Headers({ 'Content-Type': 'application/json' }),
         ...config,
       });
-      console.log(res);
-      if (res.redirected) {
-        router.push(res.url);
-      }
       if (!res.ok) {
-        const error = new HttpError(res, (await res.json()) as ApiErrorObject);
-        console.log('http post error', error);
+        const errObj = (await res.json()) as ApiErrorObject;
+        if (errObj.requireAlert) {
+          toast({ status: 'error', title: errObj.message });
+        }
+        const error = new HttpError(res, errObj);
         throw error;
       }
       return res.json() as Promise<ResponsData>;

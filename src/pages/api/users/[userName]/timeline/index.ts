@@ -26,7 +26,7 @@ export default handler<PostWithUser[]>().get(async (req, res) => {
         id: cursor,
       },
       orderBy: {
-        updatedAt: 'desc',
+        createdAt: 'desc',
       },
       where: {
         user: { followers: { some: { followerId: currentUser.id } } },
@@ -47,7 +47,7 @@ export default handler<PostWithUser[]>().get(async (req, res) => {
   }
   const posts = await prisma.post.findMany({
     take: limit,
-    orderBy: { updatedAt: 'desc' },
+    orderBy: { createdAt: 'desc' },
     where: {
       user: { followers: { some: { followerId: currentUser.id } } },
     },

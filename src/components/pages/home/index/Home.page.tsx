@@ -2,6 +2,7 @@ import { Box, Flex, Grid, Text } from '@chakra-ui/layout';
 import React, { FC, memo, useCallback } from 'react';
 
 import { UserPostCard as PostCard } from '@/components/domain/post/UserPostCard';
+import { NoResource } from '@/components/layouts/NoResource';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { useTimeline } from '@/repositories/posts';
@@ -39,16 +40,20 @@ export const HomePage: FC = () => {
     <Flex flexDirection="column" sx={{ gap: '1rem' }}>
       <Text variant="pageTitle">フォロー中のユーザーの投稿</Text>
       {data ? (
-        <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
-          gap={4}
-        >
-          {data.map((posts) =>
-            posts.map((post) => (
-              <UserPostCard key={post.id} post={post} user={post.user} />
-            ))
-          )}
-        </Grid>
+        data[0].length === 0 ? (
+          <NoResource resourceName="フォロー中のユーザーの投稿" />
+        ) : (
+          <Grid
+            templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+            gap={4}
+          >
+            {data.map((posts) =>
+              posts.map((post) => (
+                <UserPostCard key={post.id} post={post} user={post.user} />
+              ))
+            )}
+          </Grid>
+        )
       ) : (
         <Loading />
       )}

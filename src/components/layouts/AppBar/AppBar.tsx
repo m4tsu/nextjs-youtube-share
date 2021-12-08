@@ -10,6 +10,7 @@ import { User } from '@/types/domains/user';
 import { Link } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 
+import { ColorModeButton } from './ColorModeButton';
 import { HeaderButton } from './HeaderButton';
 
 type ComponentProps = {
@@ -73,9 +74,15 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
                 {me ? (
                   <AppBarMenu me={me} />
                 ) : (
-                  <Link path={Paths.login}>
-                    <HeaderButton>ログイン</HeaderButton>
-                  </Link>
+                  <>
+                    <ColorModeButton />
+                    <Link path={Paths.login}>
+                      <HeaderButton>投稿する</HeaderButton>
+                    </Link>
+                    <Link path={Paths.login}>
+                      <HeaderButton>ログイン</HeaderButton>
+                    </Link>
+                  </>
                 )}
               </>
             )}

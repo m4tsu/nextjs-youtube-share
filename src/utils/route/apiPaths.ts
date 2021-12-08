@@ -3,6 +3,7 @@ import qs from 'query-string';
 import { ParamKeys } from './Link';
 
 export const ApiPaths = {
+  withdraw: '/api/auth/withdraw',
   createUser: '/api/auth/createUser',
   createUserWithUserName: '/api/auth/createUserWithUserName',
   me: '/api/auth/me',
@@ -19,7 +20,6 @@ export const ApiPaths = {
   userFollowers: '/api/users/[userName]/followers',
   userFollowings: '/api/users/[userName]/followings',
   createPost: '/api/users/[userName]/posts/create',
-
   follow: '/api/users/follow/[userId]',
   nicovideoInfo: '/api/nicovideoInfo/[videoId]',
 } as const;

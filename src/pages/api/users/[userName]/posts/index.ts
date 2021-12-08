@@ -56,7 +56,7 @@ export default handler<UserPosts>().get(async (req, res) => {
               },
             ],
           },
-          orderBy: { updatedAt: 'desc' },
+          orderBy: { createdAt: 'desc' },
           include: {
             _count: { select: { favorites: true } },
             favorites: { where: { userId: req.currentUser?.id } },

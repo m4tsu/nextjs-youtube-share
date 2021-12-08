@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { handler } from '@/lib/apiRouteHandler/handler';
 import prisma from '@/lib/prisma/prismaClient';
-import { Post } from '@/types/domains/post';
+import { PostWithUser } from '@/types/domains/post';
 
 const querySchema = z.object({
   cursor: z.string().optional(),
@@ -14,7 +14,7 @@ const querySchema = z.object({
     .transform((v) => Number(v)),
 });
 
-export default handler<Post[]>().get(async (req, res) => {
+export default handler<PostWithUser[]>().get(async (req, res) => {
   // const {cursor, limit} = req.query as {cursor: Post['id'], limit: string}
   const { cursor, limit } = querySchema.parse(req.query);
   const currentUser = req.currentUser;
@@ -26,11 +26,12 @@ export default handler<Post[]>().get(async (req, res) => {
         id: cursor,
       },
       orderBy: {
-        updatedAt: 'desc',
+        createdAt: 'desc',
       },
       include: {
         _count: { select: { favorites: true } },
         favorites: { where: { userId: currentUser?.id } },
+        user: true,
       },
     });
     return res.status(200).json(
@@ -43,10 +44,11 @@ export default handler<Post[]>().get(async (req, res) => {
   }
   const posts = await prisma.post.findMany({
     take: limit,
-    orderBy: { updatedAt: 'desc' },
+    orderBy: { createdAt: 'desc' },
     include: {
       _count: { select: { favorites: true } },
       favorites: { where: { userId: currentUser?.id } },
+      user: true,
     },
   });
   return res.status(200).json(

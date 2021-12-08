@@ -164,7 +164,7 @@ export const useUserFavoritePosts = (
 };
 
 export const useAllPosts = (limit: number) => {
-  return useInfiniteFetch<Post>(limit, ApiPaths.posts);
+  return useInfiniteFetch<PostWithUser>(limit, ApiPaths.posts);
 };
 
 export const useTimeline = (limit: number) => {

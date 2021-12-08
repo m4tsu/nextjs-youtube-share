@@ -34,7 +34,7 @@ export default handler<User>().post(async (req, res) => {
         'Unique constraint failed on the fields: (`userName`)'
       ) > -1
     ) {
-      res.redirect(307, '/settings/registration');
+      res.status(307).json({ message: 'IDを設定する必要があります。' });
     } else {
       return res.status(500).json({
         message: JSON.stringify(e),

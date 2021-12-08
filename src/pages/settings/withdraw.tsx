@@ -1,11 +1,9 @@
 import { NextAppPage } from 'next';
 
-import { SettingsPage } from '@/components/pages/settings/index/Settings.page';
+import { WithdrawPage } from '@/components/pages/withdraw/index/Withdraw.page';
 
 const Page: NextAppPage = () => {
-  return <SettingsPage />;
+  return <WithdrawPage />;
 };
-
 Page.requireLogin = true;
-
 export default Page;

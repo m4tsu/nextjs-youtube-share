@@ -9,7 +9,7 @@ import React, { FC, memo } from 'react';
 import { FiLogOut } from 'react-icons/fi';
 
 import { TabButton } from '@/components/ui/TabButton';
-import { ToggleColorModeButton } from '@/components/ui/ToggleColorModeButton';
+import { ToggleColorModeMenuButton } from '@/components/ui/ToggleColorModeMenuButton';
 import { useAuthDispatch } from '@/services/auth/AuthProvider';
 import { User } from '@/types/domains/user';
 import { Link } from '@/utils/route/Link';
@@ -43,7 +43,7 @@ const Component: FC<Props> = ({ me }) => {
           />
           <Divider />
           <Flex flexDirection="column">
-            <ToggleColorModeButton />
+            <ToggleColorModeMenuButton />
             <Link path={Paths.settings}>
               <TabButton
                 isActive={currentPathName === Paths.settings}

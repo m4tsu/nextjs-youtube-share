@@ -10,6 +10,9 @@ export const Paths = {
   top: '/',
   home: '/home',
   login: '/login',
+  terms: '/terms',
+  privacy: '/privacy',
   settings: '/settings',
+  withdraw: '/settings/withdraw',
   registration: '/settings/registration',
 } as const;

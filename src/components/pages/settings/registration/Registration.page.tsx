@@ -21,9 +21,10 @@ import { useDebounce } from '@/utils/useDebounce';
 
 export const RegistrationPage: FC = () => {
   const authUser = supabaseClient.auth.user();
+  const router = useRouter();
+
   const { me, isLoading: isLoadingMe } = useAuth();
   const { createUserWithUserName } = useAuthDispatch();
-  const router = useRouter();
   const [userName, setUserName] = useState<string>(
     authUser?.user_metadata?.user_name ?? ''
   );
@@ -42,7 +43,11 @@ export const RegistrationPage: FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
-    await createUserWithUserName(debouncedUserName);
+    try {
+      await createUserWithUserName(debouncedUserName);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   if (!authUser) {
@@ -77,7 +82,7 @@ export const RegistrationPage: FC = () => {
               placeholder="tubetterID1234"
               value={userName}
               onChange={handleChange}
-              disabled={isLoading}
+              // disabled={isLoading}
             />
             {isLoading && (
               <InputRightElement>

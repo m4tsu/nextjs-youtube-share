@@ -50,7 +50,7 @@ export default handler<UserFavoritePosts>().get(async (req, res) => {
       },
       take: perPage,
       skip,
-      orderBy: { updatedAt: 'desc' }, // favoriteのupdatedAtでソートしたいけどできなさそう
+      orderBy: { createdAt: 'desc' }, // favoriteのupdatedAtでソートしたいけどできなさそう
     }),
   ]);
   if (!data) {
