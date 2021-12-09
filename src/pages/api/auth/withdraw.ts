@@ -11,10 +11,6 @@ export default handler<User>().delete(async (req, res) => {
   const currentUser = authenticate(req);
 
   const result = await prisma.user.delete({ where: { id: currentUser.id } });
-  const hoge = await supabaseClient.auth.api.deleteUser(
-    currentUser.id,
-    serviceKey
-  );
-  console.log(serviceKey, hoge);
+  await supabaseClient.auth.api.deleteUser(currentUser.id, serviceKey);
   res.status(200).json(result);
 });

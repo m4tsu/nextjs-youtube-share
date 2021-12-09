@@ -36,7 +36,7 @@ export const DeleteCommentModal: FC<Props> = ({
       await commentsRepository.deleteComment(userName, postId, commentId);
       toast({ status: 'success', title: 'コメントを削除しました。' });
     } catch (e) {
-      console.log(e);
+      toast({ status: 'error', title: 'コメントの削除に失敗しました。' });
     }
     onClose();
   };

@@ -38,7 +38,7 @@ export const CategorySettingsPage: FC = () => {
       await categoryRepository.deleteCategory(selectedId, me?.userName);
       toast({ status: 'success', title: 'カテゴリーを削除しました。' });
     } catch (e) {
-      console.log(e);
+      toast({ status: 'error', title: 'カテゴリーの削除に失敗しました。' });
     }
     setSelectedId(null);
     onClose();

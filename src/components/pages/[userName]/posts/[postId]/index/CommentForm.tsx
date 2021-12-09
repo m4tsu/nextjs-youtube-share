@@ -31,9 +31,7 @@ export const CommentForm: FC<Props> = ({ me, postId, userName }) => {
     mode: 'onChange',
     resolver: zodResolver(commentSchemaOnCreate),
   });
-  console.log(errors);
   const onSubmit = handleSubmit(async (params) => {
-    console.log('onSubmit!!!!!!');
     try {
       await commentsRepository.createComment(userName, postId, params);
       toast({ status: 'success', title: 'コメントが完了しました。' });

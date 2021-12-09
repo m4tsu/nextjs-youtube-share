@@ -115,7 +115,6 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
 
   if (error) return <Error error={error.serialize()} />;
   if (!userName || !data) return <Loading />;
-  console.log(data.comments);
   const { type, videoId, title, body, updatedAt, categories } = data;
   const embedUrl = getEmbedUrl(type, videoId);
   return (

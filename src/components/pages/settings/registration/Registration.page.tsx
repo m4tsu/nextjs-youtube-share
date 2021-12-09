@@ -12,6 +12,7 @@ import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { Panel } from '@/components/ui/Panel';
+import { toast } from '@/lib/chakraUI/theme';
 import { supabaseClient } from '@/lib/supabase/client';
 import { useUser } from '@/repositories/users';
 import { useAuth, useAuthDispatch } from '@/services/auth/AuthProvider';
@@ -45,8 +46,9 @@ export const RegistrationPage: FC = () => {
     e.preventDefault();
     try {
       await createUserWithUserName(debouncedUserName);
+      toast({ status: 'success', title: 'TubetterIDが登録されました。' });
     } catch (e) {
-      console.log(e);
+      toast({ status: 'error', title: 'TubetterIDの登録に失敗しました。' });
     }
   };
 
