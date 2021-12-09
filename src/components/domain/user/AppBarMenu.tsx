@@ -6,6 +6,7 @@ import { Menu, MenuButton, MenuList } from '@chakra-ui/menu';
 import { Portal } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC, memo } from 'react';
+import { AiFillTags } from 'react-icons/ai';
 import { FiLogOut } from 'react-icons/fi';
 
 import { TabButton } from '@/components/ui/TabButton';
@@ -53,9 +54,13 @@ const Component: FC<Props> = ({ me }) => {
                 設定
               </TabButton>
             </Link>
-            {/* <TabButton isActive={currentPathName === Paths.settings}>
-            カテゴリー管理
-          </TabButton> */}
+
+            <Link path={Paths.categorySettings}>
+              <TabButton isActive={currentPathName === Paths.categorySettings}>
+                <Icon as={AiFillTags} />
+                カテゴリー管理
+              </TabButton>
+            </Link>
           </Flex>
           <Divider />
           <TabButton onClick={signOut} asMenuItem>

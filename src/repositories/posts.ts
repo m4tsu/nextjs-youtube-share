@@ -1,4 +1,5 @@
 import { mutate } from 'swr';
+import { SWRInfiniteConfiguration } from 'swr/infinite/dist/infinite';
 
 import { UserFavoritePosts } from '@/pages/api/users/[userName]/favorites';
 import {
@@ -163,8 +164,11 @@ export const useUserFavoritePosts = (
   return { data, error, totalPage };
 };
 
-export const useAllPosts = (limit: number) => {
-  return useInfiniteFetch<PostWithUser>(limit, ApiPaths.posts);
+export const useAllPosts = (
+  limit: number,
+  config?: SWRInfiniteConfiguration
+) => {
+  return useInfiniteFetch<PostWithUser>(limit, ApiPaths.posts, config);
 };
 
 export const useTimeline = (limit: number) => {

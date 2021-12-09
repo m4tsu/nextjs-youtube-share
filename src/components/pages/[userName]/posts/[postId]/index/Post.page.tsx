@@ -36,6 +36,8 @@ import { getEmbedUrl } from '@/utils/domains/post/video';
 import { Paths } from '@/utils/route/paths';
 import { HttpError } from '@/utils/types/error';
 
+import { CommentCard } from './CommentCard';
+import { CommentForm } from './CommentForm';
 import { DeletePostModal } from './DeletePostModal';
 import { EditPost } from './EditPost';
 
@@ -64,10 +66,6 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
   const { data, error } = usePost(userName, postId);
   const { me } = useAuth();
   const isMine = me ? me.userName === userName : false;
-
-  // const handleUpdated = () => {
-  //   onCloseEdit()
-  // }
 
   const onUnFavorite = useCallback(
     async (postId: string) => {
@@ -117,7 +115,7 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
 
   if (error) return <Error error={error.serialize()} />;
   if (!userName || !data) return <Loading />;
-
+  console.log(data.comments);
   const { type, videoId, title, body, updatedAt, categories } = data;
   const embedUrl = getEmbedUrl(type, videoId);
   return (
@@ -186,10 +184,32 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
         </Flex>
         <Divider borderColor="gray.400" />
         <Box mt={2}>
-          <Text whiteSpace="pre-wrap" fontSize="lg">
+          <Text whiteSpace="pre-wrap" fontSize="md">
             {body}
           </Text>
         </Box>
+        <Divider borderColor="gray.400" mt={10} mb={4} />
+        <Flex flexDirection="column" sx={{ gap: '2rem' }}>
+          {data.comments?.length ? (
+            <Text textAlign="center">{data.comments.length}件のコメント</Text>
+          ) : (
+            <></>
+          )}
+          <Flex flexDirection="column" sx={{ gap: '1rem' }}>
+            {data.comments &&
+              data.comments.map((comment) => (
+                <CommentCard
+                  key={comment.id}
+                  comment={comment}
+                  userName={userName}
+                  isMyPost={isMine}
+                />
+              ))}
+          </Flex>
+          {postId && me && (
+            <CommentForm me={me} postId={postId} userName={userName} />
+          )}
+        </Flex>
       </Panel>
       {me && (
         <Modal isOpen={isOpenEdit} onClose={onCloseEdit} size="4xl">

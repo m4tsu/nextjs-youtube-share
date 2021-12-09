@@ -1,5 +1,5 @@
 import { Box, Flex, Grid, Text } from '@chakra-ui/layout';
-import { FC, useCallback } from 'react';
+import { FC, memo, useCallback } from 'react';
 
 import { UserPostCard } from '@/components/domain/post/UserPostCard';
 import { Button } from '@/components/ui/Button';
@@ -14,9 +14,16 @@ import { Error } from '../error/Error';
 const LOADER_HEIGHT = '40px';
 const MAX_POSTS_COUNTS = 100;
 const LIMIT = 12;
+
+const MemoedPostCard = memo(UserPostCard, (prev, next) => {
+  return prev.post.id === next.post.id;
+});
+
 export const TopPage: FC = () => {
   const { me, isLoading } = useAuth();
-  const { data, error, loadMore, isLast, isValidating } = useAllPosts(LIMIT);
+  const { data, error, loadMore, isLast, isValidating } = useAllPosts(LIMIT, {
+    refreshInterval: 60000,
+  });
   const fetchLimited = data ? data.length >= MAX_POSTS_COUNTS / LIMIT : false;
 
   const handleScroll = useCallback(() => {
@@ -60,7 +67,8 @@ export const TopPage: FC = () => {
         >
           {data.map((posts) =>
             posts.map((post) => (
-              <UserPostCard key={post.id} post={post} user={post.user} />
+              <MemoedPostCard key={post.id} post={post} user={post.user} />
+              // <UserPostCard key={post.id} post={post} user={post.user} />
             ))
           )}
         </Grid>

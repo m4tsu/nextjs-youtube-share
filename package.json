@@ -11,12 +11,13 @@
     "typecheck": "tsc -p . --noEmit",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "format": "prettier --check 'src/**/*.{ts,tsx,js,jsx,json,md}'",
-    "format:fix": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,md}'",
+    "format": "prettier --check src/**/*.{ts,tsx,js,jsx,json,md}",
+    "format:fix": "prettier --write src/**/*.{ts,tsx,js,jsx,json,md}",
     "type-check": "tsc --noEmit",
     "db:migrate:reset": "prisma migrate reset",
     "db:migrate:create": "prisma migrate dev --create-only",
     "db:migrate:deploy": "prisma migrate deploy",
+    "db:generate:type": "prisma generate",
     "update-types": "npx openapi-typescript https://kythykqvtmbwfamnlrig.supabase.co/rest/v1/?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzMTc5MTcxMSwiZXhwIjoxOTQ3MzY3NzExfQ.Tlwa_1WltpdmW2ql4uioOMI8KGPlKdtDHfD8DbolqZA --output src/types/database/index.ts"
   },
   "dependencies": {

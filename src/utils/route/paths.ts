@@ -14,5 +14,6 @@ export const Paths = {
   privacy: '/privacy',
   settings: '/settings',
   withdraw: '/settings/withdraw',
+  categorySettings: '/settings/category',
   registration: '/settings/registration',
 } as const;

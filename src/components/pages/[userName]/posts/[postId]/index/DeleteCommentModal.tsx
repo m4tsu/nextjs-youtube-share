@@ -1,54 +1,53 @@
 import { Text } from '@chakra-ui/layout';
 import {
   Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from '@chakra-ui/modal';
-import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/lib/chakraUI/theme';
-import { postsRepository } from '@/repositories/posts';
+import { commentsRepository } from '@/repositories/comment';
+import { Comment } from '@/types/domains/comment';
 import { Post } from '@/types/domains/post';
 import { User } from '@/types/domains/user';
-import { getPath } from '@/utils/route/Link';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   postId: Post['id'];
-  myUserName: User['userName'];
+  userName: User['userName'];
+  commentId: Comment['id'];
 };
-export const DeletePostModal: FC<Props> = ({
+export const DeleteCommentModal: FC<Props> = ({
   isOpen,
   onClose,
   postId,
-  myUserName,
+  userName,
+  commentId,
 }) => {
-  const router = useRouter();
   const handleClick = async () => {
     try {
-      await postsRepository.deletePost(postId, myUserName);
+      await commentsRepository.deleteComment(userName, postId, commentId);
+      toast({ status: 'success', title: 'コメントを削除しました。' });
     } catch (e) {
-      toast({ status: 'error', title: '投稿の削除に失敗しました。' });
+      console.log(e);
     }
-    router.push(
-      getPath({ path: '/users/[userName]', params: { userName: myUserName } })
-    );
+    onClose();
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>投稿を削除する</ModalHeader>
+        <ModalHeader>コメントを削除する</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text>投稿を削除してもよろしいですか？</Text>
+          <Text>このコメントを削除してもよろしいですか？</Text>
         </ModalBody>
         <ModalFooter display="flex" sx={{ gap: '0.5rem' }}>
           <Button onClick={onClose} colorScheme="gray" variant="outline">

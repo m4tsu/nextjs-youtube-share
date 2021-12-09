@@ -48,8 +48,8 @@ export const AuthProvider: FC = ({ children }) => {
   const [session, setSession] = useState<Session | null>(initialSession);
   const [me, setMe] = useState<User | null>(null);
   const [isLoadingMe, setIsLoadingMe] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>(null);
-  // const isLoading = (!error && !!session) || isLoadingMe;
   const isLoading = isLoadingMe || (!error && !me && !!session);
 
   const authenticated = useRef(false);

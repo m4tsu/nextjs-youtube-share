@@ -4,6 +4,7 @@ import { schemaForType } from '@/lib/zod/schemaForType';
 import { validateUrl } from '@/utils/domains/post/video';
 
 import { Category, categorySchemaOnPostForm } from './category';
+import { Comment } from './comment';
 import { User } from './user';
 
 import { Post as PrismaPost, VideoType } from '.prisma/client';
@@ -12,6 +13,7 @@ type Post = PrismaPost & {
   favorited?: boolean;
   favoritesCount?: number;
   categories?: Category[];
+  comments?: Comment[];
 };
 export type { Post, VideoType };
 

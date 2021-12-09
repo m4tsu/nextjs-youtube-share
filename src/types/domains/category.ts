@@ -41,16 +41,3 @@ export const categorySchemaOnPostForm = z.union([
     label: categorySchema.shape.name,
   }),
 ]);
-// export const categorySchemaOnPostForm = categorySchemaOnCreate
-//   .omit({ userId: true, name: true })
-//   .extend({
-//     value: categorySchema.shape.name,
-//     label: categorySchema.shape.name,
-//     __isNew__: z.boolean(),
-//   })
-//   .or(
-//     categorySchemaOnUpdate.omit({ userId: true, name: true }).extend({
-//       value: categorySchema.shape.name,
-//       label: categorySchema.shape.name,
-//     })
-//   );

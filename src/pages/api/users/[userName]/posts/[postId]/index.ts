@@ -15,6 +15,7 @@ export default handler<Post>()
         _count: { select: { favorites: true } },
         favorites: { where: { userId: req.currentUser?.id } },
         categories: { include: { category: true } },
+        comments: { include: { user: true }, orderBy: { createdAt: 'asc' } },
       },
     });
     if (!post) {
@@ -27,6 +28,11 @@ export default handler<Post>()
       favoritesCount: post._count?.favorites || 0,
       favorited: post.favorites.length > 0,
       categories: post.categories.map((c) => c.category),
+      comments: post.comments.map((comment) => {
+        if (!comment.deletedBy) return { ...comment, deletedBy: null };
+        const { content, deletedBy, ...rest } = comment;
+        return { ...rest, deletedBy, content: null };
+      }),
     });
   })
   .patch(async (req, res) => {

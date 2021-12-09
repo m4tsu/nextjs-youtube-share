@@ -18,6 +18,7 @@ model User {
   updatedAt DateTime @updatedAt @default(now())
   avatarUrl String  @db.VarChar(255)
   posts Post[]
+  comments Comment[]
   categories Category[]
   favorites Favorite[]
   followers Follow[] @relation(name: "followee")
@@ -30,7 +31,7 @@ enum VideoType {
 }
 
 model Post {
-  id        String    @id @unique  @db.Uuid @default(uuid()) //@default(dbgenerated("public.uuid_generate_v4()"))
+  id        String    @id @unique  @db.Uuid @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
   type VideoType
@@ -42,8 +43,25 @@ model Post {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   favorites Favorite[]
   categories CategoriesOnPost[]
+  comments Comment[]
 
   @@index([userId], name: "userId")
+}
+
+enum DeletedBy {
+  commenter
+  author
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content String @db.VarChar(1000)
+  deletedBy DeletedBy?
+  createdAt DateTime @default(now())
 }
 
 model Favorite {
