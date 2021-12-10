@@ -51,8 +51,7 @@ export default handler<Notification[]>()
   })
   .patch(async (req, res) => {
     const currentUser = authenticate(req);
-    // const { notificationIds } = readBodySchema.parse(req.body);
-    const result = await prisma.notification.updateMany({
+    await prisma.notification.updateMany({
       where: { recieverId: currentUser.id, read: false },
       data: { read: true },
     });
