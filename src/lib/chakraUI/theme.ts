@@ -105,6 +105,7 @@ export const theme = extendTheme(
           bg: mode('bgWhite', 'darkPrimary.700')(props),
           color: mode('gray.800', 'bgWhite')(props),
           minHeight: '100vh',
+          textUnderlineOffset: '2px',
         },
         main: {
           pb: '40px',

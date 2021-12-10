@@ -147,7 +147,7 @@ export const NewPage: FC<Props> = ({ userName }) => {
   }, [nicovideoData?.title, isDirty]);
 
   return (
-    <Panel>
+    <Panel pt={0}>
       <Flex
         as="form"
         direction="column"

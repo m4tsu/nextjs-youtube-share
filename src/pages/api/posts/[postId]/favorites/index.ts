@@ -32,7 +32,23 @@ export default handler()
 
     const result = await prisma.favorite.create({
       data: { userId: currentUser.id, postId },
+      include: { post: { include: { user: true } } },
     });
+
+    try {
+      await prisma.notification.create({
+        data: {
+          notifierId: currentUser.id,
+          recieverId: result.post.userId,
+          type: 'favorited',
+          targetId: postId,
+          targetName: result.post.title,
+        },
+      });
+    } catch (e) {
+      console.log(e); // TODO: とりあえずこっちはエラー投げないようにしておく...
+    }
+
     return res.status(200).json(result);
   })
   .delete(async (req, res) => {

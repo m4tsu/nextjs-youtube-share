@@ -18,6 +18,20 @@ export default handler()
       where: { id: currentUser.id },
       data: { followings: { create: [{ followeeId: userId }] } },
     });
+
+    try {
+      await prisma.notification.create({
+        data: {
+          notifierId: currentUser.id,
+          recieverId: userId,
+          type: 'followed',
+          targetId: userId,
+        },
+      });
+    } catch (e) {
+      console.log(e); // TODO: とりあえずこっちはエラー投げないようにしておく...
+    }
+
     res.status(200).json(result);
   })
   .delete(async (req, res) => {

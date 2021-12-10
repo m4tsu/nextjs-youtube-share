@@ -7,6 +7,8 @@ export const ApiPaths = {
   createUser: '/api/auth/createUser',
   createUserWithUserName: '/api/auth/createUserWithUserName',
   me: '/api/auth/me',
+  notifications: '/api/notifications',
+  unreadNotificationsCount: '/api/notifications/unreadCount',
   posts: '/api/posts',
   user: '/api/users/[userName]',
   timeline: '/api/users/[userName]/timeline',

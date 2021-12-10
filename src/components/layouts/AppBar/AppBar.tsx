@@ -12,6 +12,7 @@ import { Paths } from '@/utils/route/paths';
 
 import { ColorModeButton } from './ColorModeButton';
 import { HeaderButton } from './HeaderButton';
+import { Notifications } from './Notifications';
 
 type ComponentProps = {
   me: null | User;
@@ -20,6 +21,7 @@ type ComponentProps = {
 const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
   const bgColor = useColorModeValue('white', 'darkPrimary.600');
   const borderColor = useColorModeValue('gray.200', 'darkPrimary.400');
+  const hoverBg = useColorModeValue('gray.50', 'darkPrimary.500');
 
   const [mounted, setMounted] = useState(false); //https://github.com/vercel/next.js/discussions/17443
   useEffect(() => {
@@ -44,7 +46,13 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <Box display="flex" alignItems="center" h="full">
+        <Box
+          display="flex"
+          alignItems="center"
+          h="full"
+          px={4}
+          _hover={{ bgColor: hoverBg }}
+        >
           <Link
             path="/"
             chakraLinkProps={{
@@ -72,7 +80,10 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
                 )}
 
                 {me ? (
-                  <AppBarMenu me={me} />
+                  <>
+                    <Notifications me={me} />
+                    <AppBarMenu me={me} />
+                  </>
                 ) : (
                   <>
                     <ColorModeButton />

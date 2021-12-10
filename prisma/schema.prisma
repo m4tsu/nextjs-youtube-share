@@ -23,6 +23,8 @@ model User {
   favorites Favorite[]
   followers Follow[] @relation(name: "followee")
   followings Follow[] @relation(name: "follower")
+  notifications Notification[] @relation(name: "reciever")
+  sentNotifications Notification[] @relation(name: "notifier")
 }
 
 enum VideoType {
@@ -101,4 +103,23 @@ model CategoriesOnPost {
   postId String @db.Uuid
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   @@id([categoryId, postId])
+}
+
+enum NotificationType {
+  followed //フォローした
+  commented //コメントした
+  favorited //投稿をお気に入りした
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  notifierId String @db.Uuid
+  notifier User @relation(name: "notifier",fields: [notifierId], references: [id], onDelete: Cascade) //アクションしたユーザー
+  recieverId String @db.Uuid
+  reciever  User @relation(name: "reciever",fields: [recieverId], references: [id], onDelete: Cascade) //通知を受けるユーザー
+  type NotificationType
+  targetId String //フォローされたuserId,コメントされたpostId,お気に入りされたpostId
+  targetName String? ////コメントされたpost.titleとか
+  read Boolean @default(false)
+  createdAt DateTime @default(now())
 }

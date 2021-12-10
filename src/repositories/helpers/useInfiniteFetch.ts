@@ -5,7 +5,7 @@ import { HttpError, NetworkError } from '@/utils/types/error';
 import { httpClient } from './httpClient';
 
 const getKeyForInfiniteFetch = <
-  Data extends { id: string },
+  Data extends { id: string | number },
   DataList extends Data[]
 >(
   pageIndex: number,
@@ -25,7 +25,7 @@ const getKeyForInfiniteFetch = <
 };
 
 export const useInfiniteFetch = <
-  Data extends { id: string },
+  Data extends { id: string | number },
   E extends unknown = HttpError | NetworkError
 >(
   limit: number,

@@ -3,7 +3,7 @@ import Icon from '@chakra-ui/icon';
 import { SettingsIcon } from '@chakra-ui/icons';
 import { Divider, Flex } from '@chakra-ui/layout';
 import { Menu, MenuButton, MenuList } from '@chakra-ui/menu';
-import { Portal } from '@chakra-ui/react';
+import { Portal, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC, memo } from 'react';
 import { AiFillTags } from 'react-icons/ai';
@@ -24,9 +24,11 @@ const Component: FC<Props> = ({ me }) => {
   const { signOut } = useAuthDispatch();
   const router = useRouter();
   const currentPathName = router.pathname;
+  const hoverBg = useColorModeValue('gray.50', 'darkPrimary.500');
+
   return (
     <Menu strategy="fixed" isLazy autoSelect={false}>
-      <MenuButton>
+      <MenuButton _hover={{ bgColor: hoverBg }} px={4}>
         <Avatar src={me.avatarUrl} boxSize="44px" />
       </MenuButton>
       <Portal>

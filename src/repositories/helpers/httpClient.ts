@@ -68,7 +68,7 @@ class HttpClient {
     }
   }
 
-  async put<ResponsData, RequestParams extends Record<string, unknown>>({
+  async put<ResponsData, RequestParams>({
     url,
     params,
     config,
@@ -95,7 +95,7 @@ class HttpClient {
     }
   }
 
-  async patch<ResponsData, RequestParams extends Record<string, unknown>>({
+  async patch<ResponsData, RequestParams = any>({
     url,
     params,
     config,
