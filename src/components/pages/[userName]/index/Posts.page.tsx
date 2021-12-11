@@ -29,6 +29,7 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
     totalPage,
   } = useUserPosts(page, USER_POSTS_PER_PAGE, userName, categoryName);
   const { data: categories, error: categoriesError } = useCategories(userName);
+
   const onChangePage = useCallback(
     (pageNumber: number) => {
       if (userName) {
@@ -80,12 +81,7 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
   if (categoriesError) {
     return <Error error={categoriesError.serialize()} />;
   }
-  if (!userPosts || !userName) {
-    return <Loading />;
-  }
-  if (totalPage && page > totalPage) {
-    router.push(getPath({ path: Paths.posts, params: { userName } }));
-  }
+
   const categoryOptions = categories
     ? categories.map((c) => ({ value: c.name, label: c.name }))
     : [];
@@ -123,28 +119,37 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
           onChange={onSelectCategory}
         />
       </Flex>
-
-      {userPosts.posts.length == 0 ? (
+      {userPosts && userPosts.posts.length == 0 && (
         <NoResource resourceName="投稿" />
-      ) : (
-        <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
-          gap={4}
-        >
-          {userPosts.posts.map((post) => (
-            // <PostCard key={post.id} post={post} user={data} />
-            <PostCard embeded key={post.id} post={post} user={userPosts} />
-          ))}
-        </Grid>
       )}
+      <Flex
+        minHeight="800px"
+        flexDirection="column"
+        justifyContent="space-between"
+        sx={{ gap: '1rem' }}
+      >
+        {userPosts ? (
+          <Grid
+            templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+            gap={4}
+          >
+            {userPosts.posts.map((post) => (
+              // <PostCard key={post.id} post={post} user={data} />
+              <PostCard embeded key={post.id} post={post} user={userPosts} />
+            ))}
+          </Grid>
+        ) : (
+          <Loading />
+        )}
 
-      {totalPage && (
-        <Paginator
-          currentPage={page}
-          totalPage={totalPage}
-          onPageChange={onChangePage}
-        />
-      )}
+        {totalPage && (
+          <Paginator
+            currentPage={page}
+            totalPage={totalPage}
+            onPageChange={onChangePage}
+          />
+        )}
+      </Flex>
     </Flex>
   );
 };

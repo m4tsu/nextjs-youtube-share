@@ -40,7 +40,6 @@ export const FollowButton: FC<FollowButtonProps> = ({
   const { me } = useAuth();
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
 
-  console.log(isFollowing);
   const rerendered = useRef(false);
   useEffect(() => {
     if (rerendered.current) {
