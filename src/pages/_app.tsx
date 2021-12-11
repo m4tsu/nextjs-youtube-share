@@ -58,11 +58,9 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
               rel="stylesheet"
             />
           </Head>
-          {requireLogin ? (
-            <AuthGuard>{getLayout(<Component {...pageProps} />)}</AuthGuard>
-          ) : (
-            getLayout(<Component {...pageProps} />)
-          )}
+          <AuthGuard requireLogin={requireLogin}>
+            {getLayout(<Component {...pageProps} />)}
+          </AuthGuard>
           <Footer />
           {asModal && <ModalPage />}
         </AuthProvider>

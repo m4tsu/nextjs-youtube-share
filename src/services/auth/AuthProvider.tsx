@@ -53,9 +53,9 @@ export const AuthProvider: FC = ({ children }) => {
   const isLoading = isLoadingMe || (!error && !me && !!session);
 
   const authenticated = useRef(false);
-  console.log('AuthProvider', session, me, isLoading, error);
-  console.log('authenticated', authenticated);
-  console.log('isLoadingMe', isLoadingMe);
+  // console.log('AuthProvider', session, me, isLoading, error);
+  // console.log('authenticated', authenticated);
+  // console.log('isLoadingMe', isLoadingMe);
 
   const createUserWithUserName = useCallback(async (userName: string) => {
     const newUser = await usersRepository.createUserWithUserName(userName);
@@ -86,13 +86,12 @@ export const AuthProvider: FC = ({ children }) => {
       authenticated.current = true;
       setMe(res);
     } catch (e) {
-      console.log('OOOOOOO', e instanceof HttpError, e);
+      console.log(e instanceof HttpError, e);
       setError(e);
       if (e instanceof HttpError && e.status === 404) {
         setIsLoadingMe(false); // TODO: リダイレクト前にこれしないとずっとローディングになっちゃう...
         try {
           const r = await usersRepository.createUser();
-          console.log('newMe', r);
           setMe(r);
         } catch (e) {
           if (e instanceof HttpError && e.status === 307) {
@@ -111,13 +110,11 @@ export const AuthProvider: FC = ({ children }) => {
   useEffect(() => {
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
       async (event, s) => {
-        console.log('auth.onAuthStateChange', event, s);
         setSession(s);
         await authenticate(event, s);
       }
     );
     if (session && !authenticated.current) {
-      console.log('kotti!!!!');
       authenticate('SIGNED_IN', session);
     }
 

@@ -1,28 +1,39 @@
 import { Flex, FlexProps } from '@chakra-ui/layout';
 import { Icon } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { AiOutlineStar, AiOutlineHome } from 'react-icons/ai';
 import { FiUsers } from 'react-icons/fi';
 import { MdPlaylistPlay } from 'react-icons/md';
 
 import { TabButton } from '@/components/ui/TabButton';
+import { useAuth } from '@/services/auth/AuthProvider';
 import { Link } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 
 type Props = {
-  currentPathName: string;
   userName: string;
-  isMe?: boolean;
   asMenu?: boolean;
 } & FlexProps;
 
 export const UserSidePanelTabs: FC<Props> = ({
-  currentPathName,
+  // currentPathName,
   userName,
-  isMe,
+  // isMe,
   asMenu,
   ...props
 }) => {
+  const router = useRouter();
+  const { me } = useAuth();
+
+  const isMe = !me
+    ? false
+    : !userName
+    ? false
+    : me.userName === userName
+    ? true
+    : false;
+  const currentPathName = router.pathname;
   return (
     <Flex flexDirection="column" {...props} sx={{ gap: '2px' }}>
       {isMe && (

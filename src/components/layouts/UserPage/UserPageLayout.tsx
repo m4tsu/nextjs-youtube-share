@@ -35,7 +35,6 @@ export const UserPageLayout: FC = ({ children }) => {
             </Box>
           </Box>
         )}
-
         <Box as="main" flex="1">
           {children}
         </Box>

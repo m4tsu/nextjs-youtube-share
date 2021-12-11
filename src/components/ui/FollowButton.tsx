@@ -9,8 +9,14 @@ import {
   ModalFooter,
 } from '@chakra-ui/modal';
 import { Portal } from '@chakra-ui/portal';
-import { FC, MouseEventHandler } from 'react';
+import { useRouter } from 'next/router';
+import { FC, MouseEventHandler, useEffect, useRef, useState } from 'react';
 
+import { toast } from '@/lib/chakraUI/theme';
+import { usersRepository } from '@/repositories/users';
+import { useAuth } from '@/services/auth/AuthProvider';
+import { getPath } from '@/utils/route/Link';
+import { HttpError } from '@/utils/types/error';
 import { useHover } from '@/utils/useHover';
 
 import { Button } from './Button';
@@ -19,19 +25,71 @@ type FollowButtonProps = {
   isFollowing: boolean;
   onClick?: () => void;
   userName: string;
+  userId: string;
 } & ButtonProps;
 export const FollowButton: FC<FollowButtonProps> = ({
-  isFollowing,
+  isFollowing: initialIsFollowing,
   onClick,
   userName,
+  userId,
   ...props
 }) => {
   const { ref, isHovered } = useHover<HTMLButtonElement>();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const unfollow = () => {
-    if (onClick) {
-      onClick();
+  const router = useRouter();
+  const { me } = useAuth();
+  const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
+
+  console.log(isFollowing);
+  const rerendered = useRef(false);
+  useEffect(() => {
+    if (rerendered.current) {
+      setIsFollowing(initialIsFollowing);
+    } else {
+      rerendered.current = true;
     }
+  }, [initialIsFollowing]);
+
+  const follow = async () => {
+    if (!userName) return;
+    if (!me) {
+      router.push(getPath({ path: '/login' }));
+      return;
+    }
+    try {
+      await usersRepository.follow(userId);
+      setIsFollowing(true);
+      toast({ title: 'フォローしました', status: 'success' });
+    } catch (e) {
+      if (e instanceof HttpError) {
+        toast({ title: 'ログインしてください.', status: 'error' });
+        router.push(getPath({ path: '/login' }));
+        return;
+      }
+      throw e;
+    }
+  };
+
+  const unfollow = async () => {
+    if (!userName) return;
+    if (!me) {
+      router.push(getPath({ path: '/login' }));
+      return;
+    }
+    try {
+      await usersRepository.unFollow(userId);
+      setIsFollowing(false);
+      toast({ title: 'フォロー解除しました', status: 'success' });
+    } catch (e) {
+      if (e instanceof HttpError) {
+        toast({ title: 'ログインしてください.', status: 'error' });
+        router.push(getPath({ path: '/login' }));
+        return;
+      }
+      throw e;
+    }
+
+    onClick && onClick();
     onClose();
   };
 
@@ -40,13 +98,13 @@ export const FollowButton: FC<FollowButtonProps> = ({
     onOpen();
   };
 
-  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickFollow: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
+    await follow();
     onClick && onClick();
   };
 
   return (
-    // <Box ref={ref} flexShrink={0}>
     <>
       {isFollowing ? (
         <Button
@@ -65,7 +123,7 @@ export const FollowButton: FC<FollowButtonProps> = ({
           ref={ref}
           colorScheme="primary"
           flexShrink={0}
-          onClick={handleClick}
+          onClick={handleClickFollow}
           {...props}
         >
           フォロー
@@ -99,6 +157,5 @@ export const FollowButton: FC<FollowButtonProps> = ({
         </Modal>
       </Portal>
     </>
-    // </Box>
   );
 };
