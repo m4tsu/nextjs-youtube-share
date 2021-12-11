@@ -8,18 +8,7 @@ export const Container: FC<ContainerProps> = forwardRef<
   ContainerProps
 >(({ children, ...props }, ref) => {
   return (
-    <ChakraContainer
-      ref={ref}
-      {...props}
-      // maxWidth={{
-      //   base: '100%',
-      //   md: breakpoints.md,
-      //   lg: breakpoints.lg,
-      //   // xl: breakpoints.xl,
-      // }}
-      maxWidth={breakpoints.xl}
-      // px={4}
-    >
+    <ChakraContainer ref={ref} {...props} maxWidth={breakpoints.xl}>
       {children}
     </ChakraContainer>
   );

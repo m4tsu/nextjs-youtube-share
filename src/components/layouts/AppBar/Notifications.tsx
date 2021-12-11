@@ -154,7 +154,7 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
             WebkitBoxOrient: 'vertical',
           }}
         >
-          {notification.id} {Message}
+          {Message}
         </Text>
       </Flex>
     );
@@ -211,7 +211,7 @@ const NotificationList: FC<Props> = ({ me }) => {
 
   return (
     <Box
-      maxHeight="600px"
+      maxHeight="500px"
       width="100%"
       overflowY="scroll"
       onScroll={debounced}
@@ -246,7 +246,7 @@ const NotificationList: FC<Props> = ({ me }) => {
 
 const COUNT_REFRESH_INTERVAL = 1000 * 60 * 5;
 export const Notifications: FC<Props> = ({ me }) => {
-  const width = useBreakpointValue({ base: '100%', sm: '480px' });
+  const width = useBreakpointValue({ base: '100vw', sm: '480px' });
   const hoverBg = useColorModeValue('gray.50', 'darkPrimary.500');
   const { data, error } = useUnreadNotificationsCount({
     refreshInterval: COUNT_REFRESH_INTERVAL,
@@ -255,7 +255,7 @@ export const Notifications: FC<Props> = ({ me }) => {
   return (
     <Menu strategy="fixed" isLazy autoSelect={false}>
       <MenuButton
-        boxSize="60px"
+        px={3}
         _hover={{ bgColor: hoverBg }}
         _active={{ backgroundColor: 'unset' }}
       >
@@ -275,7 +275,6 @@ export const Notifications: FC<Props> = ({ me }) => {
               {count}
             </Flex>
           )}
-
           <Icon as={MdNotificationsNone} boxSize="30px" />
         </Box>
       </MenuButton>

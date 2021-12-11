@@ -226,6 +226,7 @@ export const NewPage: FC<Props> = ({ userName }) => {
               setValue('categories', [...values]);
             }}
             formatCreateLabel={(value) => `カテゴリーを作成: ${value}`}
+            noOptionsMessage={() => '選択可能なカテゴリーがありません'}
           />
           <FormErrorMessage>
             {categoriesError && categoriesError}

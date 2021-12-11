@@ -5,6 +5,7 @@ import { SWRConfig } from 'swr';
 
 import { AppBar } from '@/components/layouts/AppBar/AppBar';
 import { AuthGuard } from '@/components/layouts/AuthGuard/AuthGuard';
+import { Footer } from '@/components/layouts/Footer/Footer';
 import { Main } from '@/components/layouts/Main/Main';
 import { ModalPage } from '@/components/layouts/ModalPage/ModalPage';
 import { theme, toast } from '@/lib/chakraUI/theme';
@@ -62,6 +63,7 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
           ) : (
             getLayout(<Component {...pageProps} />)
           )}
+          <Footer />
           {asModal && <ModalPage />}
         </AuthProvider>
       </SWRConfig>

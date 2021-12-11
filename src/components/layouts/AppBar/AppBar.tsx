@@ -1,5 +1,7 @@
-import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
+import { Icon } from '@chakra-ui/icons';
+import { Box, Flex, useColorModeValue, Text, Tooltip } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
+import { MdPlaylistAdd } from 'react-icons/md';
 
 import { AppBarMenu } from '@/components/domain/user/AppBarMenu';
 import { Container } from '@/components/ui/Container';
@@ -50,7 +52,7 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
           display="flex"
           alignItems="center"
           h="full"
-          px={4}
+          px={2}
           _hover={{ bgColor: hoverBg }}
         >
           <Link
@@ -75,7 +77,11 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
               <>
                 {me && (
                   <Link path={Paths.newPost} params={{ userName: me.userName }}>
-                    <HeaderButton>投稿する</HeaderButton>
+                    <Tooltip label="投稿する">
+                      <HeaderButton>
+                        <Icon as={MdPlaylistAdd} boxSize="30px" />
+                      </HeaderButton>
+                    </Tooltip>
                   </Link>
                 )}
 
@@ -88,7 +94,11 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
                   <>
                     <ColorModeButton />
                     <Link path={Paths.login}>
-                      <HeaderButton>投稿する</HeaderButton>
+                      <Tooltip label="投稿する">
+                        <HeaderButton>
+                          <Icon as={MdPlaylistAdd} boxSize="30px" />
+                        </HeaderButton>
+                      </Tooltip>
                     </Link>
                     <Link path={Paths.login}>
                       <HeaderButton>ログイン</HeaderButton>

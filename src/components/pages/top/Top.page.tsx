@@ -68,7 +68,6 @@ export const TopPage: FC = () => {
           {data.map((posts) =>
             posts.map((post) => (
               <MemoedPostCard key={post.id} post={post} user={post.user} />
-              // <UserPostCard key={post.id} post={post} user={post.user} />
             ))
           )}
         </Grid>

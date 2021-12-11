@@ -109,6 +109,7 @@ export const theme = extendTheme(
         },
         main: {
           pb: '40px',
+          minHeight: 'calc(100vh - 60px)',
         },
         '#chakra-toast-manager-top-right': {
           // TODO: 正式な指定方法わからない

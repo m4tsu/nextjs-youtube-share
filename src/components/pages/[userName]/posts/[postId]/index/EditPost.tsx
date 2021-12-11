@@ -109,6 +109,7 @@ export const EditPost: FC<Props> = ({ post, me, onUpdated }) => {
             setValue('categories', [...values]);
           }}
           formatCreateLabel={(value) => `カテゴリーを作成: ${value}`}
+          noOptionsMessage={() => '選択可能なカテゴリーがありません'}
         />
         <FormErrorMessage>
           {categoriesError && categoriesError}

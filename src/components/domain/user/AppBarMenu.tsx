@@ -28,7 +28,7 @@ const Component: FC<Props> = ({ me }) => {
 
   return (
     <Menu strategy="fixed" isLazy autoSelect={false}>
-      <MenuButton _hover={{ bgColor: hoverBg }} px={4}>
+      <MenuButton _hover={{ bgColor: hoverBg }} px={2}>
         <Avatar src={me.avatarUrl} boxSize="44px" />
       </MenuButton>
       <Portal>
