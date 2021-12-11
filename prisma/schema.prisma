@@ -18,9 +18,13 @@ model User {
   updatedAt DateTime @updatedAt @default(now())
   avatarUrl String  @db.VarChar(255)
   posts Post[]
+  comments Comment[]
+  categories Category[]
   favorites Favorite[]
   followers Follow[] @relation(name: "followee")
   followings Follow[] @relation(name: "follower")
+  notifications Notification[] @relation(name: "reciever")
+  sentNotifications Notification[] @relation(name: "notifier")
 }
 
 enum VideoType {
@@ -29,7 +33,7 @@ enum VideoType {
 }
 
 model Post {
-  id        String    @id @unique  @db.Uuid @default(uuid()) //@default(dbgenerated("public.uuid_generate_v4()"))
+  id        String    @id @unique  @db.Uuid @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
   type VideoType
@@ -40,8 +44,26 @@ model Post {
   userId String  @db.Uuid
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   favorites Favorite[]
+  categories CategoriesOnPost[]
+  comments Comment[]
 
   @@index([userId], name: "userId")
+}
+
+enum DeletedBy {
+  commenter
+  author
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content String @db.VarChar(1000)
+  deletedBy DeletedBy?
+  createdAt DateTime @default(now())
 }
 
 model Favorite {
@@ -62,4 +84,42 @@ model Follow {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
   @@id([followeeId, followerId])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  posts CategoriesOnPost[]
+  @@unique([userId, name])
+}
+
+model CategoriesOnPost {
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  postId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@id([categoryId, postId])
+}
+
+enum NotificationType {
+  followed //フォローした
+  commented //コメントした
+  favorited //投稿をお気に入りした
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  notifierId String @db.Uuid
+  notifier User @relation(name: "notifier",fields: [notifierId], references: [id], onDelete: Cascade) //アクションしたユーザー
+  recieverId String @db.Uuid
+  reciever  User @relation(name: "reciever",fields: [recieverId], references: [id], onDelete: Cascade) //通知を受けるユーザー
+  type NotificationType
+  targetId String //フォローされたuserId,コメントされたpostId,お気に入りされたpostId
+  targetName String? ////コメントされたpost.titleとか
+  read Boolean @default(false)
+  createdAt DateTime @default(now())
 }

@@ -3,13 +3,27 @@ import { z } from 'zod';
 import { schemaForType } from '@/lib/zod/schemaForType';
 import { validateUrl } from '@/utils/domains/post/video';
 
+import { Category, categorySchemaOnPostForm } from './category';
+import { Comment } from './comment';
+import { User } from './user';
+
 import { Post as PrismaPost, VideoType } from '.prisma/client';
 
 type Post = PrismaPost & {
   favorited?: boolean;
-  favoritesCount: number;
+  favoritesCount?: number;
+  categories?: Category[];
+  comments?: Comment[];
 };
 export type { Post, VideoType };
+
+export type PostFavorites = Post & {
+  favoriteUsers: User[];
+};
+
+export type PostWithUser = Post & {
+  user: User;
+};
 
 export type NicovideoInfo = {
   thumbnailUrl: string;
@@ -47,21 +61,46 @@ export const postSchemaOnCreate = postSchema
     body: true,
     thumbnailUrl: true,
   })
-  .extend({ thumbnailUrl: z.string().optional() });
+  .extend({
+    thumbnailUrl: z.string().optional(),
+    categories: z.array(categorySchemaOnPostForm),
+  });
 
-export const postFormSchema = postSchemaOnCreate
-  .omit({ videoId: true })
+export const postFormSchemaOnCreate = postSchemaOnCreate
+  .pick({ type: true, title: true, body: true, thumbnailUrl: true })
   .extend({
     videoUrl: z.string().min(1, 'URLを入力してください.'),
+    categories: z
+      .array(categorySchemaOnPostForm)
+      // .array()
+      .max(5, 'カテゴリーは5つまでしか設定できません.'),
   })
   .refine(
     (data) => {
-      console.log('regine!!!!', data);
       const result = validateUrl(data.type, data.videoUrl);
       return result.isValid;
     },
     { message: 'URLの形式が間違っています.', path: ['videoUrl'] }
   );
-
 export type NewPostParams = z.infer<typeof postSchemaOnCreate>;
-export type PostFormParams = z.infer<typeof postFormSchema>;
+export type PostFormParamsOnCreate = z.infer<typeof postFormSchemaOnCreate>;
+
+export const postSchemaOnUpdate = postSchema
+  .pick({
+    title: true,
+    body: true,
+  })
+  .extend({
+    categories: z.array(categorySchemaOnPostForm),
+  });
+export const postFormSchemaOnUpdate = postSchemaOnUpdate
+  .pick({ title: true, body: true })
+  .extend({
+    categories: z
+      .array(categorySchemaOnPostForm)
+      // .array()
+      .max(5, 'カテゴリーは5つまでしか設定できません.'),
+  });
+
+export type UpdatePostParams = z.infer<typeof postSchemaOnUpdate>;
+export type PostFormParamsOnUpdate = z.infer<typeof postFormSchemaOnUpdate>;

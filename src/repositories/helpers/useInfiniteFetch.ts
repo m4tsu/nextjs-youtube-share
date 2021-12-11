@@ -1,12 +1,11 @@
-import { Fetcher } from 'swr';
-import useSWRInfinite from 'swr/infinite';
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite';
 
-import { HttpError } from '@/utils/types/error';
+import { HttpError, NetworkError } from '@/utils/types/error';
 
 import { httpClient } from './httpClient';
 
 const getKeyForInfiniteFetch = <
-  Data extends { id: string },
+  Data extends { id: string | number },
   DataList extends Data[]
 >(
   pageIndex: number,
@@ -26,19 +25,21 @@ const getKeyForInfiniteFetch = <
 };
 
 export const useInfiniteFetch = <
-  Data extends { id: string },
-  E extends unknown = HttpError
+  Data extends { id: string | number },
+  E extends unknown = HttpError | NetworkError
 >(
   limit: number,
   path: string,
-  fetcher?: Fetcher<Data[]>
+  // fetcher?: Fetcher<Data[]>
+  config?: SWRInfiniteConfiguration
 ) => {
   const { data, error, setSize, size, isValidating } = useSWRInfinite<
     Data[],
     E
   >(
     (i, list) => getKeyForInfiniteFetch(i, list, limit, path),
-    fetcher ?? httpClient.get
+    httpClient.get,
+    config
   );
   const isLast = data ? data.slice(-1)[0].length < limit : false;
   const loadMore = () => {

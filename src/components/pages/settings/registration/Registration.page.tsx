@@ -12,6 +12,7 @@ import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { Panel } from '@/components/ui/Panel';
+import { toast } from '@/lib/chakraUI/theme';
 import { supabaseClient } from '@/lib/supabase/client';
 import { useUser } from '@/repositories/users';
 import { useAuth, useAuthDispatch } from '@/services/auth/AuthProvider';
@@ -21,9 +22,10 @@ import { useDebounce } from '@/utils/useDebounce';
 
 export const RegistrationPage: FC = () => {
   const authUser = supabaseClient.auth.user();
+  const router = useRouter();
+
   const { me, isLoading: isLoadingMe } = useAuth();
   const { createUserWithUserName } = useAuthDispatch();
-  const router = useRouter();
   const [userName, setUserName] = useState<string>(
     authUser?.user_metadata?.user_name ?? ''
   );
@@ -42,7 +44,12 @@ export const RegistrationPage: FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
-    await createUserWithUserName(debouncedUserName);
+    try {
+      await createUserWithUserName(debouncedUserName);
+      toast({ status: 'success', title: 'TubetterIDが登録されました。' });
+    } catch (e) {
+      toast({ status: 'error', title: 'TubetterIDの登録に失敗しました。' });
+    }
   };
 
   if (!authUser) {
@@ -77,7 +84,7 @@ export const RegistrationPage: FC = () => {
               placeholder="tubetterID1234"
               value={userName}
               onChange={handleChange}
-              disabled={isLoading}
+              // disabled={isLoading}
             />
             {isLoading && (
               <InputRightElement>

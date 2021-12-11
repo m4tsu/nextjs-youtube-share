@@ -1,9 +1,9 @@
-import { authorize, handler } from '@/lib/apiRouteHandler/handler';
+import { authenticate, handler } from '@/lib/apiRouteHandler/handler';
 import prisma from '@/lib/prisma/prismaClient';
 import { User } from '@/types/domains/user';
 
 export default handler<User>().get(async (req, res) => {
-  const currentUser = authorize(req);
+  const currentUser = authenticate(req);
   const userByAuthUserId = await prisma.user.findUnique({
     where: { id: currentUser.id },
   });

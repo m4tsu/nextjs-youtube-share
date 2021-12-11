@@ -1,13 +1,21 @@
 import { mutate } from 'swr';
+import { SWRInfiniteConfiguration } from 'swr/infinite/dist/infinite';
 
-import { NewPostParams, NicovideoInfo, Post } from '@/types/domains/post';
+import { UserFavoritePosts } from '@/pages/api/users/[userName]/favorites';
+import {
+  NewPostParams,
+  NicovideoInfo,
+  Post,
+  PostFavorites,
+  PostWithUser,
+  UpdatePostParams,
+} from '@/types/domains/post';
 import { UserPosts } from '@/types/domains/user';
 import { ApiPaths, getApiPath, getFetchKey } from '@/utils/route/apiPaths';
 
 import { httpClient } from './helpers/httpClient';
 import { useFetch } from './helpers/useFetch';
 import { useInfiniteFetch } from './helpers/useInfiniteFetch';
-import { usePaginationFetch } from './helpers/usePaginationFetch';
 class PostsRepository {
   private static instance: PostsRepository;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -35,15 +43,43 @@ class PostsRepository {
       newPost,
       false
     );
-    await mutate<Post[]>(
-      getFetchKey({
-        path: '/api/users/[userName]/posts',
-        params: { userName },
+
+    return newPost;
+  };
+
+  updatePost = async (
+    postId: string,
+    params: UpdatePostParams,
+    userName: string
+  ) => {
+    const updatedPost = await httpClient.patch<Post, UpdatePostParams>({
+      url: getApiPath({
+        path: ApiPaths.userPost,
+        params: { userName, postId },
       }),
-      async (data) => (data ? { ...data, newPost } : undefined),
+      params,
+    });
+    mutate<Post>(
+      getFetchKey({
+        path: '/api/users/[userName]/posts/[postId]',
+        params: { userName, postId: updatedPost.id },
+      }),
+      (data) => {
+        const { title, body, categories } = updatedPost;
+        return data ? { ...data, title, body, categories } : updatedPost;
+      },
       false
     );
-    return newPost;
+    return updatedPost;
+  };
+
+  deletePost = async (postId: string, userName: string) => {
+    await httpClient.delete({
+      url: getApiPath({
+        path: '/api/users/[userName]/posts/[postId]',
+        params: { postId, userName },
+      }),
+    });
   };
 
   favorite = async (postId: string) => {
@@ -66,33 +102,6 @@ class PostsRepository {
 
 export const postsRepository = PostsRepository.getInstance();
 
-export const createPost = async (params: NewPostParams, userName: string) => {
-  const newPost = await httpClient.post<Post, NewPostParams>({
-    url: getApiPath({
-      path: '/api/users/[userName]/posts/create',
-      params: { userName },
-    }),
-    params,
-  });
-  await mutate<Post>(
-    getFetchKey({
-      path: '/api/users/[userName]/posts/[postId]',
-      params: { userName, postId: newPost.id },
-    }),
-    newPost,
-    false
-  );
-  await mutate<Post[]>(
-    getFetchKey({
-      path: '/api/users/[userName]/posts',
-      params: { userName },
-    }),
-    async (data) => (data ? { ...data, newPost } : undefined),
-    false
-  );
-  return newPost;
-};
-
 export const useNicovideoInfo = (videoId?: string) => {
   return useFetch<NicovideoInfo>(
     getFetchKey({ path: '/api/nicovideoInfo/[videoId]', params: { videoId } })
@@ -108,15 +117,27 @@ export const usePost = (userName?: string, postId?: string) => {
   );
 };
 
+export const usePostFavorites = (postId?: string) => {
+  return useFetch<PostFavorites>(
+    getFetchKey({ path: '/api/posts/[postId]/favorites', params: { postId } })
+  );
+};
+
 export const useUserPosts = (
   pageIndex: number,
   perPage: number,
-  userName?: string
+  userName?: string,
+  categoryName?: string
 ) => {
-  const { data, error } = usePaginationFetch<UserPosts>(
-    getFetchKey({ path: '/api/users/[userName]/posts', params: { userName } }),
-    pageIndex,
-    perPage
+  const { data, error } = useFetch<UserPosts>(
+    // usePaginationFetch<UserPosts>(
+    getFetchKey({
+      path: '/api/users/[userName]/posts',
+      params: { userName },
+      query: { pageIndex, perPage, categoryName },
+    })
+    // pageIndex,
+    // perPage
   );
   const totalPage = data?.postsCount
     ? Math.ceil(data.postsCount / perPage)
@@ -124,6 +145,32 @@ export const useUserPosts = (
   return { data, error, totalPage };
 };
 
-export const useAllPosts = (limit: number) => {
-  return useInfiniteFetch<Post>(limit, ApiPaths.posts);
+export const useUserFavoritePosts = (
+  pageIndex: number,
+  perPage: number,
+  userName?: string,
+  categoryName?: string
+) => {
+  const { data, error } = useFetch<UserFavoritePosts>(
+    getFetchKey({
+      path: '/api/users/[userName]/favorites',
+      params: { userName },
+      query: { pageIndex, perPage, categoryName },
+    })
+  );
+  const totalPage = data?.postsCount
+    ? Math.ceil(data.postsCount / perPage)
+    : null;
+  return { data, error, totalPage };
+};
+
+export const useAllPosts = (
+  limit: number,
+  config?: SWRInfiniteConfiguration
+) => {
+  return useInfiniteFetch<PostWithUser>(limit, ApiPaths.posts, config);
+};
+
+export const useTimeline = (limit: number) => {
+  return useInfiniteFetch<PostWithUser>(limit, ApiPaths.timeline);
 };

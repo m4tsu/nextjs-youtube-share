@@ -8,10 +8,7 @@ type Props = {
 };
 export const YoutubePlayer: VFC<Props> = React.memo(
   ({ videoId, setVideoTitle }) => {
-    console.log('rerender');
-
     const handleVideoReady = (event: any) => {
-      console.log(event);
       if (setVideoTitle && event.target.getVideoData().title) {
         setVideoTitle(event.target.getVideoData().title);
       }

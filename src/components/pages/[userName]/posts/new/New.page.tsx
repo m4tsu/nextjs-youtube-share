@@ -4,10 +4,11 @@ import {
   FormErrorMessage,
   FormLabel,
   HStack,
-  Input,
+  InputGroup,
+  InputRightElement,
   Radio,
   RadioGroup,
-  Textarea,
+  Spinner,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
@@ -15,16 +16,19 @@ import { FC, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/Button';
-import { CreatableSelect } from '@/components/ui/MultiSelect';
+import { CreatableSelect } from '@/components/ui/CreatableSelect';
+import { Input } from '@/components/ui/Input';
 import { Panel } from '@/components/ui/Panel';
+import { Textarea } from '@/components/ui/Textarea';
 import { DummyPlayer, VideoPlayer } from '@/components/ui/VideoPlayer';
 import { YoutubePlayer } from '@/components/ui/YoutubePlayer';
 import { toast } from '@/lib/chakraUI/theme';
-import { createPost, useNicovideoInfo } from '@/repositories/posts';
+import { useCategories } from '@/repositories/category';
+import { postsRepository, useNicovideoInfo } from '@/repositories/posts';
 import {
   NewPostParams,
-  PostFormParams,
-  postFormSchema,
+  PostFormParamsOnCreate,
+  postFormSchemaOnCreate,
 } from '@/types/domains/post';
 import { getEmbedUrl, validateUrl } from '@/utils/domains/post/video';
 import { getPath } from '@/utils/route/Link';
@@ -39,10 +43,11 @@ const placeholders = {
     'https://www.nicovideo.jp/watch/sm1234567 | https://nico.ms/sm1234567',
 };
 
-export const NewPage: FC = () => {
+type Props = {
+  userName: string;
+};
+export const NewPage: FC<Props> = ({ userName }) => {
   const router = useRouter();
-  const { userName } = router.query as { userName: string };
-
   const {
     handleSubmit,
     register,
@@ -51,13 +56,27 @@ export const NewPage: FC = () => {
     trigger,
     getValues,
     setValue,
-  } = useForm<PostFormParams>({
+  } = useForm<PostFormParamsOnCreate>({
     mode: 'all',
-    defaultValues: { type: 'youtube', videoUrl: '' },
-    resolver: zodResolver(postFormSchema),
+    defaultValues: { type: 'youtube', videoUrl: '', categories: [] },
+    resolver: zodResolver(postFormSchemaOnCreate),
   });
-  console.log(errors, isSubmitting, isValid, isDirty);
-  console.log(postFormSchema.safeParse(getValues()));
+  const { data, error } = useCategories(userName);
+  const categoryOptions = data
+    ? data.map((c) => {
+        return {
+          id: c.id,
+          label: c.name,
+          value: c.name,
+        };
+      })
+    : [];
+
+  const categoriesError =
+    watch('categories').length > 5
+      ? 'カテゴリーは5つまでしか設定できません.'
+      : null; // TODO: 何故かzodエラーが出ない
+
   const urlValidationResult = validateUrl(watch('type'), watch('videoUrl'));
   const isNicovideo = watch('type') === 'nicovideo';
 
@@ -78,11 +97,9 @@ export const NewPage: FC = () => {
   }, []);
 
   const onSubmit = async (values: NewPostFormParams) => {
-    console.log(values, nicovideoData);
-    console.log(urlValidationResult);
     if (urlValidationResult.isValid) {
       try {
-        const newPost = await createPost(
+        const newPost = await postsRepository.createPost(
           {
             ...values,
             videoId: urlValidationResult.videoId,
@@ -97,7 +114,6 @@ export const NewPage: FC = () => {
           })
         );
       } catch (e) {
-        console.log('catch error', e);
         toast({
           title: '投稿が失敗しました',
           status: 'error',
@@ -128,10 +144,10 @@ export const NewPage: FC = () => {
         trigger('title');
       }
     }
-  }, [nicovideoData?.title]);
+  }, [nicovideoData?.title, isDirty]);
 
   return (
-    <Panel>
+    <Panel pt={0}>
       <Flex
         as="form"
         direction="column"
@@ -181,29 +197,40 @@ export const NewPage: FC = () => {
         </FormControl>
         <FormControl isInvalid={!!errors.title}>
           <FormLabel htmlFor="title">タイトル</FormLabel>
-          <Input
-            id="title"
-            placeholder="投稿のタイトル"
-            {...register('title')}
-          />
+          <InputGroup>
+            <Input
+              id="title"
+              placeholder="投稿のタイトル"
+              {...register('title')}
+            />
+            {nicovideoInfoLoading && (
+              <InputRightElement>
+                <Spinner color="primary.500" />
+              </InputRightElement>
+            )}
+          </InputGroup>
+
           <FormErrorMessage>
             {errors.title && errors.title.message}
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl>
+        <FormControl isInvalid={!!categoriesError}>
           <FormLabel htmlFor="categories">カテゴリー</FormLabel>
           <CreatableSelect
             isMulti
-            options={[
-              { value: 'A', label: 'カテゴリA' },
-              { value: 'B', label: 'カテゴリB' },
-              { value: 'C', label: 'カテゴリC' },
-            ]}
+            name="categories"
+            placeholder="カテゴリーを選択する"
+            options={categoryOptions}
             onChange={(values) => {
-              console.log(values);
+              setValue('categories', [...values]);
             }}
+            formatCreateLabel={(value) => `カテゴリーを作成: ${value}`}
+            noOptionsMessage={() => '選択可能なカテゴリーがありません'}
           />
+          <FormErrorMessage>
+            {categoriesError && categoriesError}
+          </FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!errors.body}>
@@ -222,7 +249,12 @@ export const NewPage: FC = () => {
           type="submit"
           width="full"
           isLoading={isSubmitting}
-          disabled={nicovideoInfoLoading || !isValid || !!nicovideoInfoError}
+          disabled={
+            nicovideoInfoLoading ||
+            !isValid ||
+            !!nicovideoInfoError ||
+            !!categoriesError
+          }
         >
           投稿する
         </Button>

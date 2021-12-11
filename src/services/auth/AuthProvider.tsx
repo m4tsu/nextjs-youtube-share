@@ -48,9 +48,9 @@ export const AuthProvider: FC = ({ children }) => {
   const [session, setSession] = useState<Session | null>(initialSession);
   const [me, setMe] = useState<User | null>(null);
   const [isLoadingMe, setIsLoadingMe] = useState(false);
-  // const { data: me, error } = useMe(session);
-  const error = null;
-  const isLoading = (!error && !!session) || isLoadingMe;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [error, setError] = useState<any>(null);
+  const isLoading = isLoadingMe || (!error && !me && !!session);
 
   const authenticated = useRef(false);
   console.log('AuthProvider', session, me, isLoading, error);
@@ -65,8 +65,8 @@ export const AuthProvider: FC = ({ children }) => {
   const signOut = useCallback(async () => {
     await supabaseClient.auth.signOut();
     setMe(null);
-    router.push(Paths.login);
-  }, []);
+    router.push(Paths.top);
+  }, [router]);
 
   const authenticate = async (event: AuthChangeEvent, s: Session | null) => {
     // for server side auth
@@ -81,16 +81,26 @@ export const AuthProvider: FC = ({ children }) => {
         console.log(res);
       });
       const res = await usersRepository.fetchMe();
+      setIsLoadingMe(false);
       console.log(res);
       authenticated.current = true;
       setMe(res);
     } catch (e) {
       console.log('OOOOOOO', e instanceof HttpError, e);
+      setError(e);
       if (e instanceof HttpError && e.status === 404) {
         setIsLoadingMe(false); // TODO: リダイレクト前にこれしないとずっとローディングになっちゃう...
-        const r = await usersRepository.createUser();
-        console.log('newMe', r);
-        setMe(r);
+        try {
+          const r = await usersRepository.createUser();
+          console.log('newMe', r);
+          setMe(r);
+        } catch (e) {
+          if (e instanceof HttpError && e.status === 307) {
+            router.push(Paths.registration);
+          } else {
+            throw e;
+          }
+        }
       } else {
         setMe(null);
       }
@@ -119,7 +129,7 @@ export const AuthProvider: FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoading: isLoadingMe, me: me ?? null }}>
+    <AuthContext.Provider value={{ isLoading: isLoading, me: me ?? null }}>
       <AuthDispatchContext.Provider
         value={{ createUserWithUserName, signIn: signinWithTwitter, signOut }}
       >

@@ -6,6 +6,7 @@ import { UserPosts } from '@/types/domains/user';
 
 const querySchema = z.object({
   userName: z.string(),
+  categoryName: z.string().optional(),
   pageIndex: z
     .string()
     .refine((v) => {
@@ -21,38 +22,63 @@ const querySchema = z.object({
 });
 
 export default handler<UserPosts>().get(async (req, res) => {
-  console.log(req.url);
-  const { userName, pageIndex, perPage } = querySchema.parse(req.query);
-  console.log('userPosts api', req.query);
+  const { userName, categoryName, pageIndex, perPage } = querySchema.parse(
+    req.query
+  );
   const skip = (pageIndex - 1) * perPage;
-  const result = await prisma.user.findUnique({
-    where: { userName },
-    include: {
-      _count: { select: { posts: true } },
-      posts: {
-        take: perPage,
-        skip,
-        orderBy: { updatedAt: 'desc' },
-        include: {
-          _count: { select: { favorites: true } },
-          favorites: { where: { userId: req.currentUser?.id } },
+  const [totalCount, result] = await prisma.$transaction([
+    prisma.post.count({
+      where: {
+        AND: [
+          {
+            categories: categoryName
+              ? { some: { category: { name: categoryName } } }
+              : undefined,
+          },
+          {
+            user: { userName },
+          },
+        ],
+      },
+    }),
+    prisma.user.findUnique({
+      where: { userName },
+      include: {
+        posts: {
+          take: perPage,
+          skip,
+          where: {
+            AND: [
+              {
+                categories: categoryName
+                  ? { some: { category: { name: categoryName } } }
+                  : undefined,
+              },
+            ],
+          },
+          orderBy: { createdAt: 'desc' },
+          include: {
+            _count: { select: { favorites: true } },
+            favorites: { where: { userId: req.currentUser?.id } },
+            categories: { include: { category: true } },
+          },
         },
       },
-    },
-  });
-  console.log('userPosts', result);
+    }),
+  ]);
   if (!result) {
     return res.status(404).json({
-      message: 'ユーザーがみつかりませんでした.',
+      message: '投稿が見つかりませんでした',
     });
   }
   const userPosts = {
     ...result,
-    postsCount: result._count?.posts || 0,
+    postsCount: totalCount,
     posts: result.posts.map((post) => ({
       ...post,
       favoritesCount: post._count?.favorites || 0,
       favorited: post.favorites.length > 0,
+      categories: post.categories.map((c) => c.category),
     })),
   };
   return res.status(200).json(userPosts);

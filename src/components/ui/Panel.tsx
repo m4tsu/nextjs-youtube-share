@@ -1,18 +1,18 @@
-import { Box, BoxProps } from '@chakra-ui/layout';
-import { FC } from 'react';
+import { Box, BoxProps, LinkBox } from '@chakra-ui/layout';
+import { useStyleConfig } from '@chakra-ui/system';
+import { FC, forwardRef } from 'react';
 
-export const Panel: FC<BoxProps> = (props) => {
-  return (
-    <Box
-      // borderRadius="sm"
-      // borderWidth="1px"
-      // borderStyle="solid"
-      // borderColor="lightgray"
-      bgColor="white"
-      // boxShadow="xs"
-      // transition="box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms"
-      p={4}
-      {...props}
-    />
-  );
-};
+type Props = {
+  asLinkBox?: boolean;
+  variant?: string;
+} & BoxProps;
+export const Panel: FC<Props> = forwardRef<HTMLDivElement, Props>(
+  ({ asLinkBox, variant, ...props }, ref) => {
+    const styles = useStyleConfig('Panel', { variant });
+    return asLinkBox ? (
+      <Box as={LinkBox} __css={styles} ref={ref} {...props} />
+    ) : (
+      <Box __css={styles} ref={ref} {...props} />
+    );
+  }
+);

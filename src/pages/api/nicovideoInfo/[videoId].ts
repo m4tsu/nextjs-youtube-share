@@ -12,7 +12,6 @@ const nicovideoInfo = async (req: NextApiRequest, res: NextApiResponse) => {
     const xml = await result.text();
     const parser = new Parser();
     const obj = await parser.parseStringPromise(xml);
-    console.log(obj.nicovideo_thumb_response.thumb[0]);
     const title = obj.nicovideo_thumb_response.thumb[0].title[0];
     const thumbnailUrl = obj.nicovideo_thumb_response.thumb[0].thumbnail_url[0];
     res.status(200).json({ title, thumbnailUrl });

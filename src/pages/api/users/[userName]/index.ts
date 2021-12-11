@@ -5,11 +5,12 @@ import { User } from '@/types/domains/user';
 export default handler<User>().get(async (req, res) => {
   const { userName } = req.query as { userName: string };
   const currentUser = req.currentUser;
-  console.log('user api!!!!', req.query);
 
   const user = await prisma.user.findUnique({
     where: { userName },
-    include: { followers: { where: { followerId: currentUser?.id } } },
+    include: {
+      followers: { where: { OR: [{ followerId: req.currentUser?.id }] } },
+    },
   });
   if (!user) {
     return res.status(404).json({

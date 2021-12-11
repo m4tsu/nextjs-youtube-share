@@ -29,7 +29,7 @@ const options: Options<NextApiRequest, NextApiResponse<ApiErrorObject>> = {
   },
 };
 
-export const authorize = (
+export const authenticate = (
   req: NextApiRequest & { currentUser: User | null }
 ) => {
   if (!req.currentUser) {

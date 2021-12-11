@@ -1,9 +1,11 @@
 import { NextAppPage } from 'next';
 
-const SettingsPage: NextAppPage = () => {
-  return <div>Settings Page</div>;
+import { SettingsPage } from '@/components/pages/settings/index/Settings.page';
+
+const Page: NextAppPage = () => {
+  return <SettingsPage />;
 };
 
-SettingsPage.requireLogin = true;
+Page.requireLogin = true;
 
-export default SettingsPage;
+export default Page;

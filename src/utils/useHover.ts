@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-export const useHover = () => {
+export const useHover = <T extends HTMLElement = HTMLDivElement>() => {
   const [isHovered, setHovered] = useState(false);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<T>(null);
 
   const handleMouseover = () => setHovered(true);
   const handleMouseout = () => setHovered(false);

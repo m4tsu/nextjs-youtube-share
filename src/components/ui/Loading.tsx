@@ -1,12 +1,16 @@
-import { Spinner } from '@chakra-ui/react';
-import { FC } from 'react';
+import { Box, Spinner, BoxProps } from '@chakra-ui/react';
+import React, { FC } from 'react';
 
-import { Panel } from './Panel';
-
-export const Loading: FC = () => {
+export const Loading: FC<BoxProps> = (props) => {
   return (
-    <Panel display="flex" justifyContent="center">
-      <Spinner />
-    </Panel>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      width="full"
+      {...props}
+    >
+      <Spinner color="primary.500" />
+    </Box>
   );
 };

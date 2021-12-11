@@ -1,26 +1,16 @@
-import useSWR, { Fetcher } from 'swr';
+import useSWR, { Fetcher, SWRConfiguration } from 'swr';
 
-import { HttpError } from '@/utils/types/error';
+import { HttpError, NetworkError } from '@/utils/types/error';
 
 import { httpClient } from './httpClient';
 
-export const useFetch = <
-  T extends Record<string, unknown>,
-  E extends unknown = HttpError
->(
+export const useFetch = <T, E extends unknown = HttpError | NetworkError>(
   key: string | null,
-  fetcher?: Fetcher<T>
+  // fetcher?: Fetcher<T>
+  config?: SWRConfiguration
 ) => {
   console.log('useFetch', key);
-  const { data, error, mutate } = useSWR<T, E>(
-    key,
-    fetcher ? fetcher : fetcher ?? httpClient.get,
-    {
-      shouldRetryOnError: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const { data, error, mutate } = useSWR<T, E>(key, httpClient.get, config);
   console.log(error);
   return {
     data,
@@ -32,7 +22,7 @@ export const useFetch = <
 // isValidatingを使わなくても、useSWRから取得してしまうとisValidatingに応じてレンダリングが起こってしまうので使うかどうかで呼び出しを変える
 export const useFetchWithValidating = <
   T extends Record<string, unknown>,
-  E extends unknown = HttpError
+  E extends unknown = HttpError | NetworkError
 >(
   key: string | null,
   fetcher?: Fetcher<T>

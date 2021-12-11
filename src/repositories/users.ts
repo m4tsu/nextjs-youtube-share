@@ -29,6 +29,10 @@ class UsersRepository {
       params: { userName },
     });
   }
+  async withdraw() {
+    return await httpClient.delete({ url: ApiPaths.withdraw });
+  }
+
   async follow(userId: string) {
     await httpClient.post({
       url: getApiPath({
@@ -47,33 +51,6 @@ class UsersRepository {
   }
 }
 
-// export const createPost = async (params: NewPostParams, userName: string) => {
-//   const newPost = await httpClient.post<Post, NewPostParams>({
-//     url: getApiPath({
-//       path: '/api/users/[userName]/posts/create',
-//       params: { userName },
-//     }),
-//     params,
-//   });
-//   await mutate<Post>(
-//     getFetchKey({
-//       path: '/api/users/[userName]/posts/[postId]',
-//       params: { userName, postId: newPost.id },
-//     }),
-//     newPost,
-//     false
-//   );
-//   await mutate<Post[]>(
-//     getFetchKey({
-//       path: '/api/users/[userName]/posts',
-//       params: { userName },
-//     }),
-//     async (data) => (data ? { ...data, newPost } : undefined),
-//     false
-//   );
-//   return newPost;
-// };
-
 export const usersRepository = UsersRepository.getInstance();
 
 export const useUser = (userName?: string) => {
@@ -83,6 +60,17 @@ export const useUser = (userName?: string) => {
 };
 
 export const useMe = (session: Session | null) => {
-  console.log('useMe');
   return useFetch<User>(session ? getFetchKey({ path: '/api/auth/me' }) : null);
+};
+
+export const useFollowers = (userName?: string) => {
+  return useFetch<User[]>(
+    getFetchKey({ path: ApiPaths.followers, params: { userName } })
+  );
+};
+
+export const useFollowings = (userName?: string) => {
+  return useFetch<User[]>(
+    getFetchKey({ path: ApiPaths.followings, params: { userName } })
+  );
 };
