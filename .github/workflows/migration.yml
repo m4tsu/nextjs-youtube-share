@@ -26,7 +26,8 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install NPM packages
-              run: npm ci
+        run: npm ci
+
       - name: DB migrate
         env:
           DATABASE_URL: ${{secrets.DATABASE_URL}}
