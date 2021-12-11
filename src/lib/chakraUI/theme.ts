@@ -12,45 +12,6 @@ export const colors = {
   textMain: '#1A202C', //gray.800
   textSub: '#718096', //gray.500
   lightGray: '#a8abb1',
-  // primary: {
-  //   200: '#00FFF2',
-  //   300: '#00e5da',
-  //   400: '#00ccc1',
-  //   500: '#00b5ad',
-  //   600: '#009991',
-  //   700: '#007f79',
-  // },
-  // bgPrimary: {
-  //   500: '#2B4E4E',
-  //   600: '#223E3E',
-  //   700: '#192E2E',
-  //   800: '#111f1f', #121212 とPromaryの8%を混ぜた色.Googleのダークモードガイドライン？にあるっぽい
-  //   900: '#070d0d',
-  // },
-  // primaryDark: {
-  //   400: '#0B6379',
-  //   500: '#095061',
-  //   600: '#063D4A',
-  //   // 700: '#052D37',
-  //   700: '#0E2125',
-  //   // 800: '#02161B',
-  //   800: '#071012',
-  //   900: '#000304',
-  // },
-  // white: '#DBEDF3',
-
-  // primary: {
-  //   50: '#3DF5FF',
-  //   100: '#23F4FF',
-  //   200: '#0AF2FF',
-  //   300: '#00E3EF',
-  //   400: '#00CBD6',
-  //   500: '#00B3BC',
-  //   600: '#009BA3',
-  //   700: '#00818A',
-  //   800: '#006A70',
-  //   900: '#005256',
-  // },
   primary: {
     50: '#A3FAFF',
     100: '#89F9FF',
@@ -98,7 +59,7 @@ export const breakpoints = createBreakpoints({
 });
 
 const config = {
-  initialColorMode: 'light',
+  initialColorMode: 'dark',
   useSystemColorMode: false,
   cssVarPrefix: 'tbt',
 } as const;

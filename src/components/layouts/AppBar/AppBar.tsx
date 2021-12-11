@@ -5,7 +5,6 @@ import { MdPlaylistAdd } from 'react-icons/md';
 
 import { AppBarMenu } from '@/components/domain/user/AppBarMenu';
 import { Container } from '@/components/ui/Container';
-import { Loading } from '@/components/ui/Loading';
 import { Panel } from '@/components/ui/Panel';
 import { useAuth } from '@/services/auth/AuthProvider';
 import { User } from '@/types/domains/user';
@@ -72,7 +71,7 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
         {mounted && (
           <Flex h="full">
             {isLoading ? (
-              <Loading />
+              <></>
             ) : (
               <>
                 {me && (

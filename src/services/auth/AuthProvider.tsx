@@ -77,14 +77,14 @@ export const AuthProvider: FC = ({ children }) => {
         headers: new Headers({ 'Content-Type': 'application/json' }),
         credentials: 'same-origin',
         body: JSON.stringify({ event, session: s }),
-      }).then((res) => {
-        console.log(res);
       });
-      const res = await usersRepository.fetchMe();
+      if (event !== 'SIGNED_OUT') {
+        const res = await usersRepository.fetchMe();
+        setMe(res);
+
+        authenticated.current = true;
+      }
       setIsLoadingMe(false);
-      console.log(res);
-      authenticated.current = true;
-      setMe(res);
     } catch (e) {
       console.log(e instanceof HttpError, e);
       setError(e);

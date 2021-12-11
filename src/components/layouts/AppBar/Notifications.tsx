@@ -167,11 +167,8 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
 const LIMIT = 12;
 const MAX_COUNTS = 50;
 const RERESH_INTERVAL = 1000 * 60 * 5;
-type Props = {
-  me: User;
-};
 
-const NotificationList: FC<Props> = ({ me }) => {
+const NotificationList: FC = () => {
   const scrollbarColor = useColorModeValue('gray.300', 'darkPrimary.400');
   const { data, error, isLast, isValidating, loadMore } = useNotifications(
     LIMIT,
@@ -181,6 +178,7 @@ const NotificationList: FC<Props> = ({ me }) => {
 
   useEffect(() => {
     notificationsRepository.readNotifications();
+
     return () => {
       mutate<number>(
         getFetchKey({ path: '/api/notifications/unreadCount' }),
@@ -244,6 +242,9 @@ const NotificationList: FC<Props> = ({ me }) => {
   );
 };
 
+type Props = {
+  me: User;
+};
 const COUNT_REFRESH_INTERVAL = 1000 * 60 * 5;
 export const Notifications: FC<Props> = ({ me }) => {
   const width = useBreakpointValue({ base: '100vw', sm: '480px' });
@@ -251,6 +252,7 @@ export const Notifications: FC<Props> = ({ me }) => {
   const { data, error } = useUnreadNotificationsCount({
     refreshInterval: COUNT_REFRESH_INTERVAL,
   });
+
   const count = error ? 0 : data ? data : 0;
   return (
     <Menu strategy="fixed" isLazy autoSelect={false}>
@@ -298,7 +300,7 @@ export const Notifications: FC<Props> = ({ me }) => {
             as="div"
             cursor="default"
           >
-            <NotificationList me={me} />
+            <NotificationList />
           </MenuItem>
         </MenuList>
       </Portal>

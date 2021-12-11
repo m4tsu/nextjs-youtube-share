@@ -59,7 +59,9 @@ export const TopPage: FC = () => {
           </Text>
         </Flex>
       )}
-      <Text variant="pageTitle">新着投稿</Text>
+      <Text variant="pageTitle" textAlign="center">
+        新着投稿
+      </Text>
 
       {data ? (
         <Grid
