@@ -13,6 +13,7 @@ import { Error } from '../error/Error';
 
 const LOADER_HEIGHT = '40px';
 const MAX_POSTS_COUNTS = 100;
+const REFRESH_INTERVAL = 1000 * 60 * 10;
 const LIMIT = 12;
 
 const MemoedPostCard = memo(UserPostCard, (prev, next) => {
@@ -22,7 +23,7 @@ const MemoedPostCard = memo(UserPostCard, (prev, next) => {
 export const TopPage: FC = () => {
   const { me, isLoading } = useAuth();
   const { data, error, loadMore, isLast, isValidating } = useAllPosts(LIMIT, {
-    refreshInterval: 60000,
+    refreshInterval: REFRESH_INTERVAL,
   });
   const fetchLimited = data ? data.length >= MAX_POSTS_COUNTS / LIMIT : false;
 
