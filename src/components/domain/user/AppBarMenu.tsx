@@ -38,12 +38,7 @@ const Component: FC<Props> = ({ me }) => {
           flexDirection="column"
           sx={{ gap: '.5rem' }}
         >
-          <UserSidePanelTabs
-            userName={me.userName}
-            isMe
-            asMenu
-            currentPathName={currentPathName}
-          />
+          <UserSidePanelTabs userName={me.userName} asMenu />
           <Divider />
           <Flex flexDirection="column">
             <ToggleColorModeMenuButton />

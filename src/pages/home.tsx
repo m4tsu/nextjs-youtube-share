@@ -9,4 +9,5 @@ const Page: NextAppPage = () => {
 
 Page.requireLogin = true;
 Page.getLayout = (page) => <UserPageLayout>{page}</UserPageLayout>;
+
 export default Page;

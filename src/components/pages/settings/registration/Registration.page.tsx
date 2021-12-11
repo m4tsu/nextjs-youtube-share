@@ -17,6 +17,7 @@ import { supabaseClient } from '@/lib/supabase/client';
 import { useUser } from '@/repositories/users';
 import { useAuth, useAuthDispatch } from '@/services/auth/AuthProvider';
 import { userSchemaOnCreate } from '@/types/domains/user';
+import { getPath } from '@/utils/route/Link';
 import { Paths } from '@/utils/route/paths';
 import { useDebounce } from '@/utils/useDebounce';
 
@@ -60,7 +61,11 @@ export const RegistrationPage: FC = () => {
   }
   if (isLoadingMe) return <Loading />;
   if (me && router.isReady) {
-    router.replace(Paths.home);
+    router.replace(
+      getPath({
+        path: Paths.home,
+      })
+    );
     return <></>;
   }
   return (

@@ -1,4 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import * as Sentry from '@sentry/nextjs';
 import { MyAppProps } from 'next/app';
 import Head from 'next/head';
 import { SWRConfig } from 'swr';
@@ -31,15 +32,17 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
                   )),
                   status: 'error',
                   position: 'top-right',
-                  duration: 4000,
+                  duration: 3000,
                   isClosable: true,
                 });
               }
               if (error.unexpected) {
+                Sentry.captureException(error);
                 console.log('Unexpected HttpError!!!', error);
               }
               return;
             }
+            Sentry.captureException(error);
             console.log('Unexpected Error!!!', error);
           },
           shouldRetryOnError: false,
@@ -58,11 +61,9 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
               rel="stylesheet"
             />
           </Head>
-          {requireLogin ? (
-            <AuthGuard>{getLayout(<Component {...pageProps} />)}</AuthGuard>
-          ) : (
-            getLayout(<Component {...pageProps} />)
-          )}
+          <AuthGuard requireLogin={requireLogin}>
+            {getLayout(<Component {...pageProps} />)}
+          </AuthGuard>
           <Footer />
           {asModal && <ModalPage />}
         </AuthProvider>

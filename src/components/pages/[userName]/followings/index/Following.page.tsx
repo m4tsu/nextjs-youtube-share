@@ -15,24 +15,27 @@ export const FollowingPage: FC<Props> = ({ userName }) => {
   const { data: followings, error } = useFollowings(userName);
 
   if (error) return <Error error={error.serialize()} />;
-  if (!followings) return <Loading />;
   return (
     <Flex flexDirection="column" sx={{ gap: '1rem' }}>
       <Text variant="pageTitle">フォロー中</Text>
-      {followings.length === 0 ? (
-        <NoResource resourceName="フォロー中のユーザー" saffix="いません。" />
+      {followings ? (
+        followings.length === 0 ? (
+          <NoResource resourceName="フォロー中のユーザー" saffix="いません。" />
+        ) : (
+          <Grid
+            templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+            gap={4}
+          >
+            {followings.map((following) => (
+              <UserCardWithFollowButton
+                key={following.userName}
+                user={following}
+              />
+            ))}
+          </Grid>
+        )
       ) : (
-        <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
-          gap={4}
-        >
-          {followings.map((following) => (
-            <UserCardWithFollowButton
-              key={following.userName}
-              user={following}
-            />
-          ))}
-        </Grid>
+        <Loading />
       )}
     </Flex>
   );

@@ -8,7 +8,6 @@ import { FavoritePostsPage } from '@/components/pages/[userName]/favorites/index
 
 const querySchema = z.object({
   userName: z.string().optional(),
-  category: z.string().optional(),
   page: z
     .string()
     .optional()
@@ -19,7 +18,7 @@ const querySchema = z.object({
 });
 const Page: NextAppPage = () => {
   const router = useRouter();
-  const { userName, page, category } = querySchema.parse(router.query);
+  const { userName, page } = querySchema.parse(router.query);
 
   return <FavoritePostsPage userName={userName} page={page ?? 1} />;
 };

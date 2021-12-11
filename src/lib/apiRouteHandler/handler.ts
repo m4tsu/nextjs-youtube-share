@@ -16,7 +16,6 @@ const options: Options<NextApiRequest, NextApiResponse<ApiErrorObject>> = {
       };
       return res.status(err.statusCode).json(error);
     }
-    console.error(err.message);
     const error: ApiErrorObject = { message: err.message, unexpected: true };
     return res.status(500).end(error);
   },

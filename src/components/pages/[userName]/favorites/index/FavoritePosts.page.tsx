@@ -48,36 +48,46 @@ export const FavoritePostsPage: FC<Props> = ({
   if (error) {
     return <Error error={error.serialize()} />;
   }
-  if (!data || !userName) {
-    return <Loading />;
-  }
-  if (totalPage && page > totalPage) {
-    router.push(getPath({ path: Paths.favorites, params: { userName } }));
-  }
 
   return (
     <Flex flexDirection="column" sx={{ gap: '1rem' }}>
       <Text variant="pageTitle">お気に入りした投稿</Text>
-      {data.posts.length === 0 ? (
-        <NoResource resourceName="お気に入りした投稿" />
-      ) : (
-        <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
-          gap={4}
-        >
-          {data.posts.map((post) => (
-            <UserPostCard embeded key={post.id} post={post} user={post.user} />
-          ))}
-        </Grid>
-      )}
+      <Flex
+        minHeight="800px"
+        flexDirection="column"
+        justifyContent="space-between"
+        sx={{ gap: '1rem' }}
+      >
+        {data ? (
+          data.posts.length === 0 ? (
+            <NoResource resourceName="お気に入りした投稿" />
+          ) : (
+            <Grid
+              templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
+              gap={4}
+            >
+              {data.posts.map((post) => (
+                <UserPostCard
+                  embeded
+                  key={post.id}
+                  post={post}
+                  user={post.user}
+                />
+              ))}
+            </Grid>
+          )
+        ) : (
+          <Loading />
+        )}
 
-      {totalPage && (
-        <Paginator
-          currentPage={page}
-          totalPage={totalPage}
-          onPageChange={onChangePage}
-        />
-      )}
+        {totalPage && (
+          <Paginator
+            currentPage={page}
+            totalPage={totalPage}
+            onPageChange={onChangePage}
+          />
+        )}
+      </Flex>
     </Flex>
   );
 };
