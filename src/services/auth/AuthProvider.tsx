@@ -53,9 +53,7 @@ export const AuthProvider: FC = ({ children }) => {
   const isLoading = isLoadingMe || (!error && !me && !!session);
 
   const authenticated = useRef(false);
-  // console.log('AuthProvider', session, me, isLoading, error);
-  // console.log('authenticated', authenticated);
-  // console.log('isLoadingMe', isLoadingMe);
+  console.log('AuthProvider', session, me, isLoading, error);
 
   const createUserWithUserName = useCallback(async (userName: string) => {
     const newUser = await usersRepository.createUserWithUserName(userName);

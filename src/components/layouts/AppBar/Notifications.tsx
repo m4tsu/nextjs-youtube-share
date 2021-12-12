@@ -27,6 +27,7 @@ import {
   useNotifications,
   useUnreadNotificationsCount,
 } from '@/repositories/notification';
+import { useAuth } from '@/services/auth/AuthProvider';
 import { Notification } from '@/types/domains/notification';
 import { User } from '@/types/domains/user';
 import { assertUnexpectedValue } from '@/utils/assertUnexpectedValue';
@@ -39,10 +40,12 @@ type NotificationPanelProps = {
 };
 const NotificationPanel: FC<NotificationPanelProps> = memo(
   ({ notification }) => {
+    const { me } = useAuth();
     const bgColor = useColorModeValue('white', 'darkPrimary.600');
     const hoverBgColor = useColorModeValue('bgWhite', 'darkPrimary.500');
 
     const Message = useMemo(() => {
+      if (!me) return <></>;
       switch (notification.type) {
         case 'followed': {
           return (
@@ -74,7 +77,7 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
               <Link
                 path="/users/[userName]/posts/[postId]"
                 params={{
-                  userName: notification.notifier.userName,
+                  userName: me.userName,
                   postId: notification.targetId,
                 }}
                 chakraLinkProps={{
@@ -103,7 +106,7 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
               <Link
                 path="/users/[userName]/posts/[postId]"
                 params={{
-                  userName: notification.notifier.userName,
+                  userName: me.userName,
                   postId: notification.targetId,
                 }}
                 chakraLinkProps={{
@@ -120,7 +123,7 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
           return assertUnexpectedValue(notification.type);
         }
       }
-    }, []);
+    }, [me?.userName]);
     return (
       <Flex
         alignItems="flex-start"
@@ -312,6 +315,7 @@ export const Notifications: FC<Props> = () => {
             py={2}
             as="div"
             cursor="default"
+            // closeOnSelect
           >
             <NotificationList />
           </MenuItem>
