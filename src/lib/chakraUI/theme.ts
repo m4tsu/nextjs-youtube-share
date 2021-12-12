@@ -201,7 +201,7 @@ export const theme = extendTheme(
 export const toast = createStandaloneToast({
   theme,
   defaultOptions: {
-    duration: 3000,
+    duration: 2000,
     isClosable: true,
     position: 'top-right',
     variant: 'solid',

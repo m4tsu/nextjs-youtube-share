@@ -21,6 +21,7 @@ import { mutate } from 'swr';
 
 import { Error } from '@/components/pages/error/Error';
 import { Loading } from '@/components/ui/Loading';
+import { fromNow } from '@/lib/dayjs/utils';
 import {
   notificationsRepository,
   useNotifications,
@@ -149,21 +150,25 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
             <Avatar src={notification.notifier.avatarUrl} boxSize="44px" />
           </Link>
         </Flex>
-
-        <Text
-          variant="secondary"
-          overflowY="hidden"
-          fontSize="14px"
-          lineHeight="1.5"
-          maxHeight="63px"
-          sx={{
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-          }}
-        >
-          {Message}
-        </Text>
+        <Flex flexDirection="column">
+          <Text
+            variant="secondary"
+            overflowY="hidden"
+            fontSize="14px"
+            lineHeight="1.5"
+            maxHeight="63px"
+            sx={{
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            {Message}
+          </Text>
+          <Text as="time" variant="secondary" fontSize="sm">
+            {fromNow(notification.createdAt)}
+          </Text>
+        </Flex>
       </Flex>
     );
   },
@@ -173,7 +178,7 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
 );
 
 const LIMIT = 12;
-const MAX_COUNTS = 50;
+const MAX_COUNTS = 120;
 const RERESH_INTERVAL = 1000 * 60 * 5;
 
 const NotificationList: FC = () => {

@@ -18,7 +18,7 @@ export const TabButton: FC<
       lineHeight="unset"
       alignItems="center"
       color={color}
-      fontWeight={isActive ? 'bold' : 'thin'}
+      fontWeight={isActive ? 'bold' : 'normal'}
       fontSize="lg"
       py={1}
       pl={1}

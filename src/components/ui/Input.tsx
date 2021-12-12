@@ -11,7 +11,7 @@ export const Input = forwardRef<InputProps, 'input'>((props, ref) => {
       borderColor={borderColor}
       color={color}
       _hover={{ borderColor: hoverBorderColor }}
-      // focusBorderColor={focusBorderColor}
+      autoComplete="off"
       ref={ref}
       {...props}
     />

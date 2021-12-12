@@ -6,7 +6,7 @@ import React, { FC, useCallback } from 'react';
 import { Card } from '@/components/ui/Card';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { toast } from '@/lib/chakraUI/theme';
-import { toDate } from '@/lib/dayjs/utils';
+import { fromNow } from '@/lib/dayjs/utils';
 import { postsRepository } from '@/repositories/posts';
 import { useAuth } from '@/services/auth/AuthProvider';
 import { Post } from '@/types/domains/post';
@@ -107,7 +107,7 @@ const Component = ({
             -
           </Text>
           <Text as="time" variant="secondary" fontSize="sm" flexShrink={0}>
-            {toDate(post.updatedAt)}
+            {fromNow(post.createdAt)}
           </Text>
         </Flex>
         <FavoriteButton

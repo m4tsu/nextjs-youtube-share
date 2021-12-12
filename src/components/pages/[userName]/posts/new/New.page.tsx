@@ -147,13 +147,8 @@ export const NewPage: FC<Props> = ({ userName }) => {
   }, [nicovideoData?.title, isDirty]);
 
   return (
-    <Panel pt={0}>
-      <Flex
-        as="form"
-        direction="column"
-        gridGap={4}
-        onSubmit={handleSubmit(onSubmit)}
-      >
+    <Panel pt={0} px={0}>
+      <Flex direction="column" gridGap={4}>
         {urlValidationResult.isValid ? (
           isNicovideo ? (
             <VideoPlayer
@@ -168,96 +163,103 @@ export const NewPage: FC<Props> = ({ userName }) => {
         ) : (
           <DummyPlayer />
         )}
-
-        <FormControl>
-          <FormLabel>動画サイト</FormLabel>
-          <RadioGroup name="type" defaultValue="youtube">
-            <HStack spacing="6">
-              <Radio value="youtube" {...register('type')}>
-                Youtube
-              </Radio>
-              <Radio {...register('type')} value="nicovideo">
-                ニコニコ動画
-              </Radio>
-            </HStack>
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl isInvalid={!!errors.videoUrl}>
-          <FormLabel htmlFor="videoUrl">動画URL</FormLabel>
-          <Input
-            id="videoUrl"
-            placeholder={placeholders[watch('type')]}
-            defaultValue=""
-            {...register('videoUrl')}
-          />
-          <FormErrorMessage>
-            {errors.videoUrl && errors.videoUrl.message}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={!!errors.title}>
-          <FormLabel htmlFor="title">タイトル</FormLabel>
-          <InputGroup>
-            <Input
-              id="title"
-              placeholder="投稿のタイトル"
-              {...register('title')}
-            />
-            {nicovideoInfoLoading && (
-              <InputRightElement>
-                <Spinner color="primary.500" />
-              </InputRightElement>
-            )}
-          </InputGroup>
-
-          <FormErrorMessage>
-            {errors.title && errors.title.message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <FormControl isInvalid={!!categoriesError}>
-          <FormLabel htmlFor="categories">カテゴリー</FormLabel>
-          <CreatableSelect
-            isMulti
-            name="categories"
-            placeholder="カテゴリーを選択する"
-            options={categoryOptions}
-            onChange={(values) => {
-              setValue('categories', [...values]);
-            }}
-            formatCreateLabel={(value) => `カテゴリーを作成: ${value}`}
-            noOptionsMessage={() => '選択可能なカテゴリーがありません'}
-          />
-          <FormErrorMessage>
-            {categoriesError && categoriesError}
-          </FormErrorMessage>
-        </FormControl>
-
-        <FormControl isInvalid={!!errors.body}>
-          <FormLabel htmlFor="content">本文</FormLabel>
-          <Textarea
-            id="content"
-            placeholder="動画の感想などを入力してください"
-            {...register('body')}
-          />
-          <FormErrorMessage>
-            {errors.body && errors.body.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button
-          colorScheme="primary"
-          type="submit"
-          width="full"
-          isLoading={isSubmitting}
-          disabled={
-            nicovideoInfoLoading ||
-            !isValid ||
-            !!nicovideoInfoError ||
-            !!categoriesError
-          }
+        <Flex
+          as="form"
+          direction="column"
+          gridGap={4}
+          px={4}
+          onSubmit={handleSubmit(onSubmit)}
         >
-          投稿する
-        </Button>
+          <FormControl>
+            <FormLabel>動画サイト</FormLabel>
+            <RadioGroup name="type" defaultValue="youtube">
+              <HStack spacing="6">
+                <Radio value="youtube" {...register('type')}>
+                  Youtube
+                </Radio>
+                <Radio {...register('type')} value="nicovideo">
+                  ニコニコ動画
+                </Radio>
+              </HStack>
+            </RadioGroup>
+          </FormControl>
+
+          <FormControl isInvalid={!!errors.videoUrl}>
+            <FormLabel htmlFor="videoUrl">動画URL</FormLabel>
+            <Input
+              id="videoUrl"
+              placeholder={placeholders[watch('type')]}
+              defaultValue=""
+              {...register('videoUrl')}
+            />
+            <FormErrorMessage>
+              {errors.videoUrl && errors.videoUrl.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={!!errors.title}>
+            <FormLabel htmlFor="title">タイトル</FormLabel>
+            <InputGroup>
+              <Input
+                id="title"
+                placeholder="投稿のタイトル"
+                {...register('title')}
+              />
+              {nicovideoInfoLoading && (
+                <InputRightElement>
+                  <Spinner color="primary.500" />
+                </InputRightElement>
+              )}
+            </InputGroup>
+
+            <FormErrorMessage>
+              {errors.title && errors.title.message}
+            </FormErrorMessage>
+          </FormControl>
+
+          <FormControl isInvalid={!!categoriesError}>
+            <FormLabel htmlFor="categories">カテゴリー</FormLabel>
+            <CreatableSelect
+              isMulti
+              name="categories"
+              placeholder="カテゴリーを選択する"
+              options={categoryOptions}
+              onChange={(values) => {
+                setValue('categories', [...values]);
+              }}
+              formatCreateLabel={(value) => `カテゴリーを作成: ${value}`}
+              noOptionsMessage={() => '選択可能なカテゴリーがありません'}
+            />
+            <FormErrorMessage>
+              {categoriesError && categoriesError}
+            </FormErrorMessage>
+          </FormControl>
+
+          <FormControl isInvalid={!!errors.body}>
+            <FormLabel htmlFor="content">本文</FormLabel>
+            <Textarea
+              id="content"
+              placeholder="動画の感想などを入力してください"
+              {...register('body')}
+            />
+            <FormErrorMessage>
+              {errors.body && errors.body.message}
+            </FormErrorMessage>
+          </FormControl>
+          <Button
+            colorScheme="primary"
+            type="submit"
+            width="full"
+            isLoading={isSubmitting}
+            disabled={
+              nicovideoInfoLoading ||
+              !isValid ||
+              !!nicovideoInfoError ||
+              !!categoriesError
+            }
+          >
+            投稿する
+          </Button>
+        </Flex>
       </Flex>
     </Panel>
   );
