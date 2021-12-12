@@ -13,10 +13,10 @@ export const SearchUsersButton = ({ onClick }: Props) => {
   const bgColor = useColorModeValue('gray.50', 'darkPrimary.400');
   return (
     <Button
-      px={3}
+      px={2}
       bgColor={bgColor}
       height="70%"
-      margin="auto"
+      margin="auto 12px"
       borderRadius="md"
       display="flex"
       onClick={onClick}
