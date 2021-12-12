@@ -24,7 +24,7 @@ import { Paths } from '@/utils/route/paths';
 import { ColorModeButton } from './ColorModeButton';
 import { HeaderButton } from './HeaderButton';
 import { Notifications } from './Notifications';
-import { SearchUsersButton } from './SearchUsers';
+import { SearchUsersButton } from './SearchUsersButton';
 import { SearchUsersModal } from './SearchUsersModal';
 
 type ComponentProps = {

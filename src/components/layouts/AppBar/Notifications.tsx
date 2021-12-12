@@ -49,7 +49,7 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
               <Link
                 path="/users/[userName]"
                 params={{ userName: notification.notifier.userName }}
-                chakraLinkProps={{ textDecoration: 'underline' }}
+                chakraLinkProps={{ _hover: { textDecoration: 'underline' } }}
               >
                 {notification.notifier.displayName}
               </Link>{' '}
@@ -63,7 +63,9 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
               <Link
                 path="/users/[userName]"
                 params={{ userName: notification.notifier.userName }}
-                chakraLinkProps={{ textDecoration: 'underline' }}
+                chakraLinkProps={{
+                  _hover: { textDecoration: 'underline' },
+                }}
               >
                 {notification.notifier.displayName}
               </Link>{' '}
@@ -74,7 +76,9 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
                   userName: notification.notifier.userName,
                   postId: notification.targetId,
                 }}
-                chakraLinkProps={{ textDecoration: 'underline' }}
+                chakraLinkProps={{
+                  _hover: { textDecoration: 'underline' },
+                }}
               >
                 {notification.targetName}
               </Link>{' '}
@@ -88,7 +92,9 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
               <Link
                 path="/users/[userName]"
                 params={{ userName: notification.notifier.userName }}
-                chakraLinkProps={{ textDecoration: 'underline' }}
+                chakraLinkProps={{
+                  _hover: { textDecoration: 'underline' },
+                }}
               >
                 {notification.notifier.displayName}
               </Link>{' '}
@@ -99,7 +105,9 @@ const NotificationPanel: FC<NotificationPanelProps> = memo(
                   userName: notification.notifier.userName,
                   postId: notification.targetId,
                 }}
-                chakraLinkProps={{ textDecoration: 'underline' }}
+                chakraLinkProps={{
+                  _hover: { textDecoration: 'underline' },
+                }}
               >
                 {notification.targetName}
               </Link>{' '}

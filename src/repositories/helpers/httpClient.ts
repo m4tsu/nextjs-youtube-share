@@ -3,6 +3,8 @@
 import { toast } from '@/lib/chakraUI/theme';
 import { ApiErrorObject, HttpError, NetworkError } from '@/utils/types/error';
 
+export const SERVER_URL = process.env.SERVER_URL ?? 'http://localhost:3000';
+
 type FetchParams<RequestParams> = {
   url: string;
   config?: Omit<RequestInit, 'body' | 'method'>;

@@ -1,6 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import * as Sentry from '@sentry/nextjs';
 import { MyAppProps } from 'next/app';
+import Head from 'next/head';
 import { SWRConfig } from 'swr';
 
 import { AppBar } from '@/components/layouts/AppBar/AppBar';
@@ -52,6 +53,9 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
       >
         <AuthProvider>
           <AppBar />
+          <Head>
+            <title>Tubetter</title>
+          </Head>
           <AuthGuard requireLogin={requireLogin}>
             {getLayout(<Component {...pageProps} />)}
           </AuthGuard>

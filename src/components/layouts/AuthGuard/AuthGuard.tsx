@@ -7,6 +7,7 @@ import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/services/auth/AuthProvider';
 import { Paths } from '@/utils/route/paths';
 
+let mounted = false;
 export const AuthGuard: FC<{ requireLogin?: boolean }> = ({
   requireLogin = false,
   children,
@@ -15,13 +16,14 @@ export const AuthGuard: FC<{ requireLogin?: boolean }> = ({
   const { me, isLoading } = useAuth();
 
   useEffect(() => {
+    mounted = true;
     if (!requireLogin) return;
     if (!isLoading && !me && router.isReady) {
       router.replace(Paths.login);
     }
   }, [isLoading, me, router, requireLogin]);
   if (!requireLogin) return <>{children}</>;
-  if (isLoading)
+  if (isLoading && mounted)
     return (
       <Portal>
         <Modal

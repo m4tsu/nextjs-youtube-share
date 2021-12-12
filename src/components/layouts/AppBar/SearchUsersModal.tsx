@@ -1,6 +1,6 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import { InputGroup, InputRightElement } from '@chakra-ui/input';
-import { Divider, Flex, Text } from '@chakra-ui/layout';
+import { Flex, Text } from '@chakra-ui/layout';
 import {
   Modal,
   ModalBody,
@@ -8,8 +8,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/modal';
-import { Spinner } from '@chakra-ui/spinner';
-import { ChangeEvent, FC, memo, useState } from 'react';
+import { ChangeEvent, memo, useState } from 'react';
 
 import { UserCard } from '@/components/domain/user/UserCard';
 import { Error } from '@/components/pages/error/Error';
@@ -32,46 +31,6 @@ const UsersList = memo(({ users }: UsersListProps) => {
   );
 });
 
-export const SearchUsers: FC = () => {
-  const [input, setInput] = useState<string>('');
-  const debouncedInput = useDebounce(input, 700);
-  const { data: users, error, isValidating } = useSearchUsers(debouncedInput);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
-
-  if (error) return <Error error={error.serialize()} />;
-
-  return (
-    <Flex flexDirection="column" width="full">
-      <Flex p={2}>
-        <InputGroup>
-          <Input
-            id="userName"
-            name="userName"
-            placeholder="ユーザー検索"
-            value={input}
-            onChange={handleChange}
-            variant=""
-
-            // disabled={isLoading}
-          />
-          {isValidating && (
-            <InputRightElement>
-              <Spinner color="primary.600" />
-            </InputRightElement>
-          )}
-          <InputRightElement>
-            <SearchIcon />
-          </InputRightElement>
-        </InputGroup>
-      </Flex>
-      <Divider />
-      <div>hogehoge</div>
-    </Flex>
-  );
-};
-
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -83,7 +42,7 @@ export const SearchUsersModal = ({ isOpen, onClose }: Props) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
-  console.log(users);
+  if (error) return <Error error={error} />;
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <ModalOverlay />
@@ -96,15 +55,7 @@ export const SearchUsersModal = ({ isOpen, onClose }: Props) => {
               placeholder="ユーザー検索"
               value={input}
               onChange={handleChange}
-              variant=""
-
-              // disabled={isLoading}
             />
-            {isValidating && (
-              <InputRightElement>
-                <Spinner color="primary.600" />
-              </InputRightElement>
-            )}
             <InputRightElement>
               <SearchIcon />
             </InputRightElement>
@@ -115,7 +66,7 @@ export const SearchUsersModal = ({ isOpen, onClose }: Props) => {
             users.length ? (
               <UsersList users={users} />
             ) : (
-              <Text textAlign="center">ユーザーが見つかりません</Text>
+              <Text textAlign="center">ユーザーが見つかりません。</Text>
             )
           ) : (
             debouncedInput && <Loading />

@@ -8,7 +8,6 @@ export default class Document extends NextDocument {
     return (
       <Html lang="ja">
         <Head>
-          <title>Tubetter</title>
           <meta
             name="description"
             content="Tubetter はお気に入りの動画をシェアするためのサービスです！"
