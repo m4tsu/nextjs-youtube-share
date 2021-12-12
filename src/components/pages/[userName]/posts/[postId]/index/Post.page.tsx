@@ -121,93 +121,100 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
     <>
       <Panel display="flex" flexDirection="column" gridGap="2" p={0}>
         <VideoPlayer embedUrl={embedUrl} />
-        <Text as="h1" fontWeight="bold" fontSize="3xl">
-          {title}
-        </Text>
-        <Flex alignItems="center" gridGap="2" fontSize="md">
-          <Text as="time" variant="secondary" flexShrink={0}>
-            {toDate(updatedAt)}
+        <Flex flexDirection="column" gridGap="2" px={4} pb={4}>
+          <Text as="h1" fontWeight="bold" fontSize="3xl">
+            {title}
           </Text>
-          <Flex flex="1 1 auto" flexWrap="wrap" sx={{ gap: '.5rem' }}>
-            {categories &&
-              categories.map((category) => (
-                <CategoryLinkButton
-                  key={category.id}
-                  userName={userName}
-                  categoryName={category.name}
-                >
-                  {category.name}
-                </CategoryLinkButton>
-              ))}
-          </Flex>
-          <Flex flexShrink={0} alignItems="center">
-            {userName && (
-              <FavoriteButton
-                postId={data.id}
-                userName={userName}
-                favorited={data.favorited || false}
-                favoritesCount={data.favoritesCount || 0}
-                w={8}
-                h={8}
-                onFavorite={onFavorite}
-                onUnFavorite={onUnFavorite}
-              />
-            )}
-            {isMine && (
-              <Flex>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    borderRadius="full"
-                    p={0}
-                    variant="outline"
-                    borderWidth="0"
-                    fontSize="2xl"
+          <Flex alignItems="center" gridGap="2" fontSize="md">
+            <Text as="time" variant="secondary" flexShrink={0}>
+              {toDate(updatedAt)}
+            </Text>
+            <Flex flex="1 1 auto" flexWrap="wrap" sx={{ gap: '.5rem' }}>
+              {categories &&
+                categories.map((category) => (
+                  <CategoryLinkButton
+                    key={category.id}
+                    userName={userName}
+                    categoryName={category.name}
                   >
-                    <Icon as={MdMoreVert} boxSize="32px" />
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={onOpenEdit}>
-                      <EditIcon />
-                      編集
-                    </MenuItem>
-                    <MenuItem onClick={onOpenDelete}>
-                      <DeleteIcon />
-                      削除
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </Flex>
+                    {category.name}
+                  </CategoryLinkButton>
+                ))}
+            </Flex>
+            <Flex flexShrink={0} alignItems="center">
+              {userName && (
+                <FavoriteButton
+                  postId={data.id}
+                  userName={userName}
+                  favorited={data.favorited || false}
+                  favoritesCount={data.favoritesCount || 0}
+                  w={8}
+                  h={8}
+                  onFavorite={onFavorite}
+                  onUnFavorite={onUnFavorite}
+                />
+              )}
+              {isMine && (
+                <Flex>
+                  <Menu>
+                    <MenuButton
+                      as={Button}
+                      borderRadius="full"
+                      p={0}
+                      variant="outline"
+                      borderWidth="0"
+                      fontSize="2xl"
+                    >
+                      <Icon as={MdMoreVert} boxSize="32px" />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem onClick={onOpenEdit}>
+                        <EditIcon />
+                        編集
+                      </MenuItem>
+                      <MenuItem onClick={onOpenDelete}>
+                        <DeleteIcon />
+                        削除
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Flex>
+              )}
+            </Flex>
+          </Flex>
+          {body && (
+            <>
+              <Divider borderColor="gray.400" />
+              <Box py={4}>
+                <Text whiteSpace="pre-wrap" fontSize="md">
+                  {body}
+                </Text>
+              </Box>
+            </>
+          )}
+
+          <Divider borderColor="gray.400" />
+          <Flex flexDirection="column" sx={{ gap: '2rem' }}>
+            {data.comments?.length ? (
+              <Text textAlign="center">{data.comments.length}件のコメント</Text>
+            ) : (
+              <></>
+            )}
+            <Flex flexDirection="column" sx={{ gap: '1rem' }}>
+              {data.comments &&
+                data.comments.map((comment) => (
+                  <CommentCard
+                    key={comment.id}
+                    comment={comment}
+                    userName={userName}
+                    isMyPost={isMine}
+                  />
+                ))}
+            </Flex>
+            {postId && me && (
+              <CommentForm me={me} postId={postId} userName={userName} />
             )}
           </Flex>
-        </Flex>
-        <Divider borderColor="gray.400" />
-        <Box mt={2}>
-          <Text whiteSpace="pre-wrap" fontSize="md">
-            {body}
-          </Text>
-        </Box>
-        <Divider borderColor="gray.400" mt={10} mb={4} />
-        <Flex flexDirection="column" sx={{ gap: '2rem' }}>
-          {data.comments?.length ? (
-            <Text textAlign="center">{data.comments.length}件のコメント</Text>
-          ) : (
-            <></>
-          )}
-          <Flex flexDirection="column" sx={{ gap: '1rem' }}>
-            {data.comments &&
-              data.comments.map((comment) => (
-                <CommentCard
-                  key={comment.id}
-                  comment={comment}
-                  userName={userName}
-                  isMyPost={isMine}
-                />
-              ))}
-          </Flex>
-          {postId && me && (
-            <CommentForm me={me} postId={postId} userName={userName} />
-          )}
         </Flex>
       </Panel>
       {me && (

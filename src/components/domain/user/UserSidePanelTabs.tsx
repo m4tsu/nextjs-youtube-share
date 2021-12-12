@@ -17,9 +17,7 @@ type Props = {
 } & FlexProps;
 
 export const UserSidePanelTabs: FC<Props> = ({
-  // currentPathName,
   userName,
-  // isMe,
   asMenu,
   ...props
 }) => {

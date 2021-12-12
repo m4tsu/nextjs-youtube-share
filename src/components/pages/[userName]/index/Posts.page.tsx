@@ -117,6 +117,7 @@ const PostsPageComponent: FC<Props> = ({ userName, categoryName, page }) => {
           }
           options={categoryOptions}
           onChange={onSelectCategory}
+          noOptionsMessage={() => 'カテゴリーがありません'}
         />
       </Flex>
       {userPosts && userPosts.posts.length == 0 && (
