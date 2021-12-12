@@ -72,9 +72,6 @@ const TypedLink: <T extends Path>(
   } & Omit<NextLinkProps, 'href'>
 ) => ReactElement = ({ ...props }) => {
   const href = getPath(props);
-  // const query = props.query ? `?${qs.stringify(props.query)}` : '';
-  // const hash = props.hash ? `#${props.hash}` : '';
-  // const href = path + query + hash;
   const { className, children, chakraLinkProps, asOverLay, ...linkProps } =
     props;
   return (
