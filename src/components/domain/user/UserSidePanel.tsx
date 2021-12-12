@@ -16,24 +16,14 @@ import { Paths } from '@/utils/route/paths';
 
 import { UserSidePanelTabs } from './UserSidePanelTabs';
 
-type ComponentProps = Pick<
-  User,
-  'userName' | 'avatarUrl' | 'displayName' | 'id'
-> & {
+type ComponentProps = {
+  user?: User;
   shuoldShowFollowButton?: boolean;
   isFollowing?: boolean;
   panelProps?: BoxProps;
 };
 const Component: FC<ComponentProps> = memo(
-  ({
-    id,
-    userName,
-    avatarUrl,
-    displayName,
-    isFollowing,
-    shuoldShowFollowButton = false,
-    panelProps,
-  }) => {
+  ({ user, shuoldShowFollowButton = false, panelProps }) => {
     const bg = useColorModeValue('white', 'darkPrimary.600');
 
     return (
@@ -52,21 +42,27 @@ const Component: FC<ComponentProps> = memo(
           alignItems={{ base: 'center', lg: 'unset' }}
         >
           <Flex sx={{ gap: '.5rem' }} alignItems="center">
-            <Avatar src={avatarUrl} name={userName} />
-            <Flex flexDirection="column" overflow="hidden">
-              <Text fontSize="md" fontWeight="bold">
-                {displayName}
-              </Text>
-              <Text variant="secondary" fontSize="md">
-                @{userName}
-              </Text>
-            </Flex>
+            {user ? (
+              <>
+                <Avatar src={user.avatarUrl} name={user.userName} />
+                <Flex flexDirection="column" overflow="hidden">
+                  <Text fontSize="md" fontWeight="bold">
+                    {user.displayName}
+                  </Text>
+                  <Text variant="secondary" fontSize="md">
+                    @{user.userName}
+                  </Text>
+                </Flex>
+              </>
+            ) : (
+              <Loading />
+            )}
           </Flex>
-          {shuoldShowFollowButton && (
+          {shuoldShowFollowButton && user && (
             <FollowButton
-              isFollowing={isFollowing ?? false}
-              userName={userName}
-              userId={id}
+              isFollowing={user.isFollowing ?? false}
+              userName={user.userName}
+              userId={user.id}
               width={{ base: undefined, lg: 'full' }}
             />
           )}
@@ -77,10 +73,12 @@ const Component: FC<ComponentProps> = memo(
           borderColor="gray.300"
           display={{ base: 'none', lg: 'flex' }}
         />
-        <UserSidePanelTabs
-          display={{ base: 'none', lg: 'flex' }}
-          userName={userName}
-        />
+        {user && (
+          <UserSidePanelTabs
+            display={{ base: 'none', lg: 'flex' }}
+            userName={user.userName}
+          />
+        )}
       </Panel>
     );
   }
@@ -100,15 +98,10 @@ export const UserSidePanel: FC<{ panelProps?: BoxProps }> = ({
   const user = isMyHomePage ? me : isMe ? me : data;
 
   if (error) return <Error error={error.serialize()} />;
-  if (!user) return <Loading />;
 
   return (
     <Component
-      userName={user.userName}
-      id={user.id}
-      avatarUrl={user.avatarUrl}
-      displayName={user.displayName}
-      isFollowing={user.isFollowing}
+      user={user ?? undefined}
       shuoldShowFollowButton={shuoldShowFollowButton}
       panelProps={panelProps}
     />
