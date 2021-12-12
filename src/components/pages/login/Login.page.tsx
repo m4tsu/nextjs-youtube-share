@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/layout';
+import { ListItem, Text, UnorderedList } from '@chakra-ui/layout';
 import { Flex } from '@chakra-ui/react';
 import { FC } from 'react';
 import { FaTwitter } from 'react-icons/fa';
@@ -17,7 +17,6 @@ export const LoginPage: FC = () => {
       sx={{ gap: '1rem' }}
       alignItems="center"
     >
-      {/* <Text fontSize='3xl'>ログイン</Text> */}
       <Button colorScheme="twitter" onClick={signIn} leftIcon={<FaTwitter />}>
         Twitterアカウントで 新規登録 or ログイン
       </Button>
@@ -34,6 +33,14 @@ export const LoginPage: FC = () => {
           に同意の上ご利用ください
         </Text>
       </Flex>
+      <UnorderedList>
+        ログインすると以下のようなことができるようになります
+        <ListItem>
+          他のユーザーをフォローして、投稿を追うことができます
+        </ListItem>
+        <ListItem>投稿にコメントすることができます</ListItem>
+        <ListItem>投稿をお気に入りすることができます</ListItem>
+      </UnorderedList>
     </Panel>
   );
 };
