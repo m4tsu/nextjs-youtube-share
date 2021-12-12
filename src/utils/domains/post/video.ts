@@ -15,7 +15,7 @@ const nicovideoPattern = [
 export const getThumbnail = (post: Post) => {
   switch (post.type) {
     case 'youtube': {
-      return `http://i.ytimg.com/vi/${post.videoId}/mqdefault.jpg`;
+      return `https://i.ytimg.com/vi/${post.videoId}/mqdefault.jpg`;
     }
 
     case 'nicovideo': {
