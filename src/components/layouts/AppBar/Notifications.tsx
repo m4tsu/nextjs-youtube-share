@@ -259,7 +259,7 @@ type Props = {
   me: User;
 };
 const COUNT_REFRESH_INTERVAL = 1000 * 60 * 5;
-export const Notifications: FC<Props> = ({ me }) => {
+export const Notifications: FC<Props> = () => {
   const width = useBreakpointValue({ base: '100vw', sm: '480px' });
   const hoverBg = useColorModeValue('gray.50', 'darkPrimary.500');
   const { data, error } = useUnreadNotificationsCount({
