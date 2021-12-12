@@ -31,7 +31,7 @@ export const getThumbnail = (post: Post) => {
 export const getEmbedUrl = (type: Post['type'], videoId: Post['videoId']) => {
   switch (type) {
     case 'youtube': {
-      return `https://www.youtube.com/embed/${videoId}?rel=0`;
+      return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
     }
     case 'nicovideo': {
       return `https://embed.nicovideo.jp/watch/${videoId}?oldScript=1&referer=&from=0&allowProgrammaticFullScreen=1`;
