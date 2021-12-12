@@ -35,15 +35,15 @@ const Component: FC<ComponentProps> = memo(
         bg={bg}
         {...panelProps}
       >
-        <Flex
-          flexDirection={{ base: 'row', lg: 'column' }}
-          sx={{ gap: '1rem' }}
-          justifyContent={{ base: 'space-between', lg: 'center' }}
-          alignItems={{ base: 'center', lg: 'unset' }}
-        >
-          <Flex sx={{ gap: '.5rem' }} alignItems="center">
-            {user ? (
-              <>
+        {user ? (
+          <>
+            <Flex
+              flexDirection={{ base: 'row', lg: 'column' }}
+              sx={{ gap: '1rem' }}
+              justifyContent={{ base: 'space-between', lg: 'center' }}
+              alignItems={{ base: 'center', lg: 'unset' }}
+            >
+              <Flex sx={{ gap: '.5rem' }} alignItems="center">
                 <Avatar src={user.avatarUrl} name={user.userName} />
                 <Flex flexDirection="column" overflow="hidden">
                   <Text fontSize="md" fontWeight="bold">
@@ -53,31 +53,30 @@ const Component: FC<ComponentProps> = memo(
                     @{user.userName}
                   </Text>
                 </Flex>
-              </>
-            ) : (
-              <Loading />
-            )}
-          </Flex>
-          {shuoldShowFollowButton && user && (
-            <FollowButton
-              isFollowing={user.isFollowing ?? false}
-              userName={user.userName}
-              userId={user.id}
-              width={{ base: undefined, lg: 'full' }}
-            />
-          )}
-        </Flex>
+              </Flex>
+              {shuoldShowFollowButton && user && (
+                <FollowButton
+                  isFollowing={user.isFollowing ?? false}
+                  userName={user.userName}
+                  userId={user.id}
+                  width={{ base: undefined, lg: 'full' }}
+                />
+              )}
+            </Flex>
 
-        <Divider
-          my={0}
-          borderColor="gray.300"
-          display={{ base: 'none', lg: 'flex' }}
-        />
-        {user && (
-          <UserSidePanelTabs
-            display={{ base: 'none', lg: 'flex' }}
-            userName={user.userName}
-          />
+            <Divider
+              my={0}
+              borderColor="gray.300"
+              display={{ base: 'none', lg: 'flex' }}
+            />
+
+            <UserSidePanelTabs
+              display={{ base: 'none', lg: 'flex' }}
+              userName={user.userName}
+            />
+          </>
+        ) : (
+          <Loading />
         )}
       </Panel>
     );
