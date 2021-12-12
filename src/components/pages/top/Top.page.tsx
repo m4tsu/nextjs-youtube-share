@@ -12,8 +12,8 @@ import { useWindowScroll } from '@/utils/useWindowScroll';
 import { Error } from '../error/Error';
 
 const LOADER_HEIGHT = '40px';
-const MAX_POSTS_COUNTS = 100;
-const REFRESH_INTERVAL = 1000 * 60 * 10;
+const MAX_POSTS_COUNTS = 120;
+const REFRESH_INTERVAL = 1000 * 60 * 3;
 const LIMIT = 12;
 
 const MemoedPostCard = memo(UserPostCard, (prev, next) => {

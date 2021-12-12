@@ -46,9 +46,10 @@ function MyApp({ Component, pageProps, router }: MyAppProps) {
             console.log('Unexpected Error!!!', error);
           },
           shouldRetryOnError: false,
-          revalidateOnFocus: false,
+          revalidateOnFocus: true,
           // revalidateOnMount: true,
-          revalidateOnReconnect: false,
+          revalidateOnReconnect: true,
+          errorRetryCount: 2,
         }}
       >
         <AuthProvider>
