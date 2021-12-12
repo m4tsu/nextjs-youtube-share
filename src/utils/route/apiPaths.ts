@@ -6,6 +6,7 @@ export const ApiPaths = {
   withdraw: '/api/auth/withdraw',
   createUser: '/api/auth/createUser',
   createUserWithUserName: '/api/auth/createUserWithUserName',
+  searchUsers: '/api/users/search',
   me: '/api/auth/me',
   notifications: '/api/notifications',
   unreadNotificationsCount: '/api/notifications/unreadCount',

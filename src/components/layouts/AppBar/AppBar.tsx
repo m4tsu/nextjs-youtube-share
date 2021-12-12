@@ -1,5 +1,15 @@
 import { Icon } from '@chakra-ui/icons';
-import { Box, Flex, useColorModeValue, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  useColorModeValue,
+  Text,
+  Tooltip,
+  useDisclosure,
+  Portal,
+  useBreakpointValue,
+  Image,
+} from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { MdPlaylistAdd } from 'react-icons/md';
 
@@ -14,6 +24,8 @@ import { Paths } from '@/utils/route/paths';
 import { ColorModeButton } from './ColorModeButton';
 import { HeaderButton } from './HeaderButton';
 import { Notifications } from './Notifications';
+import { SearchUsersButton } from './SearchUsersButton';
+import { SearchUsersModal } from './SearchUsersModal';
 
 type ComponentProps = {
   me: null | User;
@@ -23,6 +35,8 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
   const bgColor = useColorModeValue('white', 'darkPrimary.600');
   const borderColor = useColorModeValue('gray.200', 'darkPrimary.400');
   const hoverBg = useColorModeValue('gray.50', 'darkPrimary.500');
+  const isMobile = useBreakpointValue({ base: true, sm: false });
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [mounted, setMounted] = useState(false); //https://github.com/vercel/next.js/discussions/17443
   useEffect(() => {
@@ -62,14 +76,19 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
               alignItems: 'center',
             }}
           >
-            <Text fontFamily="Ubuntu, sans-serif" fontSize="2xl">
-              Tubetter
-            </Text>
+            {isMobile ? (
+              <Image src="/tubetter.png" borderRadius="md" boxSize="40px" />
+            ) : (
+              <Text fontFamily="Ubuntu, sans-serif" fontSize="2xl">
+                Tubetter
+              </Text>
+            )}
           </Link>
         </Box>
-
         {mounted && (
           <Flex h="full">
+            <SearchUsersButton onClick={onOpen} />
+
             {isLoading ? (
               <></>
             ) : (
@@ -109,6 +128,9 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
           </Flex>
         )}
       </Container>
+      <Portal>
+        <SearchUsersModal isOpen={isOpen} onClose={onClose} />
+      </Portal>
     </Panel>
   );
 });

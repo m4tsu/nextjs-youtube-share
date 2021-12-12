@@ -15,7 +15,6 @@ const querySchema = z.object({
 });
 
 export default handler<PostWithUser[]>().get(async (req, res) => {
-  // const {cursor, limit} = req.query as {cursor: Post['id'], limit: string}
   const { cursor, limit } = querySchema.parse(req.query);
   const currentUser = req.currentUser;
   if (cursor) {

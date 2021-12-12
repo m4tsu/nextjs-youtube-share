@@ -21,7 +21,7 @@ export const useFetch = <T, E extends unknown = HttpError | NetworkError>(
 
 // isValidatingを使わなくても、useSWRから取得してしまうとisValidatingに応じてレンダリングが起こってしまうので使うかどうかで呼び出しを変える
 export const useFetchWithValidating = <
-  T extends Record<string, unknown>,
+  T,
   E extends unknown = HttpError | NetworkError
 >(
   key: string | null,

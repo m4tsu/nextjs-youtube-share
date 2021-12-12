@@ -74,3 +74,11 @@ export const useFollowings = (userName?: string) => {
     getFetchKey({ path: ApiPaths.followings, params: { userName } })
   );
 };
+
+export const useSearchUsers = (displayNameOrUserName?: string) => {
+  return useFetchWithValidating<User[]>(
+    displayNameOrUserName
+      ? `${ApiPaths.searchUsers}?displayNameOrUserName=${displayNameOrUserName}`
+      : null
+  );
+};
