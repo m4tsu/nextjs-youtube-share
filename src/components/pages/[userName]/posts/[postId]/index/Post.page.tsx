@@ -119,7 +119,7 @@ const PostPageComponent: FC<Props> = ({ userName, postId }) => {
   const embedUrl = getEmbedUrl(type, videoId);
   return (
     <>
-      <Panel display="flex" flexDirection="column" gridGap="2">
+      <Panel display="flex" flexDirection="column" gridGap="2" p={0}>
         <VideoPlayer embedUrl={embedUrl} />
         <Text as="h1" fontWeight="bold" fontSize="3xl">
           {title}
