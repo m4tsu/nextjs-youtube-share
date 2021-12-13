@@ -21,6 +21,22 @@ import { useHover } from '@/utils/useHover';
 
 import { Button } from './Button';
 
+const FollowingButton: FC<ButtonProps> = (props) => {
+  const { ref, isHovered } = useHover<HTMLButtonElement>();
+  return (
+    <Button
+      ref={ref}
+      colorScheme={isHovered ? 'red' : 'primary'}
+      flexShrink={0}
+      variant="outline"
+      width="130px"
+      {...props}
+    >
+      {isHovered ? 'フォロー解除' : 'フォロー中'}
+    </Button>
+  );
+};
+
 type FollowButtonProps = {
   isFollowing: boolean;
   onClick?: () => void;
@@ -34,7 +50,6 @@ export const FollowButton: FC<FollowButtonProps> = ({
   userId,
   ...props
 }) => {
-  const { ref, isHovered } = useHover<HTMLButtonElement>();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const router = useRouter();
   const { me } = useAuth();
@@ -106,20 +121,9 @@ export const FollowButton: FC<FollowButtonProps> = ({
   return (
     <>
       {isFollowing ? (
-        <Button
-          ref={ref}
-          colorScheme={isHovered ? 'red' : 'primary'}
-          flexShrink={0}
-          variant="outline"
-          onClick={handleOpen}
-          width="130px"
-          {...props}
-        >
-          {isHovered ? 'フォロー解除' : 'フォロー中'}
-        </Button>
+        <FollowingButton {...props} onClick={handleOpen} />
       ) : (
         <Button
-          ref={ref}
           colorScheme="primary"
           flexShrink={0}
           onClick={handleClickFollow}
