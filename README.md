@@ -1,6 +1,6 @@
 ## 技術スタック
 
-- 言語・フレームワーク
+- 言語 / フレームワーク
   - TypeScript / Next.js
 - データフェッチ・キャッシュ
   - SWR https://swr.vercel.app/
@@ -10,7 +10,7 @@
 - 認証・データベース
   - supabase https://supabase.com/
 - コンポーネントライブラリ
-  - Chakra UI
+  - Chakra UI https://chakra-ui.com/
 - インフラ
   - Vercel https://vercel.com/
 - エラー監視
