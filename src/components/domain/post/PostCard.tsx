@@ -45,7 +45,7 @@ const Component = ({
     {embeded ? (
       <VideoPlayer embedUrl={getEmbedUrl(post.type, post.videoId)} />
     ) : (
-      <Thumbnail src={getThumbnail(post)} />
+      <Thumbnail src={getThumbnail(post)} alt={`${post.title}のサムネイル`} />
     )}
 
     <Flex

@@ -271,11 +271,12 @@ export const Notifications: FC<Props> = () => {
 
   const count = error ? 0 : data ? data : 0;
   return (
-    <Menu strategy="fixed" isLazy autoSelect={false}>
+    <Menu strategy="fixed" isLazy>
       <MenuButton
         px={3}
         _hover={{ bgColor: hoverBg }}
         _active={{ backgroundColor: 'unset' }}
+        aria-label="通知"
       >
         <Box position="relative">
           {count > 0 && (
@@ -313,9 +314,7 @@ export const Notifications: FC<Props> = () => {
             _focus={{ background: 'unset' }}
             px={0}
             py={2}
-            as="div"
             cursor="default"
-            // closeOnSelect
           >
             <NotificationList />
           </MenuItem>

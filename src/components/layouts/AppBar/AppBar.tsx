@@ -8,8 +8,9 @@ import {
   useDisclosure,
   Portal,
   useBreakpointValue,
-  Image,
+  // Image,
 } from '@chakra-ui/react';
+import Image from 'next/image';
 import React, { FC, useEffect, useState } from 'react';
 import { MdPlaylistAdd } from 'react-icons/md';
 
@@ -77,7 +78,14 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
             }}
           >
             {isMobile ? (
-              <Image src="/tubetter.png" borderRadius="md" boxSize="40px" />
+              <Flex borderRadius="md" alignItems="center">
+                <Image
+                  src="/tubetter.png"
+                  width={40}
+                  height={40}
+                  alt="tubetter-logo"
+                />
+              </Flex>
             ) : (
               <Text fontFamily="Ubuntu, sans-serif" fontSize="2xl">
                 Tubetter
@@ -96,8 +104,12 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
                 {me && (
                   <Link path={Paths.newPost} params={{ userName: me.userName }}>
                     <Tooltip label="投稿する">
-                      <HeaderButton>
-                        <Icon as={MdPlaylistAdd} boxSize="30px" />
+                      <HeaderButton aria-label="投稿ページへのリンク">
+                        <Icon
+                          as={MdPlaylistAdd}
+                          boxSize="30px"
+                          name="投稿ページへのリンク"
+                        />
                       </HeaderButton>
                     </Tooltip>
                   </Link>
@@ -113,8 +125,12 @@ const Component: FC<ComponentProps> = React.memo(({ me, isLoading }) => {
                     <ColorModeButton />
                     <Link path={Paths.login}>
                       <Tooltip label="投稿する">
-                        <HeaderButton>
-                          <Icon as={MdPlaylistAdd} boxSize="30px" />
+                        <HeaderButton aria-label="投稿ページへのリンク">
+                          <Icon
+                            as={MdPlaylistAdd}
+                            boxSize="30px"
+                            name="投稿ページへのリンク"
+                          />
                         </HeaderButton>
                       </Tooltip>
                     </Link>

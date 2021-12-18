@@ -44,7 +44,7 @@ const Component = ({
     {embeded ? (
       <VideoPlayer embedUrl={getEmbedUrl(post.type, post.videoId)} />
     ) : (
-      <Thumbnail src={getThumbnail(post)} />
+      <Thumbnail src={getThumbnail(post)} alt={`${post.title} のサムネイル`} />
     )}
     <Flex
       direction="column"
@@ -91,7 +91,11 @@ const Component = ({
             chakraLinkProps={{ position: 'relative', overflow: 'hidden' }}
           >
             <Flex alignItems="center" sx={{ gap: '.5rem' }} overflow="hidden">
-              <Avatar src={user.avatarUrl} boxSize="32px" />
+              <Avatar
+                src={user.avatarUrl}
+                boxSize="32px"
+                name={`${user.displayName}のユーザーアイコン`}
+              />
               <Text
                 as="span"
                 fontSize="md"
