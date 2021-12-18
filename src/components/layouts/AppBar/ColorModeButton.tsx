@@ -6,7 +6,7 @@ import { FC, MouseEventHandler } from 'react';
 import { HeaderButton } from './HeaderButton';
 
 export const ColorModeButton: FC = () => {
-  const { colorMode, toggleColorMode, setColorMode } = useColorMode();
+  const { colorMode, toggleColorMode } = useColorMode();
   const isDarkMode = colorMode === 'dark';
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -14,7 +14,7 @@ export const ColorModeButton: FC = () => {
     toggleColorMode();
   };
   return (
-    <HeaderButton onClick={handleClick}>
+    <HeaderButton onClick={handleClick} aria-label="カラーモード切替">
       {isDarkMode ? <Icon as={SunIcon} /> : <Icon as={MoonIcon} />}
     </HeaderButton>
   );
