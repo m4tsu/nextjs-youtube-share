@@ -4,8 +4,9 @@ import { FC, memo } from 'react';
 
 type Props = {
   src: string;
+  alt?: string;
 };
-const Component: FC<Props> = ({ src }) => {
+const Component: FC<Props> = ({ src, alt }) => {
   return (
     <Box>
       <Img
@@ -13,6 +14,7 @@ const Component: FC<Props> = ({ src }) => {
         width="full"
         objectFit="cover"
         sx={{ aspectRatio: '16/9' }}
+        alt={alt}
       />
     </Box>
   );
